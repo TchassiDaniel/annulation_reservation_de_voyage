@@ -78,8 +78,6 @@ export default function Trips()
     return(
         <div className="flex flex-col">
 
-            <div className="h-24 bg-gradient-to-r from-blue-300 to-pink-400"></div>
-
             <div className="flex flex-col ml-5 mt-8">
                 <h1 className="text-3xl font-bold">All Available Journey</h1>
                 <p className="mt-5 text-md">We provide you a least of available journey</p>

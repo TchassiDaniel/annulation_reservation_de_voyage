@@ -1,19 +1,17 @@
 "use client";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
+import logo from "../../public/networkLogo.png";
 
 const LoginPage = () => {
-
-
   const router = useRouter();
   return (
     <div className="min-h-screen flex items-center justify-center bg-white p-4">
       <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         {/* Left side - Login Form */}
         <div className="rounded-lg w-full max-w-[26rem] mx-auto">
-          <div className="flex items-center gap-2 mb-10">
-            <div className="w-8 h-8 bg-blue-500 rounded transform rotate-45"></div>
-            <h1 className="text-2xl font-bold text-gray-900">Mooving</h1>
+          <div className="ml-[-38px] mb-[-20px]">
+            <Image src={logo} alt={"App logo"} className="w-72 h-36 ml-5" />
           </div>
 
           <h1 className="text-4xl font-bold mb-1">Sign In</h1>
@@ -41,15 +39,17 @@ const LoginPage = () => {
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200"
-            onClick={()=> {router.push("/availableTrips")}}>
+              onClick={() => {
+                router.push("/availableTrips");
+              }}>
               Sign In
             </button>
           </form>
 
           <p className="mt-6 text-center text-gray-600">
-            {"Don't have an account?"}
-            <a href="/signup" className="text-blue-500 hover:underline">
-              Sign up
+            {"Don't have an account ?  "}
+            <a href="#" className="text-blue-500 hover:underline">
+              {"  Sign up"}
             </a>
           </p>
         </div>
