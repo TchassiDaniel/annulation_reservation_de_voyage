@@ -7,10 +7,10 @@ export default function Layout({
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex">
-        <div className="fixed h-screen w-1/5 border-r-2 border-gray-200">
+        <div className="fixed h-screen  border-r-2 border-gray-200 bg-white max-lg:w-1/5">
           <Sidebar />
         </div>
-        <div className="w-full ml-[20%] flex flex-col">
+        <div className="w-full ml-[210px] max-lg:ml-[20%] flex flex-col">
           {/* <div className="h-24 bg-gradient-to-r from-blue-300 to-pink-400"></div> */}
           <div className="h-24 bg-gradient-to-r from-blue-300 to-pink-400"></div>
 

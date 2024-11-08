@@ -57,7 +57,16 @@ export default function HomePage() {
         </thead>
         <tbody>
           {trips.map((trip, index) => (
-            <tr key={index} className="border-b">
+            <tr
+              key={index}
+              className={
+                trip.state === "Payed"
+                  ? " border-b-2 bg-green-50"
+                  : "border-b-2 bg-red-50"
+              }>
+              {/* className={
+                index % 2 === 0 ? " border-b-2" : "border-b-2 bg-green-50"
+              }> */}
               <td className="p-4">{trip.idVoyage}</td>
               <td className="p-4  font-semibold">{trip.titre}</td>
               <td className="p-4 text-gray-700 font-medium">
@@ -76,8 +85,8 @@ export default function HomePage() {
                 <span
                   className={
                     trip.state === "Payed"
-                      ? "text-green-500 hover:text-green-700 border-4 border-green-500 rounded-full px-2"
-                      : "text-red-500 hover:text-red-700 border-4 border-red-500 rounded-full px-2"
+                      ? "text-green-500 hover:text-green-700 border-2 border-green-500 rounded-full px-2"
+                      : "text-red-500 hover:text-red-700 border-2 border-red-500 rounded-full px-2"
                   }>
                   {trip.state}
                 </span>

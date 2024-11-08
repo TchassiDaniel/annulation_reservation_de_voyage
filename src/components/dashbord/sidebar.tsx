@@ -41,14 +41,14 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex flex-col mt-4 mr-2">
+    <div className="flex flex-col mt-4 mr-2 w-[210px] max-lg:w-full">
       <Image
         src={logo}
         alt={"App logo"}
         className="w-48 h-24 ml-4 max-lg:ml-0"
       />
 
-      <nav className="mt-3 ml-6">
+      <nav className="mt-3 ml-6 ">
         <ul className="space-y-6">
           {navLink.map((link, index) => {
             const IconComponent = link.icon;
