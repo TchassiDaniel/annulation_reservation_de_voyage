@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
-import logo from "../../public/networkLogo.png";
+import logo from "../../public/logoMoovingProject.png";
 
 const LoginPage = () => {
   const router = useRouter();
@@ -10,8 +10,8 @@ const LoginPage = () => {
       <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         {/* Left side - Login Form */}
         <div className="rounded-lg w-full max-w-[26rem] mx-auto">
-          <div className="ml-[-38px] mb-[-20px]">
-            <Image src={logo} alt={"App logo"} className="w-72 h-36 ml-5" />
+          <div className="ml-[-38px]">
+            <Image src={logo} alt={"App logo"} className="w-56 h-28 ml-5" />
           </div>
 
           <h1 className="text-4xl font-bold mb-1">Sign In</h1>
