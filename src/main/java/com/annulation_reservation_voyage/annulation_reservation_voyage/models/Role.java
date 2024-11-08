@@ -5,20 +5,22 @@ import java.util.UUID;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.User;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table
-@Setter
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Usager extends User{
+public class Role {
   @PrimaryKey
-  private UUID idUsager;
-  private String address;
+  private UUID id;
+
+  @Enumerated(EnumType.STRING)
+  private RoleType libelle;
 }

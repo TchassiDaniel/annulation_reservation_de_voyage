@@ -5,21 +5,21 @@ import java.util.UUID;
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.User;
+
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AgenceVoyage {
+public class AgenceVoyage extends User{
   @PrimaryKey
   private UUID idAgenceVoyage;
-  private String nom;
-  private String email;
-  private String password;
   private UUID coordonneeGPS;
-  private String telNumber;
 }
 
