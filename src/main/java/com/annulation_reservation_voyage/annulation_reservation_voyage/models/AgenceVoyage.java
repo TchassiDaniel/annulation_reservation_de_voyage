@@ -19,7 +19,7 @@ public class AgenceVoyage {
   private String nom;
   private String email;
   private String password;
-  private UUID coordonneeGPS;
+  private UUID idcoordonneeGPS;
   private String telNumber;
 }
 
