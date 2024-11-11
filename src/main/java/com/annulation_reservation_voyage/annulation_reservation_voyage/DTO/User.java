@@ -12,7 +12,6 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.Rol
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Getter
 @Setter
 public abstract class User implements UserDetails {
@@ -22,19 +21,20 @@ public abstract class User implements UserDetails {
   private String password;
   private String telNumber;
   private RoleType role;
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role));
+    return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + this.role));
   }
 
   @Override
   public String getPassword() {
-   return this.password;
+    return this.password;
   }
 
   @Override
   public String getUsername() {
     return this.email;
   }
-  
+
 }

@@ -2,13 +2,17 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.AgenceVoyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.AgenceVoyageRepository;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class AgenceVoyageService {
+public class AgenceVoyageService implements UserDetailsService {
 
     public final AgenceVoyageRepository agenceVoyageRepository;
 
@@ -34,5 +38,10 @@ public class AgenceVoyageService {
 
     public void delete(UUID id) {
         agenceVoyageRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       return this.agenceVoyageRepository.fin
     }
 }
