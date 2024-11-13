@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.AuthentificationDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.User;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 
 @Controller
 @RequestMapping("/utilisateur")

@@ -16,10 +16,5 @@ import lombok.NoArgsConstructor;
 public class AgenceVoyage {
   @PrimaryKey
   private UUID idAgenceVoyage;
-  private String nom;
-  private String email;
-  private String password;
   private UUID idcoordonneeGPS;
-  private String telNumber;
 }
-

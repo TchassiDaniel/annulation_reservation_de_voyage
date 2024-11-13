@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.User;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

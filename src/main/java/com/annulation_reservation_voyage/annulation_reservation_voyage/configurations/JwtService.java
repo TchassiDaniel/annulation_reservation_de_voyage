@@ -7,8 +7,8 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.User;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UsagerRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,13 +21,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class JwtService {
 
-  private UsagerRepository usagerRepository;
+  private UserRepository userRepository;
 
   private final String ENCRYPTION_KEY = "CmiiogvX6ILtIiRajQuYdYqh/Kh1Nou9BBMPVi/xgQslDTb3vJA2MPRgCM8/eGJr\n";
 
   public String generateJwt(String username) {
 
-    User user = this.usagerRepository.findByUsername(username);
+    User user = this.userRepository.findByUsername(username);
 
     Long currentTime = System.currentTimeMillis();
     Long expireTime = currentTime + 30 * 60 * 1000;
