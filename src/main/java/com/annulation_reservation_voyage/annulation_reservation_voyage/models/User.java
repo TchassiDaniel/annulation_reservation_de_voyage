@@ -11,7 +11,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.TypeUser;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,17 +22,17 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class User implements UserDetails {
+public class User implements UserDetails {
 
   @PrimaryKey
   private UUID userId;
 
   private String nom;
+  private String prenom;
   private String email;
   private String password;
   private String telNumber;
   private RoleType role;
-  private TypeUser typeUser;
 
   // Parametre pour un usager
   private String address;

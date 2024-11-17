@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 @AllArgsConstructor
 public class security {
 
@@ -36,7 +35,7 @@ public class security {
         .authorizeHttpRequests(
             (auth) -> {
               auth.requestMatchers("/utilisateur/inscription").permitAll()
-                  .requestMatchers("/utilisateur/connection").permitAll()
+                  .requestMatchers("/utilisateur/connexion").permitAll()
                   .anyRequest().authenticated();
             })
         .sessionManagement(httpSecuritySessionManagementConfiguger -> httpSecuritySessionManagementConfiguger
@@ -55,7 +54,7 @@ public class security {
   }
 
   // Pour que le gestionnaire d'authentification fonctionne correctement on lui
-  // fournir un fournisseur d'authetification
+  // fournir un fournisseur d'authentification
   @Bean
   public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();

@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
@@ -18,6 +19,7 @@ import lombok.AllArgsConstructor;
 public class UserService implements UserDetailsService {
 
   private UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
 
   public List<User> findAll() {
     return userRepository.findAll();
@@ -28,6 +30,8 @@ public class UserService implements UserDetailsService {
   }
 
   public User create(User user) {
+    user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+    user.setUserId(UUID.randomUUID());
     return userRepository.save(user);
   }
 
@@ -41,7 +45,9 @@ public class UserService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return (UserDetails) this.userRepository.findByUsername(username);
+    User user = this.userRepository.findByEmail(username).get(0);
+    UserDetails userDetails = user;
+    return userDetails;
   }
 
 }

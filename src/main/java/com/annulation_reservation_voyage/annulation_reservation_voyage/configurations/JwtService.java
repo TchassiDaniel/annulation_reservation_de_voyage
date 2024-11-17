@@ -27,7 +27,7 @@ public class JwtService {
 
   public String generateJwt(String username) {
 
-    User user = this.userRepository.findByUsername(username);
+    User user = this.userRepository.findByEmail(username).get(0);
 
     Long currentTime = System.currentTimeMillis();
     Long expireTime = currentTime + 30 * 60 * 1000;

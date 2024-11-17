@@ -7,21 +7,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
+@SpringBootApplication
 public class AnnulationReservationVoyageApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AnnulationReservationVoyageApplication.class, args);
 	}
 
-		@Bean
+	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-				.allowedOrigins("*")
-				.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
+						.allowedOrigins("*")
+						.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
 			}
 		};
 	}
