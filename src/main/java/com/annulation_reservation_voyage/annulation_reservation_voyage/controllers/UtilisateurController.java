@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,6 +22,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.configura
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
 @Controller
@@ -39,7 +41,8 @@ public class UtilisateurController {
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
-  @GetMapping("/connexion")
+  @GetMapping(path = "/connexion", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @Operation(summary = "Get a token for an user")
   public ResponseEntity<String> getToken(@RequestBody AuthentificationDTO authentificationDTO) {
     String jwt = null;
 
