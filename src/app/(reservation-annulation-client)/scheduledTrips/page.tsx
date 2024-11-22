@@ -1,4 +1,6 @@
 import React from "react";
+import { FaTrash } from "react-icons/fa";
+//import ReactTooltip from "react-tooltip";
 
 const trips = [
   {
@@ -52,21 +54,22 @@ export default function HomePage() {
             <th className="p-4">Date/Time</th>
             <th className="p-4">Refunded Amount</th>
             <th className="p-4">State</th>
-            <th className="p-4">Actions</th>
+            <th className="p-4">Cancel</th>
           </tr>
         </thead>
         <tbody>
           {trips.map((trip, index) => (
             <tr
               key={index}
+              // className={
+              //   trip.state === "Payed"
+              //     ? " border-b-2 bg-green-50"
+              //     : "border-b-2 bg-red-50"
+              // }
+
               className={
-                trip.state === "Payed"
-                  ? " border-b-2 bg-green-50"
-                  : "border-b-2 bg-red-50"
+                index % 2 === 0 ? " border-b-2" : "border-b-2 bg-gray-50"
               }>
-              {/* className={
-                index % 2 === 0 ? " border-b-2" : "border-b-2 bg-green-50"
-              }> */}
               <td className="p-4">{trip.idVoyage}</td>
               <td className="p-4  font-semibold">{trip.titre}</td>
               <td className="p-4 text-gray-700 font-medium">
@@ -92,12 +95,16 @@ export default function HomePage() {
                 </span>
               </td>
               <td className="p-4 flex space-x-4">
-                <button className="text-green-500 hover:text-green-600">
-                  <i className="fas fa-eye"></i>
-                </button>
-                <button className="text-red-500 hover:text-red-600">
-                  <i className="fas fa-trash"></i>
-                </button>
+                <FaTrash
+                  className="ml-8"
+                  data-tip="Supprimer" // Texte au survol
+                  style={{
+                    fontSize: "18px",
+                    cursor: "pointer",
+                    color: "red",
+                  }}
+                />
+                {/* <ReactTooltip place="top" type="dark" effect="solid" /> */}
               </td>
             </tr>
           ))}
