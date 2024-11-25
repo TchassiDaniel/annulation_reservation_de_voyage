@@ -116,7 +116,7 @@ export default function Trips()
                                 <p className=" mt-2 ml-4 text-md">{trip.destination}</p>
                                 <div className="flex justify-between mr-4 ml-2">
                                     <p className="text-gray-500 mt-3 ml-2 mb-5">Seats:{" " + trip.seats}</p>
-                                    <ViewDetailsButton/>
+                                    <ViewDetailsButton tripId={trip.tripId}/>
                                 </div>
                             </div>
                         );
