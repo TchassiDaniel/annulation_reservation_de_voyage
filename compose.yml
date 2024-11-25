@@ -1,0 +1,22 @@
+version: "3.9"
+name: reservation-annulation-springboot
+services:
+  scylladb:
+    container_name: scylladb
+    image: scylladb/scylla
+    restart: always
+    ports:
+      - 9042:9042
+    volumes:
+      - "./scylla/scylla.yaml:/etc/scylla/scylla.yaml"
+      - "./scylla/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties"
+  
+
+  voyage-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST = scylladb
