@@ -5,7 +5,6 @@ import {ViewDetailsButton} from "@/components/availableTripsComponents/viewDetai
 
 export default function Trips()
 {
-
     const Trip =
         [
             {
