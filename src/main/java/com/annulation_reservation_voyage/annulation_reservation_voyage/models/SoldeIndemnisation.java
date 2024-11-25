@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class SoldeIndemnisation {
   @PrimaryKey
   private UUID idSolde;
-  private float solde;
+  private double solde;
   private String type;
 }
 

@@ -17,4 +17,5 @@ public class AgenceVoyage {
   @PrimaryKey
   private UUID idAgenceVoyage;
   private UUID idcoordonneeGPS;
+  private String nom;
 }

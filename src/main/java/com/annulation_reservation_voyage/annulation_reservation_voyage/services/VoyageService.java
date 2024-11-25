@@ -1,8 +1,10 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.mappers.VoyageMapper;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.LigneVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,12 +15,25 @@ public class VoyageService {
 
     private final VoyageRepository voyageRepository;
 
-    public VoyageService(VoyageRepository voyageRepository) {
+    private final LigneVoyageRepository ligneVoyageRepository;
+
+    private final VoyageMapper voyageMapper;
+
+    public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, VoyageMapper voyageMapper) {
         this.voyageRepository = voyageRepository;
+        this.ligneVoyageRepository = ligneVoyageRepository;
+        this.voyageMapper = voyageMapper;
     }
 
     public List<Voyage> findAll() {
         return voyageRepository.findAll();
+    }
+
+    public List<VoyagePreviewDTO> findAllPreview() {
+        List<Voyage> voyages = voyageRepository.findAll();
+        voyages.stream().forEach(voyage -> {
+
+        })
     }
 
     public Voyage findById(UUID id) {
@@ -38,6 +53,5 @@ public class VoyageService {
     public void delete(UUID id) {
         voyageRepository.deleteById(id);
     }
-
 
 }

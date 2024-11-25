@@ -25,6 +25,6 @@ public class Historique {
   private LocalDateTime dateAnnulation;
   private String causeAnnulation;
   private String origineAnnulation;
-  private float tauxAnnulation;
-  private float compensation;
+  private double tauxAnnulation;
+  private double compensation;
 }

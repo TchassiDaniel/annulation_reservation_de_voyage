@@ -22,7 +22,7 @@ public class Reservation {
   private LocalDateTime dateReservation;
   private LocalDateTime dateConfirmation;
   private int nbrPassager;
-  private float prixTotal;
+  private double prixTotal;
   private StatutReservation statutReservation;
 }
 

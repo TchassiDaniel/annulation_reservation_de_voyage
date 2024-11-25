@@ -19,5 +19,5 @@ public class PolitiqueAnnulation {
   private UUID idPolitique;
   private LocalDateTime dateDebut;
   private LocalDateTime dateFin;
-  private float taux;
+  private double taux;
 }
