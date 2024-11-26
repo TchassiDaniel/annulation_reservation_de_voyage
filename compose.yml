@@ -1,22 +1,37 @@
 version: "3.9"
-name: reservation-annulation-springboot
 services:
-  scylladb:
-    container_name: scylladb
-    image: scylladb/scylla
+  database-service:
+    container_name: cassandra
+    image: cassandra:4.1
     restart: always
     ports:
-      - 9042:9042
+      - "9042:9042"
+    environment:
+      CASSANDRA_CLUSTER_NAME: "ReservationCluster"
+      CASSANDRA_DC: "datacenter1"
+      CASSANDRA_RACK: "rack1"
+      CASSANDRA_NUM_TOKENS: "256"
     volumes:
-      - "./scylla/scylla.yaml:/etc/scylla/scylla.yaml"
-      - "./scylla/cassandra-rackdc.properties.dc1:/etc/scylla/cassandra-rackdc.properties"
-  
+      - ./scylla/scylla.yaml:/etc/cassandra/cassandra.yaml:ro
+      - ./scylla/cassandra-rackdc.properties:/etc/cassandra/cassandra-rackdc.properties:ro
+    networks:
+      - annulation-reservation
 
   voyage-service:
+    container_name: voyage-service
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - database-service
     environment:
-      - DB_HOST = scylladb
+      DB_HOST: database-service
+      DB_PORT: 9042
+    networks:
+      - annulation-reservation
+
+networks:
+  annulation-reservation:
+    driver: bridge
