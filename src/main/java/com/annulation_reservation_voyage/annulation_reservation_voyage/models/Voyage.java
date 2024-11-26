@@ -37,6 +37,8 @@ public class Voyage {
   private LocalDateTime dateLimiteReservation;
   private LocalDateTime dateLimiteConfirmation;
   private String statusVoyage;
+  private String smallImage;
+  private String bigImage;
 
 }
 

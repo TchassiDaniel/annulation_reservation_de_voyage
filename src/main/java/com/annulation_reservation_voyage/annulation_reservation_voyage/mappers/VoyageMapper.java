@@ -16,6 +16,8 @@ public class VoyageMapper {
         voyagePreviewDTO.setLieuArrive(voyage.getLieuArrive());
         voyagePreviewDTO.setNbrPlaceRestante(voyage.getNbrPlaceRestante());
         voyagePreviewDTO.setNbrPlaceReservable(voyage.getNbrPlaceReservable());
+        voyagePreviewDTO.setSmallImage(voyage.getSmallImage());
+        voyagePreviewDTO.setBigImage(voyage.getBigImage());
         return voyagePreviewDTO;
     }
 }

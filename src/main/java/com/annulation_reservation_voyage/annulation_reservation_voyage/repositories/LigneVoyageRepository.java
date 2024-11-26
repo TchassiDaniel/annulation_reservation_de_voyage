@@ -17,8 +17,8 @@ public interface LigneVoyageRepository extends CassandraRepository<LigneVoyage, 
     //@Query("SELECT * FROM lignevoyage WHERE idUser = ?0")
     //List<LigneVoyage> findByIdUser(UUID idUser);
 
-    @Query("SELECT * FROM lignevoyage WHERE idVoyage = ?0")
-    List<LigneVoyage> findByIdVoyage(UUID idVoyage);
+    //@Query("SELECT * FROM lignevoyage WHERE idVoyage = ?0")
+    LigneVoyage findByIdVoyage(UUID idVoyage);
 
     //@Query("SELECT * FROM lignevoyage WHERE idUser = ?0 AND idVoyage = ?1  ALLOW FILTERING")
     //Optional<LigneVoyage> findByIdUserAndIdVoyage(UUID idUser, UUID idVoyage);
