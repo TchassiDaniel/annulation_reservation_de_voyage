@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "######### Starting to execute SH script... #########"
-
+python3 /docker-entrypoint.py &
 # If you have credentials for your DB uncomment the following two lines
 #USER_NAME='user_name'
 #PASSWORD='user_password'

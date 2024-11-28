@@ -6,23 +6,11 @@ services:
     restart: always
     ports:
       - "9042:9042"
-#    environment:
-#      CASSANDRA_CLUSTER_NAME: "ReservationCluster"
-#      CASSANDRA_DC: "datacenter1"
-#      CASSANDRA_RACK: "rack1"
-#      CASSANDRA_NUM_TOKENS: "256"
-    volumes:
-      - ./scylla_scripts/create_schema.cql:/scylla_scripts/1.cql
-      - ./scylla_scripts/populate_db.cql:/scylla_scripts/2.cql
-      - ./scylla_scripts/initdb.sh:/scylla_scripts/initdb.sh
-      - ./scylla/supervisord.conf:/etc/supervisord.conf
-#    command: >
-#      sh -c "
-#      sleep 120;
-#      /bin/bash /scylla_scripts/initdb.sh"
-    entrypoint: [ "python3", "/docker-entrypoint.py", "&&", "bash", "/scylla_scripts/initdb.sh" ]
-#      - ./scylla/scylla.yaml:/etc/cassandra/cassandra.yaml:ro
-#      - ./scylla/cassandra-rackdc.properties:/etc/cassandra/cassandra-rackdc.properties:ro
+    #    environment:
+    #      CASSANDRA_CLUSTER_NAME: "ReservationCluster"
+    #      CASSANDRA_DC: "datacenter1"
+    #      CASSANDRA_RACK: "rack1"
+    #      CASSANDRA_NUM_TOKENS: "256"
     networks:
       - annulation-reservation
 
