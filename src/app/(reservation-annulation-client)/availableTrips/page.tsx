@@ -1,7 +1,7 @@
 import {Button} from "@/components/ui/button";
 import busImage from "../../../../public/busImage.png";
 import Image from "next/image";
-import {ViewDetailsButton} from "@/components/availableTripsComponents/viewDetailsButton";
+import {ViewDetailsButton} from "@/components/availableTripComponents/viewDetailsButton";
 
 export default function Trips()
 {

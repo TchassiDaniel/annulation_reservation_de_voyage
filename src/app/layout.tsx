@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import {MoovingProvider} from "@/app/Utils/Provider";
 
 
 
@@ -18,7 +19,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <MoovingProvider>
+            {children}
+        </MoovingProvider>
+
       </body>
     </html>
   );
