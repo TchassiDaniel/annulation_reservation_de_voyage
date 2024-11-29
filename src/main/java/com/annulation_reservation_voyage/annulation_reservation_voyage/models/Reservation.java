@@ -24,5 +24,7 @@ public class Reservation {
   private int nbrPassager;
   private double prixTotal;
   private StatutReservation statutReservation;
+  private UUID idUser;
+  private UUID idVoyage;
 }
 

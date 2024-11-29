@@ -1,8 +1,10 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.controllers;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.VoyageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/voyages")
+@RequestMapping("/voyage")
 public class VoyageController {
 
     private final VoyageService voyageService;
@@ -26,14 +28,17 @@ public class VoyageController {
         this.voyageService = voyageService;
     }
 
-    @Operation(summary = "Obtenir tous les voyages", description = "Récupère la liste de tous les voyages enregistrés.")
+    @Operation(summary = "Obtenir tous les voyages",
+            description = "Récupère la liste de tous les voyages (champs stricts pour le preview) enregistrés.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Voyage.class)))
+            @ApiResponse(responseCode = "200",
+                    description = "Liste récupérée avec succès",
+                    content = @Content(mediaType = "application/json",
+                            array = @ArraySchema(schema = @Schema(implementation = VoyagePreviewDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<List<Voyage>> getAllVoyages() {
-        List<Voyage> voyages = voyageService.findAll();
+    public ResponseEntity<List<VoyagePreviewDTO>> getAllVoyages() {
+        List<VoyagePreviewDTO> voyages = voyageService.findAllPreview();
         return new ResponseEntity<>(voyages, HttpStatus.OK);
     }
 

@@ -2,11 +2,10 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.mappers.VoyageMapper;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.AgenceVoyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.LigneVoyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.AgenceVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.LigneVoyageRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +21,13 @@ public class VoyageService {
 
     private final VoyageMapper voyageMapper;
 
-    private final AgenceVoyageRepository aganceVoyageRepository;
-    private final AgenceVoyageRepository agenceVoyageRepository;
+    private final UserRepository userRepository;
 
-    public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, VoyageMapper voyageMapper, AgenceVoyageRepository agenceVoyageRepository) {
+    public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, VoyageMapper voyageMapper, UserRepository userRepository) {
         this.voyageRepository = voyageRepository;
         this.ligneVoyageRepository = ligneVoyageRepository;
-        this.aganceVoyageRepository = agenceVoyageRepository;
         this.voyageMapper = voyageMapper;
-        this.agenceVoyageRepository = agenceVoyageRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Voyage> findAll() {
@@ -45,7 +42,7 @@ public class VoyageService {
                     LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
 
                     // Trouve l'agence associée et mappe les informations si présente
-                    return agenceVoyageRepository.findById(ligneVoyage.getIdAgenceVoyage())
+                    return userRepository.findById(ligneVoyage.getIdAgenceVoyage())
                             .map(agenceVoyage -> voyageMapper.toVoyagePreviewDTO(voyage, agenceVoyage))
                             .orElse(null); // Retourne null si aucune agence n'est trouvée
                 })
