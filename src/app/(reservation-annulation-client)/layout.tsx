@@ -11,8 +11,7 @@ export default function Layout({
           <Sidebar />
         </div>
         <div className="w-full ml-[210px] max-lg:ml-[20%] flex flex-col">
-          {/* <div className="h-24 bg-gradient-to-r from-blue-300 to-pink-400"></div> */}
-          <div className="h-24 bg-gradient-to-r from-blue-300 to-reservation-color"></div>
+          {/* <div className="h-24 bg-gradient-to-r from-blue-300 to-reservation-color"></div> */}
 
           {children}
         </div>

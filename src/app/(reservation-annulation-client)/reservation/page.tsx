@@ -76,109 +76,109 @@ export default function HomePage() {
   });
 
   return (
-    <div className="py-8 min-h-screen">
-      {/* Barre de recherche et filtres */}
-      <div className="flex flex-row justify-between items-center mx-8 mb-4">
-        {/* Barre de recherche à droite */}
-        <div className="flex space-x-4">
-          {/* Filtres */}
-          <select
-            value={filterState}
-            onChange={(e) => setFilterState(e.target.value)}
-            className="border rounded px-4 py-2"
-          >
-            <option value="All">Filtrer par état...</option>
-            <option value="Payed">Payed</option>
-            <option value="Not Payed">Not Payed</option>
-          </select>
+    <>
+      <div className="h-24 bg-gradient-to-r from-blue-300 to-reservation-color"></div>
+      <div className="py-8 min-h-screen">
+        {/* Barre de recherche et filtres */}
+        <div className="flex flex-row justify-between items-center mx-8 mb-4">
+          {/* Barre de recherche à droite */}
+          <div className="flex space-x-4">
+            {/* Filtres */}
+            <select
+              value={filterState}
+              onChange={(e) => setFilterState(e.target.value)}
+              className="border rounded px-4 py-2">
+              <option value="All">Filtrer par état...</option>
+              <option value="Payed">Payed</option>
+              <option value="Not Payed">Not Payed</option>
+            </select>
 
-          {/* Recherche par date */}
+            {/* Recherche par date */}
+            <input
+              type="date"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+              className="border rounded px-4 py-2"
+            />
+          </div>
+
+          {/* Recherche par ville */}
           <input
-            type="date"
-            value={searchDate}
-            onChange={(e) => setSearchDate(e.target.value)}
+            type="text"
+            placeholder="Rechercher par ville..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="border rounded px-4 py-2"
           />
         </div>
 
-        {/* Recherche par ville */}
-        <input
-          type="text"
-          placeholder="Rechercher par ville..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border rounded px-4 py-2"
-        />
-      </div>
-
-      {/* Tableau des données */}
-      <table className="min-w-full bg-white mt-4">
-        <thead>
-          <tr className="text-left text-gray-500 bg-gray-200 border-b">
-            <th className="p-4">ID</th>
-            <th className="p-4">Ville</th>
-            <th className="p-4">Prix</th>
-            <th className="p-4">Date/Heure</th>
-            <th className="p-4">Description</th>
-            <th className="p-4">État</th>
-            <th className="p-4">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredTrips.length > 0 ? (
-            filteredTrips.map((trip, index) => (
-              <tr
-                key={index}
-                className={
-                  index % 2 === 0 ? "border-b-2" : "border-b-2 bg-gray-50"
-                }
-              >
-                <td className="p-4">{trip.idVoyage}</td>
-                <td className="p-4 font-semibold">{trip.titre}</td>
-                <td className="p-4 text-gray-700 font-medium">
-                  <span className="px-2 py-1 text-blue-600 rounded-full">
-                    {trip.prix}
-                  </span>
-                </td>
-                <td className="p-4">
-                  <span className="px-2 py-1 bg-gray-200 rounded-full">
-                    {trip.dateDepartPrevu}
-                  </span>
-                </td>
-                <td className="p-4">{trip.description}</td>
-                <td className="p-4">
-                  <span
-                    className={
-                      trip.state === "Payed"
-                        ? "text-green-500 hover:text-green-700 border-2 border-green-500 rounded-full px-2"
-                        : "text-red-500 hover:text-red-700 border-2 border-red-500 rounded-full px-2"
-                    }
-                  >
-                    {trip.state}
-                  </span>
-                </td>
-                <td className="p-4 flex space-x-4">
-                  <FaTrash
-                    className="ml-8"
-                    data-tip="Supprimer"
-                    style={{
-                      fontSize: "18px",
-                      cursor: "pointer",
-                      color: "red",
-                    }}
-                  />
+        {/* Tableau des données */}
+        <table className="min-w-full bg-white mt-4">
+          <thead>
+            <tr className="text-left text-gray-500 bg-gray-200 border-b">
+              <th className="p-4">ID</th>
+              <th className="p-4">Ville</th>
+              <th className="p-4">Prix</th>
+              <th className="p-4">Date/Heure</th>
+              <th className="p-4">Description</th>
+              <th className="p-4">État</th>
+              <th className="p-4">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredTrips.length > 0 ? (
+              filteredTrips.map((trip, index) => (
+                <tr
+                  key={index}
+                  className={
+                    index % 2 === 0 ? "border-b-2" : "border-b-2 bg-gray-50"
+                  }>
+                  <td className="p-4">{trip.idVoyage}</td>
+                  <td className="p-4 font-semibold">{trip.titre}</td>
+                  <td className="p-4 text-gray-700 font-medium">
+                    <span className="px-2 py-1 text-blue-600 rounded-full">
+                      {trip.prix}
+                    </span>
+                  </td>
+                  <td className="p-4">
+                    <span className="px-2 py-1 bg-gray-200 rounded-full">
+                      {trip.dateDepartPrevu}
+                    </span>
+                  </td>
+                  <td className="p-4">{trip.description}</td>
+                  <td className="p-4">
+                    <span
+                      className={
+                        trip.state === "Payed"
+                          ? "text-green-500 hover:text-green-700 border-2 border-green-500 rounded-full px-2"
+                          : "text-red-500 hover:text-red-700 border-2 border-red-500 rounded-full px-2"
+                      }>
+                      {trip.state}
+                    </span>
+                  </td>
+                  <td className="p-4 flex space-x-4">
+                    <FaTrash
+                      className="ml-8"
+                      data-tip="Supprimer"
+                      style={{
+                        fontSize: "18px",
+                        cursor: "pointer",
+                        color: "red",
+                      }}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={7} className="p-4 text-center text-gray-500">
+                  Aucun voyage ne correspond à vos critères.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={7} className="p-4 text-center text-gray-500">
-                Aucun voyage ne correspond à vos critères.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }

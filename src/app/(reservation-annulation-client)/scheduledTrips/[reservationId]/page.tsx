@@ -1,6 +1,6 @@
 import Image from "next/image";
-import TripDescriptionTab from "@/components/availableTripComponents/tripDescriptionTab";
-import BoutonSection from "@/components/availableTripComponents/boutonSection";
+import TripDescriptionTab from "@/components/reservationDetailComponents/tripDescriptionTab";
+import BoutonSection from "@/components/reservationDetailComponents/boutonSection";
 
 interface TripProps {
   params: { tripId: string };
