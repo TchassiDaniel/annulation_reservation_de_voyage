@@ -13,13 +13,13 @@ import java.net.InetSocketAddress;
 @Configuration
 public class CassandraConfig extends AbstractCassandraConfiguration {
 
-    @Value("${spring.data.cassandra.keyspace-name}")
+    @Value("${spring.cassandra.keyspace-name}")
     private String keyspaceName;
 
-    @Value("${spring.data.cassandra.contact-points}")
+    @Value("${spring.cassandra.contact-points}")
     private String contactPoints;
 
-    @Value("${spring.data.cassandra.local-datacenter}")
+    @Value("${spring.cassandra.local-datacenter}")
     private String localDatacenter;
 
     @Override
@@ -41,10 +41,9 @@ public class CassandraConfig extends AbstractCassandraConfiguration {
 
             String createKeyspaceQuery = String.format(
                     "CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};",
-                    keyspaceName
-            );
+                    keyspaceName);
 
-            session.execute(createKeyspaceQuery);  // Exécution de la requête de création du keyspace
+            session.execute(createKeyspaceQuery); // Exécution de la requête de création du keyspace
 
             System.out.println("Keyspace " + keyspaceName + " créé avec succès !");
         } catch (Exception e) {
