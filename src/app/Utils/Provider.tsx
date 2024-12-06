@@ -33,7 +33,13 @@ function useLogin() {
     {
         try
         {
-            const response: AxiosResponse = await axios.post("http://backend-reseau.ddns.net:8085/api/login", data);
+           // const response: AxiosResponse = await axios.post("http://backend-reseau.ddns.net:8085/api/login", data);
+            const response: AxiosResponse = await axios.get("http://backend-reseau.ddns.net:8085/api/login",
+                {
+                    data: data,
+                    headers: {'Content-Type': 'application/json'}
+                }
+            );
             if (response?.status === 200)
             {
                 setIsIsLoading(false);

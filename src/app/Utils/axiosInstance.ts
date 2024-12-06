@@ -52,6 +52,4 @@ const axiosInstance: AxiosInstance = axios.create({
 
 AuthInterceptor(axiosInstance);
 ErrorInterceptor(axiosInstance);
-
-
 export default axiosInstance;

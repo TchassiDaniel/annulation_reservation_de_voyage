@@ -43,12 +43,13 @@ const LoginPage: React.FC = () => {
 
             <h1 className="text-4xl font-bold mb-1">Sign In</h1>
 
-            {hasLoginError && (<p className="text-red-500 font-bold mt-4 mb-4"> {errorLogin}</p>)}
+
 
           </div>
 
           <form className={`${!hasLoginError && "mt-6"} space-y-6`} onSubmit={handleSubmit}>
             <div>
+              {hasLoginError && (<p className="text-red-500 font-bold text-xl mt-3 mb-4"> {errorLogin}</p>)}
               <label className="block text-gray-700 mb-1">Username</label>
               <input
                 type="text"
@@ -98,7 +99,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
-      {isLoading && <WaitForPageLoad/>}
+      {!isLoading && <WaitForPageLoad/>}
     </div>
   );
 };
