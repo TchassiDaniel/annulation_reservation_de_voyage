@@ -23,8 +23,10 @@ function useLogin() {
 
 
 
-    function saveAuthData(token: string) : void
+    function saveAuthData(_token: string) : void
     {
+        const token = _token.substring(6, _token.length);
+        console.log("token, token");
         localStorage.setItem("mooving_token", token);
     }
 
@@ -33,19 +35,13 @@ function useLogin() {
     {
         try
         {
-           // const response: AxiosResponse = await axios.post("http://backend-reseau.ddns.net:8085/api/login", data);
-            const response: AxiosResponse = await axios.get("http://backend-reseau.ddns.net:8085/api/login",
-                {
-                    data: data,
-                    headers: {'Content-Type': 'application/json'}
-                }
-            );
+            const response: AxiosResponse = await axios.post("http://backend-reseau.ddns.net:8085/api/utilisateur/connexion", data);
             if (response?.status === 200)
             {
                 setIsIsLoading(false);
                 setIsLogged(true);
                 setHasLoginError(false);
-                saveAuthData(response?.data?.token);
+                saveAuthData(response?.data);
                 return 200;
             }
             setHasLoginError(true);
@@ -53,6 +49,7 @@ function useLogin() {
         }
         catch (error)
         {
+            console.log(error);
             setIsIsLoading(false);
             setIsLogged(false);
             setHasLoginError(true);

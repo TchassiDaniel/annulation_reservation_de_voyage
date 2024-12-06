@@ -1,8 +1,11 @@
+"use client";
 import ReservationDetailAction from "@/components/reservationDetailComponents/reservationDetailAction";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { FaTrash } from "react-icons/fa";
+import {AxiosError, AxiosResponse} from "axios";
+import axiosInstance from "@/app/Utils/axiosInstance";
 //import { FaEye } from "react-icons/fa";
-//import ReactTooltip from "react-tooltip";
+
 
 const trips = [
   {
@@ -31,7 +34,44 @@ const trips = [
   },
 ];
 
+
+
 export default function HomePage() {
+
+  const [availableTrips, setAavailableTrips] = useState({});
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
+  async function getAvailableTrip()
+  {
+    setIsLoading(false);
+    try
+    {
+      const response : AxiosResponse = await axiosInstance.post("/voyage");
+      if (response.status ===200)
+      {
+        setIsLoading(false);
+        setAavailableTrips(response?.data);
+      }
+    }
+    catch (error)
+    {
+      setIsLoading(false);
+      console.log(error);
+      const axiosError = error as AxiosError ;
+      if (axiosError.status === 403)
+      {
+
+      }
+    }
+
+    useEffect(() => {
+      getAvailableTrip();
+    }, []);
+
+
+
+  }
   return (
     <>
       <div className="h-24 bg-gradient-to-r from-blue-300 to-reservation-color"></div>
