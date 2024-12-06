@@ -13,7 +13,6 @@ export interface LoginData {
 
 
 
-
 export const [MoovingProvider, useAuthentication] = constate(useLogin, value => value.authMethods);
 
 function useLogin() {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import {MoovingProvider} from "@/app/Utils/Provider";
+import React from "react";
 
 
 

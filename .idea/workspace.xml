@@ -5,50 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4c925724-03c1-4b18-b109-d1eabad4690b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.eslintrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/postcss.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/postcss.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/Dreamland_Beach__Bali.webp" beforeDir="false" afterPath="$PROJECT_DIR$/public/Dreamland_Beach__Bali.webp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bus-image.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/public/bus-image.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/bus1.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/public/bus1.jpeg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/busImage.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/busImage.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/couponIcon.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/couponIcon.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/file.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/file.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/globe.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/globe.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/logoMoovingProject.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/logoMoovingProject.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/networkLogo.png" beforeDir="false" afterPath="$PROJECT_DIR$/public/networkLogo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/next.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/next.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/vercel.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/vercel.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/window.svg" beforeDir="false" afterPath="$PROJECT_DIR$/public/window.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/availableTrips/[tripId]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/availableTrips/[tripId]/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/availableTrips/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/availableTrips/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/scheduledTrips/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(reservation-annulation-client)/scheduledTrips/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/favicon.ico" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/favicon.ico" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/Utils/Provider.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/Utils/Provider.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/loading.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/loading.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/not-found.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/not-found.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/availableTripComponents/boutonSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/availableTripComponents/boutonSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/availableTripComponents/programSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/availableTripComponents/programSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/availableTripComponents/refundSection.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/availableTripComponents/refundSection.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/availableTripComponents/tripDescriptionTab.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/availableTripComponents/tripDescriptionTab.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/availableTripsComponents/viewDetailsButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/availableTripComponents/viewDetailsButton.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/dashbord/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dashbord/sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/footer/footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/footer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ui/button.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/button.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +27,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Node.js.axiosInstance.ts.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
@@ -116,7 +76,8 @@
       <workItem from="1732846125585" duration="883000" />
       <workItem from="1732847015411" duration="3363000" />
       <workItem from="1732868831928" duration="753000" />
-      <workItem from="1732871780829" duration="13017000" />
+      <workItem from="1732871780829" duration="14176000" />
+      <workItem from="1733385602032" duration="103000" />
     </task>
     <servers />
   </component>
