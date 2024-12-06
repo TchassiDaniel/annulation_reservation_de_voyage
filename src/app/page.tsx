@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
           </div>
         </div>
       </div>
-      {!isLoading && <WaitForPageLoad/>}
+      {isLoading && <WaitForPageLoad/>}
     </div>
   );
 };
