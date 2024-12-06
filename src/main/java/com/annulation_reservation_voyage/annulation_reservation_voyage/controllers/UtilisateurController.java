@@ -50,7 +50,7 @@ public class UtilisateurController {
     return new ResponseEntity<>(user2, HttpStatus.OK);
   }
 
-  @GetMapping(path = "/connexion", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(path = "/connexion", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Operation(summary = "Get a token for an user")
   public ResponseEntity<String> getToken(@RequestBody AuthentificationDTO authentificationDTO) {
     String jwt = null;
