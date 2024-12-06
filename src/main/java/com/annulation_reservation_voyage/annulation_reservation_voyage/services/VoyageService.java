@@ -7,6 +7,11 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vo
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.LigneVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,13 +35,18 @@ public class VoyageService {
         this.userRepository = userRepository;
     }
 
-    public List<Voyage> findAll() {
-        return voyageRepository.findAll();
+    public Page<Voyage> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<Voyage> slice = voyageRepository.findAll(pageable);
+        long total = voyageRepository.count();
+        return PaginationUtils.SliceToPage(slice, total);
     }
 
-    public List<VoyagePreviewDTO> findAllPreview() {
+    public Page<VoyagePreviewDTO> findAllPreview(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<Voyage> voyagesSlice = voyageRepository.findAll(pageable);
         // Récupère tous les voyages et les traite en un flux
-        return voyageRepository.findAll().stream()
+        List<VoyagePreviewDTO> previewVoyageList =  voyagesSlice.stream()
                 .map(voyage -> {
                     // Récupère la première ligne de voyage associée
                     LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
@@ -48,6 +58,10 @@ public class VoyageService {
                 })
                 .filter(Objects::nonNull) // Exclut les valeurs null
                 .collect(Collectors.toList()); // Convertit en liste
+
+        long total = previewVoyageList.size();
+
+        return PaginationUtils.ContentToPage(previewVoyageList, pageable, total);
     }
 
 

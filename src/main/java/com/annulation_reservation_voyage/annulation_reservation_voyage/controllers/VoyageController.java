@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,8 +38,9 @@ public class VoyageController {
                             array = @ArraySchema(schema = @Schema(implementation = VoyagePreviewDTO.class))))
     })
     @GetMapping
-    public ResponseEntity<List<VoyagePreviewDTO>> getAllVoyages() {
-        List<VoyagePreviewDTO> voyages = voyageService.findAllPreview();
+    public ResponseEntity<Page<VoyagePreviewDTO>> getAllVoyages(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+        Page<VoyagePreviewDTO> voyages = voyageService.findAllPreview(page, size);
         return new ResponseEntity<>(voyages, HttpStatus.OK);
     }
 
