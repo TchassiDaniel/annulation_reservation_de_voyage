@@ -23,7 +23,8 @@ public class VoyageService {
 
     private final UserRepository userRepository;
 
-    public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, VoyageMapper voyageMapper, UserRepository userRepository) {
+    public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository,
+            VoyageMapper voyageMapper, UserRepository userRepository) {
         this.voyageRepository = voyageRepository;
         this.ligneVoyageRepository = ligneVoyageRepository;
         this.voyageMapper = voyageMapper;
@@ -50,13 +51,14 @@ public class VoyageService {
                 .collect(Collectors.toList()); // Convertit en liste
     }
 
-
     public Voyage findById(UUID id) {
         return voyageRepository.findById(id).orElse(null);
     }
 
     public Voyage create(Voyage voyage) {
         // on peut efectuer des actions spécifiques d'abord
+        // On cree un id pour la ligne de voyage
+        voyage.setIdVoyage(UUID.randomUUID());
         return voyageRepository.save(voyage);
     }
 
