@@ -8,7 +8,10 @@ Quelques requetes curl
 - Pour creer un compte:
   curl -X POST localhost:8080/api/utilisateur/inscription -H 'content-Type: application/json' -d '{"nom": "Tchassi", "prenom": "Daniel": "email":"tchassidaniel@gmail.com", "password": "azerty", "telNumber": "+237650829890", "role": "USAGER", "address":"Chapelle Obili"}'
 - Pour se connecter
-  curl -X POST localhost:8080/api/utilisateur/connexion -H 'content-Type: application/json' -d '{"username": "tchassidaniel@gmail.com", "password": "azerty"}'
+  curl -X POST localhost:8085/api/utilisateur/connexion -H 'content-Type: application/json' -d '{"username": "tchassidaniel@gmail.com", "password": "azerty"}'
+
+  - Pour tester la route profile qui retourne les infos d'un utilisateur e fonction du token
+    curl -X GET localhost:8085/api/utilisateur/profil/{token} -H 'content-Type: application/json'
 
 INSERT INTO voyages (idVoyage, titre, description, dateDepartPrev, lieuDepart,
 dateDepartEffectif, dateArriveEffectif, lieuArrive,

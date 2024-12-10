@@ -29,6 +29,10 @@ public class UserService implements UserDetailsService {
     return userRepository.findById(id).orElse(null);
   }
 
+  public User findByUsername(String email) {
+    return userRepository.findByEmail(email).get(0);
+  }
+
   public User create(User user) {
     user.setPassword(this.passwordEncoder.encode(user.getPassword()));
     user.setUserId(UUID.randomUUID());
