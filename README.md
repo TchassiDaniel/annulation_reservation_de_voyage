@@ -6,12 +6,22 @@ test push
 Quelques requetes curl
 
 - Pour creer un compte:
-  curl -X POST localhost:8080/api/utilisateur/inscription -H 'content-Type: application/json' -d '{"nom": "Tchassi", "prenom": "Daniel": "email":"tchassidaniel@gmail.com", "password": "azerty", "telNumber": "+237650829890", "role": "USAGER", "address":"Chapelle Obili"}'
+  curl -X POST localhost:8080/api/utilisateur/inscription -H 'content-Type: application/json' -d '{"nom": "Tchassi", "prenom": "Daniel", "email":"tchassidaniel@gmail.com", "password": "azerty", "telNumber": "+237650829890", "role": "USAGER", "address":"Chapelle Obili"}'
+
+- Pour creer un compte angence voyage:
+  curl -X POST backend-reseau.ddns.net:8085/api/utilisateur/inscription -H 'content-Type: application/json' -d '{"nom": "Charter Express", "prenom": "", "email":"charterexpress@gmail.com", "password": "azerty", "telNumber": "+237698752510", "role": "AGENCE_VOYAGE", "address":"Chapelle Obili"}'
+
 - Pour se connecter
   curl -X POST localhost:8085/api/utilisateur/connexion -H 'content-Type: application/json' -d '{"username": "tchassidaniel@gmail.com", "password": "azerty"}'
 
   - Pour tester la route profile qui retourne les infos d'un utilisateur e fonction du token
     curl -X GET localhost:8085/api/utilisateur/profil/{token} -H 'content-Type: application/json'
+
+  - Pour inserer une classe dans la BD
+    INSERT INTO classvoyage (idClassVoyage, nom, prix, tauxAnnulation) VALUES (uuid(), 'economique', 5000, 0.5);
+
+  -Pour inserer les lignes voyages
+  INSERT INTO lignevoyage (idLigneVoyage, idClassVoyage, idVoyage, idAgenceVoyage) VALUES (uuid(), ade6f59a-a630-423d-8530-b7281cde33d3, 753e3d86-7a43-4c50-b474-83311b28f777, 56b01dee-e3ab-493e-bd70-99a53b0cc6c1);
 
 INSERT INTO voyages (idVoyage, titre, description, dateDepartPrev, lieuDepart,
 dateDepartEffectif, dateArriveEffectif, lieuArrive,
@@ -43,7 +53,7 @@ uuid(),
 'https://st.depositphotos.com/1019192/4338/i/950/depositphotos_43389909-stock-photo-tourist-bus-traveling-on-road.jpg'
 ), (
 uuid(),
-'Découverte de la Toscane',
+'Traversé de L'Adamaoua',
 'Circuit gastronomique et culturel en Italie',
 '2024-08-10',
 'Paris',
@@ -240,3 +250,26 @@ uuid(),
 'https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg',
 'https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg'
 );
+
+{
+"titre": "Centre Ouest",
+"description": "Retour aux origines",
+"dateDepartPrev": "2024-12-29",
+"lieuDepart": "Yaoundé",
+"dateDepartEffectif": null,
+"dateArriveEffectif": null,
+"lieuArrive": "Bertoua",
+"heureDepartEffectif": null,
+"dureeVoyage": "10 heures",
+"heureArrive": null,
+"nbrPlaceReservable": 69,
+"nbrPlaceReserve": 0,
+"nbrPlaceConfirm": 0,
+"nbrPlaceRestante": 69,
+"datePublication": "2024-12-10",
+"dateLimiteReservation": "2024-12-25T03:02:02.772Z",
+"dateLimiteConfirmation": "2024-12-22T03:02:02.772Z",
+"statusVoyage": "OUVERT",
+"smallImage": "https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg",
+"bigImage": "https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg"
+}
