@@ -23,5 +23,5 @@ public class Coupon {
   private LocalDateTime dateFin;
   private StatutCoupon statusCoupon;
   private double valeur;
+  private UUID idHistorique;
 }
-

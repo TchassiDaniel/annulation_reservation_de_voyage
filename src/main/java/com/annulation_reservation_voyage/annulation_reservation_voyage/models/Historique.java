@@ -27,4 +27,5 @@ public class Historique {
   private String origineAnnulation;
   private double tauxAnnulation;
   private double compensation;
+  private UUID idReservation;
 }
