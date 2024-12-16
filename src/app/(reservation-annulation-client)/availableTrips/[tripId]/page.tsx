@@ -1,12 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import TripDescriptionTab from "@/components/availableTripComponents/tripDescriptionTab";
 import BoutonSection from "@/components/availableTripComponents/boutonSection";
-import TripImageCarousel from "@/components/availableTripComponents/TripImageCarousel"; // Import the new carousel component
+import TripImageCarousel from "@/components/availableTripComponents/TripImageCarousel";
+import axios from "axios";
 
-interface TripProps {
-  params: { tripId: string };
-}
+export default function RenderOneTrip({
+  params,
+}: {
+  params: Promise<{ tripId: string }>;
+}) {
+  const [tripId, setTripId] = useState<string | null>(null);
+  const [, setTrip] = useState(null);
 
-export default function RenderOneTrip({}: TripProps) {
+  // Récupération des paramètres
+  useEffect(() => {
+    params.then((resolvedParams) => {
+      setTripId(resolvedParams.tripId);
+    });
+  }, [params]);
+
+  // Récupération des données du voyage
+  useEffect(() => {
+    if (tripId) {
+      async function fetchVoyagebyId() {
+        try {
+          const response = await axios.get(
+            `http://backend-reseau.ddns.net:8085/api/voyage/${tripId}`
+          );
+          setTrip(response.data);
+          //console.log(response.data);
+        } catch (error) {
+          console.log("erreur lors du chargement d'un voyage by id", error);
+        }
+      }
+      fetchVoyagebyId();
+    }
+  }, [tripId]);
+
   const Trip = {
     idVoyage: "99124",
     titre: "m1-Douala-Yaounde",
@@ -50,18 +82,8 @@ export default function RenderOneTrip({}: TripProps) {
           </div>
         </div>
 
-        {/* Additional Buttons Section */}
-        <div className="flex justify-center space-x-4 mb-8">
-          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
-            Réserver maintenant
-          </button>
-          <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
-            Nous contacter
-          </button>
-        </div>
-
-        <TripDescriptionTab tripDescription={Trip.description} />
         <BoutonSection />
+        <TripDescriptionTab tripDescription={Trip.description} />
       </div>
     </div>
   );

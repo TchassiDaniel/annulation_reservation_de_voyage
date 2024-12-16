@@ -46,7 +46,7 @@ const ErrorInterceptor = (axiosInstance: AxiosInstance): void => {
 
 
 const axiosInstance: AxiosInstance = axios.create({
-    baseURL: process.env.BACKEND_API_BASE_URL,
+  baseURL: process.env.BACKEND_API_BASE_URL,
 });
 
 
