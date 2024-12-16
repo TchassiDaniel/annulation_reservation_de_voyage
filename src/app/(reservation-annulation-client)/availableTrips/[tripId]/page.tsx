@@ -1,6 +1,6 @@
-import Image from "next/image";
 import TripDescriptionTab from "@/components/availableTripComponents/tripDescriptionTab";
 import BoutonSection from "@/components/availableTripComponents/boutonSection";
+import TripImageCarousel from "@/components/availableTripComponents/TripImageCarousel"; // Import the new carousel component
 
 interface TripProps {
   params: { tripId: string };
@@ -10,7 +10,11 @@ export default function RenderOneTrip({}: TripProps) {
   const Trip = {
     idVoyage: "99124",
     titre: "m1-Douala-Yaounde",
-    image: "Dreamland_Beach__Bali.webp",
+    images: [
+      "Dreamland_Beach__Bali.webp",
+      "Bali_Temple.webp", // Add additional images here
+      "Bali_Landscape.webp", // Example of multiple images
+    ],
     description:
       "Partez à la découverte de Bali, une île paradisiaque où nature luxuriante et culture ancestrale se rencontrent. Ce voyage vous permettra d;explorer les plus beaux temples, de vous détendre sur des plages de sable fin, et de vous immerger dans la culture balinaise.",
     dateDepartPrevu: "Douala - Yaounde",
@@ -22,25 +26,8 @@ export default function RenderOneTrip({}: TripProps) {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      {/* Hero Section */}
-      <div className="relative h-96 ml-2">
-        <Image
-          src={`/${Trip.image}`}
-          alt="Plage de Bali"
-          className="w-full h-full object-cover"
-          fill
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/30 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-5xl font-bold mb-4 text-shadow">
-              Découvrez Bali
-            </h1>
-            <p className="text-xl text-shadow">
-              L&apos;île des Dieux vous attend
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* Hero Section with Carousel */}
+      <TripImageCarousel images={Trip.images} />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
@@ -61,6 +48,16 @@ export default function RenderOneTrip({}: TripProps) {
             <p>Voyages paisible, culture locale</p>
             <p className="text-gray-600">Pension complète</p>
           </div>
+        </div>
+
+        {/* Additional Buttons Section */}
+        <div className="flex justify-center space-x-4 mb-8">
+          <button className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition">
+            Réserver maintenant
+          </button>
+          <button className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition">
+            Nous contacter
+          </button>
         </div>
 
         <TripDescriptionTab tripDescription={Trip.description} />
