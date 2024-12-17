@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.PassagerDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Passager;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.PassagerRepository;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,16 @@ public class PassagerService {
         return passagerRepository.findById(id).orElse(null);
     }
 
-    public Passager create(Passager passager) {
+    public Passager create(PassagerDTO passagerDTO) {
+        Passager passager = new Passager();
+        passager.setIdPassager(UUID.randomUUID());
+        passager.setNumeroPieceIdentific(passagerDTO.getNumeroPieceIdentific());
+        passager.setNom(passagerDTO.getNom());
+        passager.setPrenom(passagerDTO.getPrenom());
+        passager.setGenre(passagerDTO.getGenre());
+        passager.setAge(passagerDTO.getAge());
+        passager.setNbrBaggage(passagerDTO.getNbrBaggage());
+        passager.setIdReservation(passagerDTO.getIdReservation());
         return passagerRepository.save(passager);
     }
 
