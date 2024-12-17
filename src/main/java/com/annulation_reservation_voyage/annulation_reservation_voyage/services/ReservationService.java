@@ -9,9 +9,11 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.Sta
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Coupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Historique;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.CouponRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.HistoriqueRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.ReservationRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -30,6 +32,7 @@ public class ReservationService {
     public final ReservationRepository reservationRepository;
     public final HistoriqueRepository historiqueRepository;
     public final CouponRepository couponRepository;
+    public final VoyageRepository voyageRepository;
 
     public List<Reservation> findAll() {
         return reservationRepository.findAll();
@@ -49,6 +52,11 @@ public class ReservationService {
         reservation.setIdVoyage(reservationDTO.getIdVoyage());
         reservation.setNbrPassager(reservationDTO.getNbrPassager());
         reservation.setPrixTotal(reservationDTO.getPrixTotal());
+
+        Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
+        voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() + reservation.getNbrPassager());
+        voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() - reservation.getNbrPassager());
+        this.voyageRepository.save(voyage);
 
         return reservationRepository.save(reservation);
     }
@@ -81,6 +89,12 @@ public class ReservationService {
         historique.setIdReservation(reservation.getIdReservation());
         historique.setStatusHistorique(StatutHistorique.VALIDER);
         this.historiqueRepository.save(historique);
+        // On deduis le nombre de reservation restante
+        Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
+        // voyage.setNbrPlaceRestante(voyage.getNbrPlaceRestante() -
+        // reservation.getNbrPassager());
+        voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() + reservation.getNbrPassager());
+        this.voyageRepository.save(voyage);
     }
 
     public void annulerReservation(ReservationCancelDTO reservationCancelDTO) {
@@ -92,7 +106,7 @@ public class ReservationService {
         }
 
         Reservation reservation = reservationOpt.get();
-
+        Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
         // On crée l'historique
         Historique historique = new Historique();
         historique.setIdHistorique(UUID.randomUUID());
@@ -104,6 +118,13 @@ public class ReservationService {
         historique.setCompensation(0);
         historique.setTauxAnnulation(0);
         historique.setOrigineAnnulation(reservationCancelDTO.getOrigineAnnulation());
+
+        // On gère le nombre de place reserve dans le voyage
+        if (historique.getStatusHistorique() == StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION
+                || historique.getStatusHistorique() == StatutHistorique.ANNULER_PAR_USAGER_APRES_RESERVATION) {
+            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
+            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
+        }
 
         // On cree le coupon si l'annulation c'est faite après la confirmation
         if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
@@ -120,6 +141,8 @@ public class ReservationService {
             } else {
                 coupon.setValeur(reservation.getPrixTotal() * reservationCancelDTO.getTauxAnnulation());
                 historique.setTauxAnnulation(reservationCancelDTO.getTauxAnnulation());
+                // On augmente le nombre de reservation restante
+                voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() - reservation.getNbrPassager());
             }
             // On enregistre le coupon
             this.couponRepository.save(coupon);
@@ -128,6 +151,7 @@ public class ReservationService {
         historique = this.historiqueRepository.save(historique);
 
         reservation.setStatutReservation(StatutReservation.ANNULER);
+        this.voyageRepository.save(voyage);
         this.reservationRepository.save(reservation);
     }
 }

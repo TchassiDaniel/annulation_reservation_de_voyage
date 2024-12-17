@@ -29,10 +29,10 @@ public class Voyage {
   private LocalTime heureDepartEffectif;
   private String dureeVoyage;
   private LocalTime heureArrive;
-  private int nbrPlaceReservable;
-  private int nbrPlaceReserve;
-  private int nbrPlaceConfirm;
-  private int nbrPlaceRestante;
+  private int nbrPlaceReservable;// Nbre de place qu'on peut encore reserve
+  private int nbrPlaceReserve;// Nbre de place qu'on a reserve
+  private int nbrPlaceConfirm;// Nbre de place qu'on a confirmer
+  private int nbrPlaceRestante;//
   private LocalDate datePublication;
   private LocalDateTime dateLimiteReservation;
   private LocalDateTime dateLimiteConfirmation;
@@ -41,4 +41,3 @@ public class Voyage {
   private String bigImage;
 
 }
-
