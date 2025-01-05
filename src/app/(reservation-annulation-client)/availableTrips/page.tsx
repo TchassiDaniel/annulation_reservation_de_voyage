@@ -12,9 +12,7 @@ export default function Trips() {
   useEffect(() => {
     async function fetchTrips() {
       try {
-        const response = await axios.get(
-          "http://backend-reseau.ddns.net:8085/api/voyage"
-        );
+        const response = await axios.get("http://backend-reseau.ddns.net:8085/api/voyage");
         setTrips(response.data);
         console.log(response.data);
       } catch (error) {

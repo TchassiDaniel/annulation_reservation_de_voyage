@@ -3,8 +3,8 @@ import ReservationDetailAction from "@/components/reservationDetailComponents/re
 import React, {useEffect, useState} from "react";
 import { FaTrash } from "react-icons/fa";
 import {AxiosError, AxiosResponse} from "axios";
-import axiosInstance from "@/app/Utils/axiosInstance";
-import {useAuthentication} from "@/app/Utils/Provider";
+import axiosInstance from "@/Utils/axiosInstance";
+import {useAuthentication} from "@/Utils/Provider";
 //import { FaEye } from "react-icons/fa";
 
 

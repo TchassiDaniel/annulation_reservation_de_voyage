@@ -17,7 +17,7 @@ export const [MoovingProvider, useAuthentication] = constate(useLogin, value => 
 
 function useLogin() {
     const [isLogged, setIsLogged] = useState<boolean>(false);
-    const [isLoading, setIsIsLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [errorLogin, setErrorLogin] = useState<string>("");
     const [hasLoginError, setHasLoginError] = useState<boolean>(false);
 
@@ -38,7 +38,7 @@ function useLogin() {
             const response: AxiosResponse = await axios.post("http://backend-reseau.ddns.net:8085/api/utilisateur/connexion", data);
             if (response?.status === 200)
             {
-                setIsIsLoading(false);
+                setIsLoading(false);
                 setIsLogged(true);
                 setHasLoginError(false);
                 saveAuthData(response?.data);
@@ -50,7 +50,7 @@ function useLogin() {
         catch (error)
         {
             console.log(error);
-            setIsIsLoading(false);
+            setIsLoading(false);
             setIsLogged(false);
             setHasLoginError(true);
             const requestError = error as AxiosError;
@@ -73,7 +73,6 @@ function useLogin() {
 
 
     useEffect(() => {
-        //console.log("error", errorLogin);
         const token = localStorage.getItem('mooving_token');
         if (token)
         {
@@ -82,23 +81,21 @@ function useLogin() {
     }, [errorLogin]);
 
 
-    const checkAuthStatus = useCallback(() => {
-        const token = localStorage.getItem('mooving_token');
-        if (token) {
-            setIsLogged(true);
-        }
-    }, []);
+    function isAuthenticated()
+    {
+        return isLogged;
+    }
 
     const authMethods = useMemo(() => ({
         login,
         logout,
         isLogged,
         isLoading,
-        checkAuthStatus,
         hasLoginError,
         errorLogin,
-        setIsLoading: setIsIsLoading
-    }), [logout, setIsIsLoading, hasLoginError, errorLogin,isLogged, isLoading, checkAuthStatus]);
+        setIsLoading,
+        isAuthenticated
+    }), [logout, setIsLoading, hasLoginError, errorLogin,isLogged, isLoading, isAuthenticated]);
 
     return { authMethods };
 }

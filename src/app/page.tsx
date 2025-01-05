@@ -2,7 +2,7 @@
 import Image from "next/image";
 import logo from "../../public/logoMoovingProject.png";
 import React from "react";
-import {LoginData, useAuthentication} from "@/app/Utils/Provider"
+import {LoginData, useAuthentication} from "@/Utils/Provider"
 import {useRouter} from "next/navigation";
 import WaitForPageLoad from "@/components/loginComponents/waitForPageLoad";
 
