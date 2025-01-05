@@ -1,9 +1,21 @@
+"use client";
 import { Sidebar } from "@/components/dashbord/sidebar";
 import { Footer } from "@/components/footer/footer";
+import React from "react";
+import {useAuthentication} from "@/app/Utils/Provider";
 
-export default function Layout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function Layout({children,}: Readonly<{ children: React.ReactNode }>)
+{
+
+    const {isLogged} = useAuthentication();
+
+
+    if(!isLogged)
+    {
+        return (
+            <div>Authentifiez vous</div>
+        )
+    }
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex">

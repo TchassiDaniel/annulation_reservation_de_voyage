@@ -25,7 +25,7 @@ function useLogin() {
 
     function saveAuthData(_token: string) : void
     {
-        const token = _token.substring(6, _token.length);
+        const token = _token.substring(7, _token.length);
         console.log("token, token");
         localStorage.setItem("mooving_token", token);
     }
@@ -73,7 +73,7 @@ function useLogin() {
 
 
     useEffect(() => {
-        console.log("error", errorLogin);
+        //console.log("error", errorLogin);
         const token = localStorage.getItem('mooving_token');
         if (token)
         {

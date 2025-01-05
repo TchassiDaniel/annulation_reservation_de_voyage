@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import { FaTrash } from "react-icons/fa";
 import {AxiosError, AxiosResponse} from "axios";
 import axiosInstance from "@/app/Utils/axiosInstance";
+import {useAuthentication} from "@/app/Utils/Provider";
 //import { FaEye } from "react-icons/fa";
 
 
@@ -40,9 +41,10 @@ export default function HomePage() {
 
   const [availableTrips, setAavailableTrips] = useState({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {isLogged} = useAuthentication();
 
 
-  async function getAvailableTrip()
+  async function getAvailableTrip() : Promise<void>
   {
     setIsLoading(false);
     try
@@ -64,14 +66,17 @@ export default function HomePage() {
 
       }
     }
-
-    useEffect(() => {
-      getAvailableTrip();
-    }, []);
-
-
-
   }
+
+
+  useEffect(() => {
+    if (isLogged) {
+      getAvailableTrip();
+    }
+  }, [isLogged]);
+
+
+
   return (
     <>
       <div className="h-24 bg-gradient-to-r from-blue-300 to-reservation-color"></div>
