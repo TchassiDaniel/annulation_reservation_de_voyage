@@ -25,7 +25,7 @@ export default function LoginPage () {
         const response = await login(data) ;
         if (response === 200)
         {
-            router.push("/availableTrips");
+            router.push("/available-trips");
         }
     }
 

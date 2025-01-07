@@ -64,6 +64,7 @@ function useLogin() {
     const logout = useCallback(() => {
         setIsLogged(false);
         localStorage.removeItem('mooving_token');
+        window.location.href = "/";
     }, []);
 
 
