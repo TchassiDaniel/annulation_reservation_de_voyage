@@ -10,6 +10,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'base-color': '#FFF',
+        'reservation-color': '#542EFF',
       },
     },
   },
