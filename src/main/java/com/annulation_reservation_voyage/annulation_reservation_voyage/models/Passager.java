@@ -9,10 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-  @Table
-  @Data
-  @AllArgsConstructor
-  @NoArgsConstructor
+@Table
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Passager {
   @PrimaryKey
   private UUID idPassager;
@@ -22,5 +22,5 @@ public class Passager {
   private String genre;
   private int age;
   private int nbrBaggage;
+  private UUID idReservation;
 }
-

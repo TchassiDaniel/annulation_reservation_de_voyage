@@ -1,8 +1,12 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.controllers;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,9 +31,7 @@ public class ReservationController {
 
     @Operation(summary = "Obtenir toutes les réservations", description = "Récupère la liste de toutes les réservations.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès",
-                    content = @Content(mediaType = "application/json",
-                            array = @ArraySchema(schema = @Schema(implementation = Reservation.class))))
+            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Reservation.class))))
     })
     @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations() {
@@ -39,8 +41,7 @@ public class ReservationController {
 
     @Operation(summary = "Obtenir une réservation par ID", description = "Récupère une réservation spécifique par ID.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Réservation trouvée",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
+            @ApiResponse(responseCode = "200", description = "Réservation trouvée", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
             @ApiResponse(responseCode = "404", description = "Réservation non trouvée")
     })
     @GetMapping("/{id}")
@@ -54,20 +55,18 @@ public class ReservationController {
 
     @Operation(summary = "Créer une réservation", description = "Ajoute une nouvelle réservation.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Réservation créée avec succès",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
+            @ApiResponse(responseCode = "201", description = "Réservation créée avec succès", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
             @ApiResponse(responseCode = "400", description = "Données invalides")
     })
-    @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation reservation) {
-        Reservation createdReservation = reservationService.create(reservation);
+    @PostMapping("/reserver")
+    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        Reservation createdReservation = reservationService.create(reservationDTO);
         return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
     }
 
     @Operation(summary = "Mettre à jour une réservation", description = "Modifie une réservation existante.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Réservation mise à jour avec succès",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
+            @ApiResponse(responseCode = "200", description = "Réservation mise à jour avec succès", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
             @ApiResponse(responseCode = "404", description = "Réservation non trouvée"),
             @ApiResponse(responseCode = "400", description = "Données invalides")
     })
@@ -93,5 +92,39 @@ public class ReservationController {
         }
         reservationService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Confirmer une réservation", description = "Confirme une réservation en modifiant son statut à 'CONFIRME' et en enregistrant l'action dans l'historique.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Réservation confirmée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @PutMapping("/confirmer")
+    public ResponseEntity<String> confirmerReservation(
+            @Parameter(description = "Données nécessaires pour confirmer la réservation (ID de la réservation).", required = true) @RequestBody ReservationConfirmDTO reservationConfirmDTO) {
+
+        try {
+            reservationService.confirmerReservation(reservationConfirmDTO);
+            return ResponseEntity.ok("Réservation confirmée avec succès.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Erreur: " + e.getMessage());
+        }
+    }
+
+    @Operation(summary = "Annuler une réservation", description = "Permet d'annuler une réservation en modifiant son statut et en enregistrant un historique d'annulation. Si l'annulation a lieu après confirmation, un coupon est généré.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Réservation annulée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @PutMapping("/annuler")
+    public ResponseEntity<String> annulerReservation(
+            @Parameter(description = "Données nécessaires pour annuler la réservation (ID de la réservation et informations supplémentaires).", required = true) @RequestBody ReservationCancelDTO reservationCancelDTO) {
+
+        try {
+            reservationService.annulerReservation(reservationCancelDTO);
+            return ResponseEntity.ok("Réservation annulée avec succès.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body("Erreur: " + e.getMessage());
+        }
     }
 }

@@ -36,6 +36,8 @@ public class security {
             (auth) -> {
               auth.requestMatchers("/utilisateur/inscription").permitAll()
                   .requestMatchers("/utilisateur/connexion").permitAll()
+                  .requestMatchers("/utilisateur/profil/*").permitAll()
+                  // .requestMatchers("/voyage/**").permitAll()
                   .requestMatchers("/swagger-ui/**").permitAll()
                   .requestMatchers("/v3/api-docs/**").permitAll()
                   .anyRequest().authenticated();

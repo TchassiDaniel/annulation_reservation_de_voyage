@@ -13,14 +13,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.AuthentificationDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.UserDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Utilisateur.AuthentificationDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Utilisateur.UserDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Utilisateur.UserDTO2;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.configurations.JwtService;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/utilisateur")
@@ -63,6 +70,30 @@ public class UtilisateurController {
     }
 
     return new ResponseEntity<>(jwt, HttpStatus.OK);
+  }
+
+  @GetMapping("/profil/{token}")
+  @Operation(summary = "Get a user information by token")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "User information", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserDTO2.class))),
+      @ApiResponse(responseCode = "404", description = "User not found") })
+  public ResponseEntity<UserDTO2> getMethodName(@PathVariable String token) {
+    String username = this.jwtService.extractUsername(token);
+    User user = this.userService.findByUsername(username);
+    if (user == null) {
+      return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    } else {
+      UserDTO2 userDTO2 = new UserDTO2();
+      userDTO2.setUserId(user.getUserId());
+      userDTO2.setAddress(user.getAddress());
+      userDTO2.setUsername(user.getEmail());
+      userDTO2.setIdcoordonneeGPS(user.getIdcoordonneeGPS());
+      userDTO2.setNom(user.getNom());
+      userDTO2.setPrenom(user.getPrenom());
+      userDTO2.setRole(user.getRole());
+      userDTO2.setTelNumber(user.getTelNumber());
+      return new ResponseEntity<>(userDTO2, HttpStatus.OK);
+    }
   }
 
 }

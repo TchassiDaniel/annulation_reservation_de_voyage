@@ -12,7 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassVoyage {
+public class ClasseVoyage {
     @PrimaryKey
     private UUID idClassVoyage;
     private String nom;
