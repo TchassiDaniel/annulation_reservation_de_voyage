@@ -17,10 +17,10 @@ export default function NavBar()
 
     return (
         <>
-            <div className="border-b-2 m-3  border-b-gray-300">
+            <div className="border-b-2 m-2  border-b-gray-300">
                 <div className="w-full h-[70px] flex justify-between">
                     <h1 className="ml-3 text-3xl  mt-3.5 font-bold">
-                        Welcome Back !!
+                        Welcome Back Thierry!!
                     </h1>
                     <div className="flex gap-3 mt-3.5 mb-4 mr-5">
                         <Tooltip placement={"top"} title={"settings"}>
@@ -42,13 +42,10 @@ export default function NavBar()
                                 <FaSignOutAlt/>
                             </button>
                         </Tooltip>
-                        <Tooltip placement={"top"} title={"Profile"}>
-                            <button className="ml-3 flex">
-                                <p className="font-bold text-secondary text-xl mt-3">{"Thierry"}</p>
-                                 <Image src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
-
-                            </button>
-                        </Tooltip>
+                        <button className="ml-3 flex">
+                            <p className="font-bold text-secondary text-xl mt-3">Profile</p>
+                             <Image src={userIcon} alt={"user-icon"} className="w-12 h-12 ml-2 mr-3"/>
+                        </button>
                     </div>
                 </div>
             </div>

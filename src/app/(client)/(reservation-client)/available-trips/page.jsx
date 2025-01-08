@@ -110,7 +110,7 @@ export default function AvailableTrips() {
         <div className="min-h-screen  p-6 flex-1">
             <div className="max-w-7xl mx-auto mb-8">
 
-                {/* Barre de recherche */}
+
                 <div className="bg-gray-100 rounded-2xl shadow-sm mb-6 p-6 flex justify-between">
                     <h1 className="text-3xl font-bold text-reservation-color mt-1 ml-2">
                         Available Trips

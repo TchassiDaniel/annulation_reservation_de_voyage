@@ -1,4 +1,4 @@
-import {AiOutlineBarChart, AiOutlineFileExclamation} from "react-icons/ai";
+import {AiOutlineBarChart} from "react-icons/ai";
 import {FaBus, FaHistory, FaHome, FaTicketAlt} from "react-icons/fa";
 import {BsFillCalendarCheckFill, BsFillCalendarXFill} from "react-icons/bs";
 
@@ -36,7 +36,7 @@ export const linkList = [
             },
             {
                 icon: BsFillCalendarXFill,
-                name: "Annulation",
+                name: "Cancellation",
                 link: '/history/cancellation',
             }
         ]

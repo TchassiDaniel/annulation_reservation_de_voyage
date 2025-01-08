@@ -1,11 +1,21 @@
 'use client';
 
-import { useState } from 'react';
-import {FaCalendarCheck, FaCalendarTimes, FaDollarSign, FaInfoCircle, FaLandmark, FaStar, FaTools} from 'react-icons/fa';
+import {useEffect, useState} from 'react';
+import {
+    FaArrowLeft,
+    FaCalendarCheck,
+    FaCalendarTimes,
+    FaDollarSign,
+    FaInfoCircle,
+    FaLandmark,
+    FaStar,
+    FaTools
+} from 'react-icons/fa';
 import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight,  Wifi, Coffee, Usb } from 'lucide-react';
 import Image from "next/image";
 import bus from "../../../../../../public/bus1.jpeg";
 import busImage from "../../../../../../public/bus-image.jpeg";
+import {useRouter} from "next/navigation";
 
 
 export default function TripDetails() {
@@ -24,35 +34,52 @@ export default function TripDetails() {
         { icon: Usb, label: "USB Ports" }
     ];
 
-    const nextImage = () => {
+    function nextImage ()
+    {
         setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    };
+    }
 
-    const prevImage = () => {
+    function prevImage ()
+    {
         setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-    };
+    }
 
+
+    useEffect(() => {
+        setInterval( () => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        },10000)
+    }, []);
+
+    const router = useRouter();
     return (
         <div className="min-h-screen p-4">
-            {/*Carousel*/}
+
+            <div className="flex justify-between  p-4 bg-gray-100 rounded-lg mb-2">
+                <button onClick={() => router.back()} className="flex gap-1">
+                    <FaArrowLeft className="text-reservation-color text-xl mt-0.5"/>
+                    <p className="text-reservation-color text-md font-bold">Back To Available Trips</p>
+                </button>
+            </div>
+
             <div className="relative h-[470px] ">
                 <div className="absolute inset-0">
                     <Image
                         src={images[currentImageIndex]}
                         alt="Trip view"
-                        className="w-full h-full object-cover opacity-80 rounded-lg"
+                        className="w-full h-full object-cover opacity-80 rounded-lg transition-all duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg"/>
                 </div>
                 <button
                     onClick={prevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 p-2 rounded-full backdrop-blur-sm transition-all"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/80 p-2 rounded-full duration-300 transition-all"
                 >
                     <ChevronLeft className="h-6 w-6 text-white"/>
                 </button>
                 <button
                     onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 p-2 rounded-full backdrop-blur-sm transition-all"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/80 p-2 rounded-full duration-300 transition-all"
                 >
                     <ChevronRight className="h-6 w-6 text-white"/>
                 </button>
@@ -79,7 +106,7 @@ export default function TripDetails() {
             </div>
 
 
-            {/*Trip Details*/}
+
             <div className="max-w-7xl mx-auto mt-4 mb-4">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
@@ -131,19 +158,17 @@ export default function TripDetails() {
                         </div>
 
 
-                        {/* Reservation Policy*/}
+
                         <div className="bg-gray-100 rounded-xl shadow-sm p-6 space-y-1">
                             <div className="flex gap-3">
                                 <FaLandmark className="text-reservation-color w-7 h-7"/>
                                 <h2 className="text-xl text-reservation-color font-bold mb-4">Reservation policy</h2>
                             </div>
-                            <div className="space-y-4 text-gray-600 ml-8">
+                            <div className="space-y-4 text-gray-600 ml-10">
                                 <div className="flex items-start gap-3">
-                                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
                                     <FaCalendarCheck className="h-6 w-6 text-green-500"/>
-                                    </div>
                                     <div>
-                                        <h3 className="font-semibold text-black mb-1 mt-2">Reservation flexible</h3>
+                                        <h3 className="font-semibold text-black mb-1">Reservation flexible</h3>
                                         <ul className="list-disc list-inside space-y-1">
                                             <li>Acompte de 30% à la réservation</li>
                                             <li>Solde à régler 45 jours avant le départ</li>
@@ -154,11 +179,9 @@ export default function TripDetails() {
 
 
                                 <div className="flex items-start gap-3">
-                                    <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center">
-                                        <FaCalendarTimes className="h-6 w-6 text-orange-500"/>
-                                    </div>
+                                    <FaCalendarTimes className="h-6 w-6 text-orange-500"/>
                                     <div>
-                                        <h3 className="font-semibold text-black mb-1 mt-2">Annulation Flexible</h3>
+                                        <h3 className="font-semibold text-black mb-1">Annulation Flexible</h3>
                                         <ul className="list-disc list-inside space-y-1">
                                             <li>Plus de 45 jours avant le départ : 150€ de frais</li>
                                             <li>Entre 45 et 30 jours : 30% du montant total</li>
@@ -169,7 +192,7 @@ export default function TripDetails() {
                         </div>
 
 
-                        {/* Description */}
+
                         <div className="bg-gray-100 rounded-xl shadow-sm p-6">
                             <div className="flex gap-3">
                                 <FaInfoCircle className="text-reservation-color w-7 h-7 "/>
@@ -183,10 +206,7 @@ export default function TripDetails() {
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 ml-10">
                                 {equipmentsOnBus.map((item, index) => (
                                     <div key={index} className="flex items-center gap-2">
-                                        <div
-                                            className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <item.icon className="h-6 w-6 text-reservation-color"/>
-                                        </div>
+                                        <item.icon className="h-6 w-6 text-reservation-color"/>
                                         <span className="text-gray-600">{item.label}</span>
                                     </div>
                                 ))}
@@ -198,13 +218,10 @@ export default function TripDetails() {
 
                     {/*Trip detail and book btn */}
                     <div className="lg:col-span-1 ">
-                        <div className="sticky top-4 bg-gray-100 rounded-xl shadow-sm p-6">
+                        <div className=" bg-gray-100 rounded-xl shadow-sm p-6">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex gap-5">
-                                    <div
-                                        className="w-12 h-12 mt-2 rounded-full bg-green-50 flex items-center justify-center">
-                                        <FaDollarSign className="h-8 w-8 text-green-600"/>
-                                    </div>
+                                    <FaDollarSign className="h-8 w-8 text-green-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500 font-semibold">From</p>
                                         <div className="flex gap-1">
@@ -219,10 +236,7 @@ export default function TripDetails() {
                             </div>
 
                             <div className="flex items-center gap-2 mb-6">
-                                <div
-                                    className="w-12 h-12 rounded-full bg-green-200 flex items-center justify-center">
-                                    <FaStar className="h-7 w-7 text-green-600"/>
-                                </div>
+                                <FaStar className="h-7 w-7 text-yellow-400"/>
                                 <div>
                                     <p className="text-sm text-gray-500">Trip Class</p>
                                     <p className="font-medium">VIP</p>
@@ -231,28 +245,21 @@ export default function TripDetails() {
 
                             <div className="space-y-8 mb-6">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                                        <MapPin className="h-7 w-7 text-red-600"/>
-                                    </div>
+                                    <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Departure location</p>
                                         <p className="font-medium">Douala, Mboppi</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-                                        <MapPin className="h-7 w-7 text-red-600"/>
-                                    </div>
+                                    <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival location</p>
                                         <p className="font-medium">Yaoundé, Nsam</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <Clock className="h-7 w-7 text-reservation-color"/>
-                                    </div>
+                                    <Clock className="h-7 w-7 text-reservation-color"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival Time</p>
                                         <p className="font-medium">12:00</p>
@@ -261,10 +268,7 @@ export default function TripDetails() {
 
 
                                 <div className="flex items-center gap-2">
-                                    <div
-                                        className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <Calendar className="h-7 w-7 text-reservation-color"/>
-                                    </div>
+                                    <Calendar className="h-7 w-7 text-reservation-color"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Validity of the offer</p>
                                         <p className="font-medium">Until Dec 31, 2023</p>
