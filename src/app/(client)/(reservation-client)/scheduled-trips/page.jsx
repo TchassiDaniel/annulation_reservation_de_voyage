@@ -1,10 +1,10 @@
 'use client';
 
-import  { useState } from 'react';
+import React, { useState } from 'react';
 import {Calendar, Clock, MapPin, AlertCircle, CheckCircle2, Timer, Wallet, MapPinHouse} from 'lucide-react';
 import {Tooltip} from "antd";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
-import {MdCancel} from "react-icons/md";
+import {MdAirlineSeatReclineNormal, MdCancel} from "react-icons/md";
 import {BsInfo} from "react-icons/bs";
 import {TripDetailsModal} from "./TripDetailModal"
 import {FaHouse} from "react-icons/fa6";
@@ -128,29 +128,35 @@ export default function ScheduledTrips() {
                             <div className="flex items-center justify-between mb-3">
                                 <div className="flex items-center gap-4">
                                     <div className="flex items-center gap-2 text-reservation-color">
-                                        <MapPin className="h-7 w-7" />
+                                        <MapPin className="h-7 w-7"/>
                                         <h3 className="text-xl font-bold">{trip.from} - {trip.to}</h3>
                                     </div>
                                     <div className="flex gap-2">
                                         {trip.status === 'confirmed' ? (
-                                            <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 flex items-center gap-1">
-                                                <CheckCircle2 className="h-4 w-4" />
+                                            <span
+                                                className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 flex items-center gap-1">
+                                                <CheckCircle2 className="h-4 w-4"/>
                                                 Confirmed
                                             </span>
                                         ) : (
-                                            <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 flex items-center gap-1">
-                                                <AlertCircle className="h-4 w-4" />
+                                            <span
+                                                className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-700 flex items-center gap-1">
+                                                <AlertCircle className="h-4 w-4"/>
                                                 Waiting for confirmation
                                             </span>
                                         )}
-                                        <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
+                                        <span
+                                            className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
                                             {trip.busType}
                                         </span>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-3xl font-bold text-reservation-color">{trip.price.toLocaleString()} FCFA</p>
-                                    <p className="text-sm text-gray-500">Seat {trip.seatNumber}</p>
+                                    <div className="flex gap-1 ml-14">
+                                        <MdAirlineSeatReclineNormal className="text-green-500 w-6 h-6"/>
+                                        <p className="text-md  text-green-500 font-semibold mt-1">Seat {trip.seatNumber}</p>
+                                    </div>
                                 </div>
                             </div>
 
@@ -203,43 +209,50 @@ export default function ScheduledTrips() {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div className="flex gap-3">
-                                    <button onClick={()=>{setSelectedTrip(trip), setCanOpenTripDetailModal(true)}}
-                                        className="px-4 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-300 font-medium rounded-lg bg-blue-100 transition-all duration-300 flex items-center gap-2">
+                            <div className={`${trip.status === 'reserved' ? 'justify-between' : 'justify-end'} flex mt-4`}>
+
+                                {trip.status === 'reserved' && (
+                                    <div className="bg-orange-50 rounded-lg border border-orange-200 w-[700px] p-4 ml-10">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <Wallet className="h-5 w-5 text-orange-500"/>
+                                                <div>
+                                                    <p className="font-medium text-orange-800">Amount remaining to be
+                                                        paid: {trip.remainingAmount.toLocaleString()} FCFA</p>
+                                                    <p className="text-sm text-orange-600">
+                                                        on a total of {trip.totalAmount.toLocaleString()} FCFA
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => {
+                                                alert("payment")
+                                            }}
+                                                    className="px-4 py-2 bg-orange-500 font-bold text-white rounded-lg text-sm  hover:bg-orange-700 transition-colors">
+                                                Complete payment
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div className={`${trip.status === 'reserved' ? 'mt-10' : ''} flex gap-3`}>
+                                    <button onClick={() => {setSelectedTrip(trip), setCanOpenTripDetailModal(true)}}
+                                            className="px-4 py-2 text-blue-600 hover:text-blue-800 hover:bg-blue-300 font-medium rounded-lg bg-blue-100 transition-all duration-300 flex items-center gap-2">
                                         <div className="border border-blue-600 rounded-full">
                                             <BsInfo className="h-6 w-6"/>
                                         </div>
                                         See details
                                     </button>
-                                    <button onClick={()=>{setSelectedTrip(trip), alert("cancellation")}} className="px-4 py-2 text-red-600 font-medium rounded-lg bg-red-100 hover:text-red-800 hover:bg-red-300 transition-all duration-300 flex gap-1">
+                                    <button onClick={() => {
+                                        setSelectedTrip(trip), alert("cancellation")
+                                    }}
+                                            className="items-center px-4 py-2 text-red-600 font-medium rounded-lg bg-red-100 hover:text-red-800 hover:bg-red-300 transition-all duration-300 flex gap-1">
                                         <MdCancel className="w-6 h-6"/>
                                         Cancel reservation
                                     </button>
                                 </div>
                             </div>
-
-
-                            {trip.status === 'reserved' && (
-                                <div className="mt-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
-                                    <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                            <Wallet className="h-5 w-5 text-orange-500"/>
-                                            <div>
-                                            <p className="font-medium text-orange-800">
-                                                Amount remaining to be paid: {trip.remainingAmount.toLocaleString()} FCFA
-                                                </p>
-                                                <p className="text-sm text-orange-600">
-                                                    on a total of {trip.totalAmount.toLocaleString()} FCFA
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <button onClick={()=>{alert("payment")}} className="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700 transition-colors">
-                                            Complete payment
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     ))}
                 </div>
@@ -250,7 +263,8 @@ export default function ScheduledTrips() {
                 <div className="flex gap-4">
                     <Tooltip placement={"left"} title={"previous slide"}>
                         <button
-                            onClick={async ()=> {}}
+                            onClick={async () => {
+                            }}
                             className="w-14 h-14 border-2 rounded-lg bg-gray-100 hover:bg-reservation-color text-xl  text-reservation-color hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                             <FaArrowLeft/>
                         </button>
@@ -258,7 +272,8 @@ export default function ScheduledTrips() {
                     <p className="text-reservation-color text-2xl font-bold mt-4">{"1/10"}</p>
                     <Tooltip placement={"right"} title={"next slide"}>
                         <button
-                            onClick={async ()=> {}}
+                            onClick={async () => {
+                            }}
                             className="w-14 h-14 border-2 rounded-lg bg-gray-100 hover:bg-reservation-color text-xl  text-reservation-color hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
                             <FaArrowRight/>
                         </button>

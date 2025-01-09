@@ -24,7 +24,7 @@ export function TripDetailsModal({ isOPen, trip, onClose }) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
-            <div className="bg-white rounded-xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-start mb-6">
                     <div className="flex gap-2 ml-16">
                         <div className="bg-blue-200 p-2 rounded-full">
@@ -78,7 +78,7 @@ export function TripDetailsModal({ isOPen, trip, onClose }) {
                             <div>
                                 <p className="text-sm text-gray-500">Departure Date</p>
                                 <p className="font-medium">
-                                    {new Date(trip.date).toLocaleDateString('fr-FR', {dateStyle: 'long'})}
+                                    {new Date(trip.date).toLocaleDateString('en-EN', {dateStyle: 'long'})}
                                 </p>
                             </div>
                         </div>
@@ -136,7 +136,7 @@ export function TripDetailsModal({ isOPen, trip, onClose }) {
                     </div>
 
 
-                    <div className="border-t border-gray-200 pt-6 mb-5">
+                    <div className="border-t border-gray-400 pt-6 mb-5">
                         <div className="flex gap-2 mb-2">
                             <FaLandmark className="text-reservation-color h-7 w-7"/>
                             <h4 className="text-xl text-reservation-color font-bold ">Cancellation Policy</h4>
@@ -149,7 +149,7 @@ export function TripDetailsModal({ isOPen, trip, onClose }) {
 
                     {/* Section paiement pour les réservations en attente */}
                     {trip.status === 'reserved' && (
-                        <div className="border-t border-gray-200 pt-6">
+                        <div className="border-t border-gray-400 pt-6">
                             <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">

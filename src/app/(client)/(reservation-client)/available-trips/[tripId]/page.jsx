@@ -1,32 +1,86 @@
 'use client';
 
-import {useEffect, useState} from 'react';
-import {
-    FaArrowLeft,
-    FaCalendarCheck,
-    FaCalendarTimes,
-    FaDollarSign,
-    FaInfoCircle,
-    FaLandmark,
-    FaStar,
-    FaTools
-} from 'react-icons/fa';
-import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight,  Wifi, Coffee, Usb } from 'lucide-react';
+import React, {useEffect, useState} from 'react';
+import {FaArrowLeft, FaCalendarCheck, FaCalendarTimes, FaDollarSign, FaInfoCircle, FaLandmark, FaStar, FaTools} from 'react-icons/fa';
+import {Calendar, ChevronLeft, ChevronRight, Clock, Coffee, MapPin, Usb, Users, Wifi} from 'lucide-react';
 import Image from "next/image";
-import bus from "../../../../../../public/bus1.jpeg";
-import busImage from "../../../../../../public/bus-image.jpeg";
 import {useRouter} from "next/navigation";
+import axiosInstance from "@/Utils/AxiosInstance";
+import {ErrorModal} from "@/components/Modals/ErrorModal";
+import busImage1 from "../../../../../../public/bus-image.jpeg";
+import {MdAirlineSeatReclineNormal} from "react-icons/md";
+import TripDetailsSkeleton from "@/components/Loadings/Skip-details-skeleton";
+import {useAuthentication} from "@/Utils/Provider";
 
 
-export default function TripDetails() {
+
+export default function TripDetails({params}) {
+
+    const tripId = React.use(params).tripId;
+    const {userData} = useAuthentication();
+    const router = useRouter();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [errorMessage, setErrorMessage] = useState("");
+    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [tripDetails, setTripDetail] = useState({});
+    const [images, setImages] = useState([busImage1]);
 
 
-    const images = [
-        bus,
-        busImage,
-        bus
-    ];
+
+
+    async function fetchTripDetails(tripId) {
+        setIsLoading(true);
+        try
+        {
+            const response = await axiosInstance.get(`/voyage/${tripId}`);
+            if (response.status === 200)
+            {
+                //console.log(response?.data);
+                setIsLoading(false);
+                setTripDetail(response?.data);
+                setImages([response.data?.smallImage, response?.data.bigImage]);
+                setErrorMessage("");
+                setCanOpenErrorModal(false);
+            }
+        }
+        catch (error)
+        {
+            setIsLoading(false);
+            console.log(error);
+            setErrorMessage("Something went wrong when retrieving trip details, please try again later !");
+            setCanOpenErrorModal(true);
+        }
+    }
+
+
+    async function bookTrip()
+    {
+        setIsLoading(true);
+        try {
+            let data = {
+                nbrePassager: 1,
+                prixTotal: 0,
+                idUser: userData.userId,
+                idVoyage: tripId
+            }
+            const response = await axiosInstance.post("/reservation/reserver", data);
+            if (response.status === 201)
+            {
+                setIsLoading(false);
+                setErrorMessage("");
+                setCanOpenErrorModal(false);
+            }
+        }
+        catch (error)
+        {
+            setIsLoading(false);
+            console.log(error);
+            setErrorMessage("Something went wrong when booking this trip, please try again later !");
+            setCanOpenErrorModal(true);
+        }
+    }
+
 
     const equipmentsOnBus = [
         { icon: Wifi, label: "Free WiFi" },
@@ -34,10 +88,12 @@ export default function TripDetails() {
         { icon: Usb, label: "USB Ports" }
     ];
 
+
     function nextImage ()
     {
         setCurrentImageIndex((prev) => (prev + 1) % images.length);
     }
+
 
     function prevImage ()
     {
@@ -46,12 +102,17 @@ export default function TripDetails() {
 
 
     useEffect(() => {
+        fetchTripDetails(tripId);
         setInterval( () => {
             setCurrentImageIndex((prev) => (prev + 1) % images.length);
         },10000)
     }, []);
 
-    const router = useRouter();
+
+    if (isLoading) {
+        return <TripDetailsSkeleton />
+    }
+
     return (
         <div className="min-h-screen p-4">
 
@@ -65,6 +126,8 @@ export default function TripDetails() {
             <div className="relative h-[470px] ">
                 <div className="absolute inset-0">
                     <Image
+                        layout="fill"
+                        objectFit="cover"
                         src={images[currentImageIndex]}
                         alt="Trip view"
                         className="w-full h-full object-cover opacity-80 rounded-lg transition-all duration-500"
@@ -95,7 +158,7 @@ export default function TripDetails() {
                 </div>
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                     <div className="max-w-7xl mx-auto">
-                        <h1 className="text-5xl font-bold mb-4">Douala - Yaoundé</h1>
+                        <h1 className="text-5xl font-bold mb-4">{tripDetails.lieuDepart + " - " + tripDetails.lieuArrive}</h1>
                         <p className="text-2xl opacity-90">Travel comfortably with General Voyages</p>
                         <button
                             className="absolute bottom-8 right-8 bg-reservation-color text-white px-8 py-4 text-2xl hover:bg-white hover:text-reservation-color hover:border-4 hover:border-reservation-color rounded-lg font-bold shadow-lg transition-all duration-300 flex items-center gap-2 ">
@@ -110,7 +173,7 @@ export default function TripDetails() {
             <div className="max-w-7xl mx-auto mt-4 mb-4">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-gray-100 rounded-xl shadow-sm p-6 grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-gray-100 rounded-xl shadow-sm p-6 grid grid-cols-2 md:grid-cols-4 gap-10">
 
 
                             <div className="flex items-center gap-2">
@@ -119,7 +182,7 @@ export default function TripDetails() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Travel Date</p>
-                                    <p className="font-medium">12 Jan 2025.</p>
+                                    <p className="font-medium">{ new Date(tripDetails.dateDepartPrev).toLocaleDateString('en-EN', {dateStyle: 'long'})}</p>
                                 </div>
                             </div>
 
@@ -129,8 +192,8 @@ export default function TripDetails() {
                                     <Calendar className="h-8 w-8 text-reservation-color"/>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">Departure</p>
-                                    <p className="font-semibold">08:00</p>
+                                    <p className="text-sm text-gray-500">Departure Time</p>
+                                    <p className="font-semibold">{tripDetails?.heureDepartEffectif?.hour + ":" + tripDetails?.heureDepartEffectif?.minute}</p>
                                 </div>
                             </div>
 
@@ -141,18 +204,18 @@ export default function TripDetails() {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Duration</p>
-                                    <p className="font-semibold">4 hours</p>
+                                    <p className=" font-semibold">{tripDetails.dureeVoyage}</p>
                                 </div>
                             </div>
 
 
                             <div className="flex items-center gap-3">
                                 <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <Users className="h-6 w-6 text-reservation-color"/>
+                                    <MdAirlineSeatReclineNormal className="h-6 w-6 text-reservation-color"/>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-gray-500">Places</p>
-                                    <p className="font-semibold">23/70 available</p>
+                                    <p className="text-sm text-gray-500">Seats</p>
+                                    <p className="font-semibold">{tripDetails.nbrPlaceRestante+"/"+tripDetails.nbrPlaceReservable} available</p>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +261,7 @@ export default function TripDetails() {
                                 <FaInfoCircle className="text-reservation-color w-7 h-7 "/>
                                 <h2 className="text-xl font-bold mb-4 text-reservation-color">About This Trip</h2>
                             </div>
-                            <p className="text-gray-600 mb-10 leading-8 font-semibold ml-10 text-justify">Partez à la découverte de Bali, une île paradisiaque où nature luxuriante et culture ancestrale se rencontrent. Ce voyage vous permettra d;explorer les plus beaux temples, de vous détendre sur des plages de sable fin, et de vous immerger dans la culture balinaise.</p>
+                            <p className="text-gray-600 mb-10 leading-8 font-semibold ml-10 text-justify">{tripDetails.description}</p>
                             <div className="flex gap-3 mb-2">
                                 <FaTools className="text-reservation-color w-7 h-7"/>
                                 <h3 className="font-bold text-xl mb-3 text-reservation-color">Equipment and services on the bus</h3>
@@ -248,21 +311,21 @@ export default function TripDetails() {
                                     <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Departure location</p>
-                                        <p className="font-medium">Douala, Mboppi</p>
+                                        <p className="font-medium">{tripDetails.lieuDepart}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival location</p>
-                                        <p className="font-medium">Yaoundé, Nsam</p>
+                                        <p className="font-medium">{tripDetails.lieuArrive}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-7 w-7 text-reservation-color"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival Time</p>
-                                        <p className="font-medium">12:00</p>
+                                        <p className="font-medium">{tripDetails?.heureArrive?.hour + ":" + tripDetails?.heureArrive?.minute}</p>
                                     </div>
                                 </div>
 
@@ -271,7 +334,7 @@ export default function TripDetails() {
                                     <Calendar className="h-7 w-7 text-reservation-color"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Validity of the offer</p>
-                                        <p className="font-medium">Until Dec 31, 2023</p>
+                                        <p className="font-medium">{ tripDetails.dateLimiteReservation ? new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,}).format(new Date(tripDetails?.dateLimiteReservation)) : ""}</p>
                                     </div>
                                 </div>
                             </div>
@@ -290,6 +353,8 @@ export default function TripDetails() {
                     </div>
                 </div>
             </div>
+
+            <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
         </div>
     );
 }

@@ -16,6 +16,16 @@ function useLogin() {
     const [isLoading, setIsLoading] = useState(false);
     const [errorLogin, setErrorLogin] = useState("");
     const [hasLoginError, setHasLoginError] = useState(false);
+    const [userData, setUserData] = useState({
+        userId :"",
+        nom : "",
+        prenom :"",
+        username: "",
+        telNumber: "",
+        role: "",
+        address: "",
+        idcoordonneeGPS: ""
+    });
 
 
 
@@ -23,7 +33,7 @@ function useLogin() {
     {
         const token = _token.substring(7, _token.length);
         console.log("token, token");
-        localStorage.setItem("mooving_token", token);
+        localStorage.setItem("mooving_app_token", token);
     }
 
 
@@ -63,24 +73,47 @@ function useLogin() {
 
     const logout = useCallback(() => {
         setIsLogged(false);
-        localStorage.removeItem('mooving_token');
+        localStorage.removeItem('mooving_app_token');
         window.location.href = "/";
     }, []);
 
 
-    useEffect(() => {
-        const token = localStorage.getItem('mooving_token');
-        if (token)
-        {
-            setIsLogged(true);
-        }
-    }, [errorLogin]);
 
 
     function isAuthenticated()
     {
         return isLogged;
     }
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("mooving_app_token");
+        async function fetchUserData()
+        {
+            if (token)
+            {
+                try {
+                    {
+                        const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
+                        if (response.status === 200)
+                        {
+                            setUserData(response.data);
+                            setIsLogged(true);
+                        }
+                    }
+                }
+                catch (error)
+                {
+                    console.log(error);
+                    setIsLogged(false);
+                    setUserData({});
+                }
+            }
+        }
+        fetchUserData();
+    }, []);
+
+
 
     const authMethods = useMemo(() => ({
         login,
@@ -90,8 +123,9 @@ function useLogin() {
         hasLoginError,
         errorLogin,
         setIsLoading,
-        isAuthenticated
-    }), [logout, setIsLoading, hasLoginError, errorLogin, isAuthenticated, isLoading, isAuthenticated, login]);
+        isAuthenticated,
+        userData
+    }), [userData, logout, setIsLoading, hasLoginError, errorLogin, isAuthenticated, isLoading, isAuthenticated, login]);
 
     return { authMethods };
 }

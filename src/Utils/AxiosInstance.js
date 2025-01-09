@@ -1,14 +1,15 @@
+'use client';
 import axios from "axios";
 
 
-
-
-const token = localStorage.getItem("mooving_token");
-
+let token = null;
+if (typeof window !== "undefined") {
+    token = localStorage.getItem("mooving_app_token");
+}
 
 const axiosInstance = axios.create(
     {
-        baseURL: 'http://85.214.142.178:8085/api/',
+        baseURL: 'http://85.214.142.178:8085/api',
         headers:
             {
                 'Authorization': `Bearer ${token}`,

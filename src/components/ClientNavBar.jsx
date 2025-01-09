@@ -9,7 +9,7 @@ import {useAuthentication} from "@/Utils/Provider";
 export default function NavBar()
 {
 
-    const {logout} = useAuthentication();
+    const {logout, userData} = useAuthentication();
 
     const applyNavLinkBtnStyle = () => {
         return " w-12 h-10 mt-1 border-2 bg-gray-50 flex justify-center items-center rounded-xl shadow-xl hover:bg-reservation-color text-reservation-color text-xl hover:text-white transition-all duration-300";
@@ -20,7 +20,7 @@ export default function NavBar()
             <div className="border-b-2 m-2  border-b-gray-300">
                 <div className="w-full h-[70px] flex justify-between">
                     <h1 className="ml-3 text-3xl  mt-3.5 font-bold">
-                        Welcome Back Thierry!!
+                        Welcome Back {userData.prenom + " " + userData.nom}!!
                     </h1>
                     <div className="flex gap-3 mt-3.5 mb-4 mr-5">
                         <Tooltip placement={"top"} title={"settings"}>
