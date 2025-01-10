@@ -6,17 +6,16 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reser
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Coupon;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Historique;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.CouponRepository;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.HistoriqueRepository;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.ReservationRepository;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.*;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.*;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
 import lombok.AllArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,16 +25,30 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ReservationService {
 
-    public final ReservationRepository reservationRepository;
-    public final HistoriqueRepository historiqueRepository;
-    public final CouponRepository couponRepository;
-    public final VoyageRepository voyageRepository;
+    private final ReservationRepository reservationRepository;
+    private final HistoriqueRepository historiqueRepository;
+    private final CouponRepository couponRepository;
+    private final VoyageRepository voyageRepository;
+    private final LigneVoyageRepository ligneVoyageRepository;
+    private final ClassVoyageRepository classVoyageRepository;
 
-    public List<Reservation> findAll() {
-        return reservationRepository.findAll();
+    public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository, CouponRepository couponRepository
+    , VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository){
+        this.couponRepository = couponRepository;
+        this.reservationRepository = reservationRepository;
+        this.historiqueRepository = historiqueRepository;
+        this.voyageRepository = voyageRepository;
+        this.ligneVoyageRepository = ligneVoyageRepository;
+        this.classVoyageRepository = classVoyageRepository;
+    }
+
+    public Page<Reservation> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Slice<Reservation> slice = reservationRepository.findAll(pageable);
+        long total = reservationRepository.count();
+        return PaginationUtils.SliceToPage(slice, total);
     }
 
     public Reservation findById(UUID id) {
@@ -43,21 +56,44 @@ public class ReservationService {
     }
 
     public Reservation create(ReservationDTO reservationDTO) {
+        // Récupérer la date et l'heure actuelles
+        LocalDateTime now = LocalDateTime.now();
 
+        // Vérifier si le voyage existe
+        Voyage voyage = voyageRepository.findById(reservationDTO.getIdVoyage())
+                .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas."));
+
+        // Vérifier que la date actuelle est inférieure à la date limite de reservation du voyage
+        if (now.isAfter(voyage.getDateLimiteReservation())) {
+            throw new RuntimeException("La date de réservation doit être antérieure à la date limite de reservation du voyage.");
+        }
+
+        // Vérifier qu'il y a suffisamment de places reservable
+        if (voyage.getNbrPlaceReservable() < reservationDTO.getNbrPassager()) {
+            throw new RuntimeException("Il n'y a pas suffisamment de places disponibles pour ce voyage.");
+        }
+
+        LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
+        ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
+
+
+        // Créer la réservation
         Reservation reservation = new Reservation();
         reservation.setIdReservation(UUID.randomUUID());
-        reservation.setDateReservation(LocalDateTime.now());
+        reservation.setDateReservation(now);
         reservation.setStatutReservation(StatutReservation.RESERVER);
         reservation.setIdUser(reservationDTO.getIdUser());
         reservation.setIdVoyage(reservationDTO.getIdVoyage());
         reservation.setNbrPassager(reservationDTO.getNbrPassager());
-        reservation.setPrixTotal(reservationDTO.getPrixTotal());
+        reservation.setMontantPaye(reservationDTO.getMontantPaye());
+        reservation.setPrixTotal(reservationDTO.getNbrPassager() * classVoyage.getPrix());
 
-        Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
+        // Mettre à jour le nombre de places réservées et réservables
         voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() + reservation.getNbrPassager());
         voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() - reservation.getNbrPassager());
-        this.voyageRepository.save(voyage);
+        voyageRepository.save(voyage);
 
+        // Enregistrer la réservation
         return reservationRepository.save(reservation);
     }
 
@@ -69,18 +105,39 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public void confirmerReservation(ReservationConfirmDTO reservationConfirmDTO) {
+    public Reservation confirmerReservation(ReservationConfirmDTO reservationConfirmDTO) {
+        // Récupérer la date et l'heure actuelles
+        LocalDateTime now = LocalDateTime.now();
+
         // On update la reservation
-        Optional<Reservation> reservationOpt = this.reservationRepository
-                .findById(reservationConfirmDTO.getIdReservation());
-        if (reservationOpt.isEmpty()) {
-            throw new RuntimeException("Reservation non existante");
+        Reservation reservation = this.reservationRepository.findById(reservationConfirmDTO.getIdReservation())
+                .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
+
+        Voyage voyage = voyageRepository.findById(reservation.getIdVoyage()).orElse(null);
+
+        // Vérifier que la date actuelle est inférieure à la date limite de confirmation du voyage
+        if (now.isAfter(voyage.getDateLimiteConfirmation())) {
+            throw new RuntimeException("La date de confirmation doit être antérieure à la date limite de confirmation du voyage.");
         }
 
-        Reservation reservation = reservationOpt.get();
-        reservation.setDateConfirmation(LocalDateTime.now());
+        // Vérifier qu'il y a suffisamment de places reservable
+        if (voyage.getNbrPlaceRestante() < reservation.getNbrPassager()) {
+            throw new RuntimeException("Il n'y a pas suffisamment de places libre pour confirmation");
+        }
+
+        //verifier que le prix total a été payé
+        if (reservation.getMontantPaye() + reservationConfirmDTO.getMontantPaye() < reservation.getPrixTotal())
+        {
+            throw new RuntimeException("Le prix total pour le voyage n'est pas complet");
+        }
+
+        reservation.setDateConfirmation(now);
+        reservation.setMontantPaye(reservationConfirmDTO.getMontantPaye() + reservation.getMontantPaye());
         reservation.setStatutReservation(StatutReservation.CONFIRMER);
-        this.reservationRepository.save(reservation);
+        // gestion des places
+        voyage.setNbrPlaceRestante(voyage.getNbrPlaceRestante() - reservation.getNbrPassager());
+        voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() + reservation.getNbrPassager());
+        this.voyageRepository.save(voyage);
         // On crée l'historique
         Historique historique = new Historique();
         historique.setIdHistorique(UUID.randomUUID());
@@ -89,12 +146,7 @@ public class ReservationService {
         historique.setIdReservation(reservation.getIdReservation());
         historique.setStatusHistorique(StatutHistorique.VALIDER);
         this.historiqueRepository.save(historique);
-        // On deduis le nombre de reservation restante
-        Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
-        // voyage.setNbrPlaceRestante(voyage.getNbrPlaceRestante() -
-        // reservation.getNbrPassager());
-        voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() + reservation.getNbrPassager());
-        this.voyageRepository.save(voyage);
+        return this.reservationRepository.save(reservation);
     }
 
     public void annulerReservation(ReservationCancelDTO reservationCancelDTO) {

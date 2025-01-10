@@ -14,6 +14,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationConfirmDTO {
-  UUID idReservation;
-  StatutReservation statutReservation;
+  private UUID idReservation;
+  private double montantPaye;
 }

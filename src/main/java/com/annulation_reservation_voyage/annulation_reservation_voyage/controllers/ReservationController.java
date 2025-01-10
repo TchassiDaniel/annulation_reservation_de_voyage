@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,9 @@ public class ReservationController {
             @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Reservation.class))))
     })
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
-        List<Reservation> reservations = reservationService.findAll();
+    public ResponseEntity<Page<Reservation>> getAllReservations(@RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        Page<Reservation> reservations = reservationService.findAll(page, size);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
@@ -56,12 +58,21 @@ public class ReservationController {
     @Operation(summary = "Créer une réservation", description = "Ajoute une nouvelle réservation.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Réservation créée avec succès", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
+            @ApiResponse(responseCode = "404", description = "le voyage dont l'id est donnée n'existe pas"),
             @ApiResponse(responseCode = "400", description = "Données invalides")
     })
     @PostMapping("/reserver")
-    public ResponseEntity<Reservation> createReservation(@RequestBody ReservationDTO reservationDTO) {
-        Reservation createdReservation = reservationService.create(reservationDTO);
-        return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+    public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
+        try {
+            Reservation createdReservation = reservationService.create(reservationDTO);
+            return new ResponseEntity<>(createdReservation, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("n'existe pas")) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }
     }
 
     @Operation(summary = "Mettre à jour une réservation", description = "Modifie une réservation existante.")
@@ -97,17 +108,22 @@ public class ReservationController {
     @Operation(summary = "Confirmer une réservation", description = "Confirme une réservation en modifiant son statut à 'CONFIRME' et en enregistrant l'action dans l'historique.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Réservation confirmée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+            @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "reservation inexistante.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @PutMapping("/confirmer")
-    public ResponseEntity<String> confirmerReservation(
+    public ResponseEntity<?> confirmerReservation(
             @Parameter(description = "Données nécessaires pour confirmer la réservation (ID de la réservation).", required = true) @RequestBody ReservationConfirmDTO reservationConfirmDTO) {
 
         try {
-            reservationService.confirmerReservation(reservationConfirmDTO);
-            return ResponseEntity.ok("Réservation confirmée avec succès.");
+            Reservation reservation = reservationService.confirmerReservation(reservationConfirmDTO);
+            return new ResponseEntity<>(reservation, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Erreur: " + e.getMessage());
+            if (e.getMessage().contains("n'existe pas")) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
     }
 

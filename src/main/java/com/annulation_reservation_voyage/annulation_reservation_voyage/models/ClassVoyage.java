@@ -12,10 +12,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClasseVoyage {
+public class ClassVoyage {
     @PrimaryKey
     private UUID idClassVoyage;
     private String nom;
     private double prix;
     private double tauxAnnulation;
+    private UUID idAgenceVoyage;
 }

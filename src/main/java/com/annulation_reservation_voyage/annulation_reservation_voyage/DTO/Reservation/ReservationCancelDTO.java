@@ -15,10 +15,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationCancelDTO {
-  StatutHistorique statusHistorique;
-  String causeAnnulation;
-  String origineAnnulation;
-  double tauxAnnulation;// Ce qu'on donne à l'utilisateur s'il annule la reservation
-  double compensation;// Si l'agence annule on te donne ça
-  UUID idReservation;
+  private StatutHistorique statusHistorique;
+  private String causeAnnulation;
+  private String origineAnnulation;
+  private double tauxAnnulation;// Ce qu'on donne à l'utilisateur s'il annule la reservation
+  private double compensation;// Si l'agence annule on te donne ça
+  private UUID idReservation;
 }

@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.controllers;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.VoyageService;
@@ -47,12 +48,12 @@ public class VoyageController {
     @Operation(summary = "Obtenir un voyage par ID", description = "Récupère un voyage en fonction de son identifiant.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Voyage trouvé",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Voyage.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = VoyageDetailsDTO.class))),
             @ApiResponse(responseCode = "404", description = "Voyage non trouvé")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Voyage> getVoyageById(@PathVariable UUID id) {
-        Voyage voyage = voyageService.findById(id);
+    public ResponseEntity<VoyageDetailsDTO> getVoyageById(@PathVariable UUID id) {
+        VoyageDetailsDTO voyage = voyageService.findById(id);
         if (voyage == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -85,7 +86,6 @@ public class VoyageController {
             //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        voyage.setIdVoyage(id); // Assurez-vous que l'ID est correctement défini
         Voyage updatedVoyage = voyageService.update(voyage);
         return new ResponseEntity<>(updatedVoyage, HttpStatus.OK);
     }

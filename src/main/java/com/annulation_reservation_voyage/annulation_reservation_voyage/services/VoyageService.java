@@ -1,9 +1,13 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.mappers.VoyageMapper;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.ClassVoyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.LigneVoyage;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.ClassVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.LigneVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
@@ -28,12 +32,15 @@ public class VoyageService {
 
     private final UserRepository userRepository;
 
+    private final ClassVoyageRepository classVoyageRepository;
+
     public VoyageService(VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository,
-            VoyageMapper voyageMapper, UserRepository userRepository) {
+            VoyageMapper voyageMapper, UserRepository userRepository, ClassVoyageRepository classVoyageRepository) {
         this.voyageRepository = voyageRepository;
         this.ligneVoyageRepository = ligneVoyageRepository;
         this.voyageMapper = voyageMapper;
         this.userRepository = userRepository;
+        this.classVoyageRepository = classVoyageRepository;
     }
 
     public Page<Voyage> findAll(int page, int size) {
@@ -52,9 +59,11 @@ public class VoyageService {
                     // Récupère la première ligne de voyage associée
                     LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
 
+                    ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
+
                     // Trouve l'agence associée et mappe les informations si présente
                     return userRepository.findById(ligneVoyage.getIdAgenceVoyage())
-                            .map(agenceVoyage -> voyageMapper.toVoyagePreviewDTO(voyage, agenceVoyage))
+                            .map(agenceVoyage -> voyageMapper.toVoyagePreviewDTO(voyage, agenceVoyage, classVoyage))
                             .orElse(null); // Retourne null si aucune agence n'est trouvée
                 })
                 .filter(Objects::nonNull) // Exclut les valeurs null
@@ -65,8 +74,16 @@ public class VoyageService {
         return PaginationUtils.ContentToPage(previewVoyageList, pageable, total);
     }
 
-    public Voyage findById(UUID id) {
-        return voyageRepository.findById(id).orElse(null);
+    public VoyageDetailsDTO findById(UUID id) {
+
+        Voyage voyage = voyageRepository.findById(id).orElse(null);
+        if (voyage != null) {
+            LigneVoyage ligneVoyage = ligneVoyageRepository.findById(id).orElse(null);
+            ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
+            User agenceVoyage = userRepository.findById(ligneVoyage.getIdAgenceVoyage()).orElse(null);
+            return voyageMapper.tovoyageDetailsDTO(voyage, agenceVoyage, classVoyage);
+        }
+        return null;
     }
 
     public Voyage create(Voyage voyage) {

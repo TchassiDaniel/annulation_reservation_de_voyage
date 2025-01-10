@@ -15,8 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationDTO {
-  int nbrPassager;
-  double prixTotal;
-  UUID idUser;
-  UUID idVoyage;
+  private int nbrPassager;
+  private double montantPaye;
+  private UUID idUser;
+  private UUID idVoyage;
 }

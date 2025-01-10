@@ -22,6 +22,7 @@ public class Reservation {
   private LocalDateTime dateReservation;
   private LocalDateTime dateConfirmation;
   private int nbrPassager;
+  private double montantPaye;
   private double prixTotal;
   private StatutReservation statutReservation;
   private UUID idUser;
