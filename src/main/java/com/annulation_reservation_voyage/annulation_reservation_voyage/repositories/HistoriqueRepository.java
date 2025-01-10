@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.repositories;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.repository.CassandraRepository;
@@ -9,5 +10,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Hi
 
 @Repository
 public interface HistoriqueRepository extends CassandraRepository<Historique, UUID> {
+
+    Optional<Historique> findByIdReservation(UUID idReservation);
 
 }

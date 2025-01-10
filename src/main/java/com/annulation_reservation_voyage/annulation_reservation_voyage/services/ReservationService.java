@@ -92,6 +92,13 @@ public class ReservationService {
         voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() + reservation.getNbrPassager());
         voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() - reservation.getNbrPassager());
         voyageRepository.save(voyage);
+        // On crée l'historique
+        Historique historique = new Historique();
+        historique.setIdHistorique(UUID.randomUUID());
+        historique.setDateReservation(now);
+        historique.setIdReservation(reservation.getIdReservation());
+        historique.setStatusHistorique(StatutHistorique.VALIDER);
+        this.historiqueRepository.save(historique);
 
         // Enregistrer la réservation
         return reservationRepository.save(reservation);
@@ -112,6 +119,11 @@ public class ReservationService {
         // On update la reservation
         Reservation reservation = this.reservationRepository.findById(reservationConfirmDTO.getIdReservation())
                 .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
+
+        // On récupère l'historique
+        Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
+                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas")
+        );
 
         Voyage voyage = voyageRepository.findById(reservation.getIdVoyage()).orElse(null);
 
@@ -138,47 +150,49 @@ public class ReservationService {
         voyage.setNbrPlaceRestante(voyage.getNbrPlaceRestante() - reservation.getNbrPassager());
         voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() + reservation.getNbrPassager());
         this.voyageRepository.save(voyage);
-        // On crée l'historique
-        Historique historique = new Historique();
-        historique.setIdHistorique(UUID.randomUUID());
-        historique.setDateConfirmation(LocalDateTime.now());
-        historique.setDateReservation(reservation.getDateReservation());
-        historique.setIdReservation(reservation.getIdReservation());
+
+        historique.setDateConfirmation(now);
         historique.setStatusHistorique(StatutHistorique.VALIDER);
         this.historiqueRepository.save(historique);
         return this.reservationRepository.save(reservation);
     }
 
     public void annulerReservation(ReservationCancelDTO reservationCancelDTO) {
-        // On update la reservation
-        Optional<Reservation> reservationOpt = this.reservationRepository
-                .findById(reservationCancelDTO.getIdReservation());
-        if (reservationOpt.isEmpty()) {
-            throw new RuntimeException("Reservation non existante");
-        }
+        // Récupérer la date et l'heure actuelles
+        LocalDateTime now = LocalDateTime.now();
 
-        Reservation reservation = reservationOpt.get();
+        // On update la reservation
+        Reservation reservation = this.reservationRepository.findById(reservationCancelDTO.getIdReservation())
+                .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
+
+        // On récupère l'historique
+        Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
+                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas")
+        );
+
         Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
         // On crée l'historique
-        Historique historique = new Historique();
-        historique.setIdHistorique(UUID.randomUUID());
-        historique.setDateAnnulation(LocalDateTime.now());
-        historique.setDateReservation(reservation.getDateReservation());
-        historique.setIdReservation(reservation.getIdReservation());
-        historique.setStatusHistorique(reservationCancelDTO.getStatusHistorique());
+        historique.setDateAnnulation(now);
+        if (reservation.getStatutReservation() == StatutReservation.RESERVER){
+            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_RESERVATION);
+            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
+            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
+        }
+        else if (reservation.getStatutReservation() == StatutReservation.CONFIRMER){
+            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION);
+            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
+            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
+            voyage.setNbrPlaceConfirm(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
+            voyage.setNbrPlaceRestante(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
+        }
         historique.setCauseAnnulation(reservationCancelDTO.getCauseAnnulation());
         historique.setCompensation(0);
         historique.setTauxAnnulation(0);
         historique.setOrigineAnnulation(reservationCancelDTO.getOrigineAnnulation());
 
-        // On gère le nombre de place reserve dans le voyage
-        if (historique.getStatusHistorique() == StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION
-                || historique.getStatusHistorique() == StatutHistorique.ANNULER_PAR_USAGER_APRES_RESERVATION) {
-            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
-            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
-        }
 
         // On cree le coupon si l'annulation c'est faite après la confirmation
+        /*
         if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
             Coupon coupon = new Coupon();
             coupon.setIdCoupon(UUID.randomUUID());
@@ -199,8 +213,9 @@ public class ReservationService {
             // On enregistre le coupon
             this.couponRepository.save(coupon);
         }
+        */
 
-        historique = this.historiqueRepository.save(historique);
+        this.historiqueRepository.save(historique);
 
         reservation.setStatutReservation(StatutReservation.ANNULER);
         this.voyageRepository.save(voyage);

@@ -127,7 +127,7 @@ public class ReservationController {
         }
     }
 
-    @Operation(summary = "Annuler une réservation", description = "Permet d'annuler une réservation en modifiant son statut et en enregistrant un historique d'annulation. Si l'annulation a lieu après confirmation, un coupon est généré.")
+    @Operation(summary = "Annuler une réservation", description = "Permet d'annuler une réservation en par un utilisateur. Si l'annulation a lieu après confirmation, un coupon est généré.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Réservation annulée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
