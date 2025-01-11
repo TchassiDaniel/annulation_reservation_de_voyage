@@ -1,59 +1,27 @@
 'use client';
-import  { useState, useEffect } from 'react';
+
 import PropTypes from "prop-types";
+import {useSeatManager} from "@/Utils/utilsMethods";
+import {useEffect} from "react";
 
-export default  function RenderBusDisposition ({setSeats}) {
+export default  function Bus70SeatsDisposition ({setSeats}) {
 
-    RenderBusDisposition.propTypes = {
+    Bus70SeatsDisposition.propTypes = {
         setSeats: PropTypes.func.isRequired,
     }
 
-    const [selectedSeats, setSelectedSeats] = useState([]);
-    const [reservedSeats, setReservedSeats] = useState([]);
+    const {selectedSeats, reservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
 
 
     useEffect(() => {
-        async function fetchReservedSeats () {
-            const mockReservedSeats = [3, 12, 25, 44, 2, 15];
-            setReservedSeats(mockReservedSeats);
-        }
-        console.log(selectedSeats);
-        fetchReservedSeats();
         setSeats(selectedSeats);
     }, [selectedSeats.length]);
 
-
-    function handleSeatClick (seatNumber)  {
-        if (reservedSeats.includes(seatNumber)) {
-            return;
-        }
-        setSelectedSeats(prev => {
-            if (prev.includes(seatNumber)) {
-                return prev.filter(seat => seat !== seatNumber);
-            } else {
-                return [...prev, seatNumber];
-            }
-        });
-    }
-
-
-
-    function getSeatClass (seatNumber) {
-        const baseClass = "w-12 h-12 border-2 rounded-lg ";
-        if (reservedSeats.includes(seatNumber)) {
-            return baseClass + "border-red-500 bg-red-300 cursor-not-allowed";
-        }
-        if (selectedSeats.includes(seatNumber)) {
-            return baseClass + "border-green-500 bg-green-300";
-        }
-        return baseClass + "border-gray-400 bg-gray-200";
-    }
 
 
     return (
         <div className="p-5">
             <div className="grid grid-cols-2 w-fit gap-12 min-h-screen overflow-y-auto">
-
                 {/* Première rangée */}
                 <div className="grid gap-3 w-fit grid-cols-3 min-h-screen p-2">
                     <div className="col-span-3 border-2 border-gray-400 flex justify-center items-center rounded-lg font-bold h-12  mt-1">
@@ -83,7 +51,7 @@ export default  function RenderBusDisposition ({setSeats}) {
                                 key={index}
                                 onClick={() => !isPorte && handleSeatClick(displayNumber)}
                                 disabled={isPorte || reservedSeats.includes(displayNumber)}
-                                className={`${isPorte ? "border-none" : getSeatClass(displayNumber)} w-10 h-10`}
+                                className={`${isPorte ? "border-none" : getSeatClass(displayNumber)}`}
                             >
                                 {displayNumber}
                             </button>
@@ -99,7 +67,7 @@ export default  function RenderBusDisposition ({setSeats}) {
                                 key={index}
                                 onClick={() => !isPorte && handleSeatClick(displayNumber)}
                                 disabled={isPorte || reservedSeats.includes(displayNumber)}
-                                className={`${isPorte ? "border-none" : getSeatClass(displayNumber)} w-10 h-10`}
+                                className={`${isPorte ? "border-none" : getSeatClass(displayNumber)}`}
                             >
                                 {displayNumber}
                             </button>

@@ -2,16 +2,12 @@
 
 import React, {useEffect, useState} from 'react';
 import {MapPin, X} from 'lucide-react';
-import RenderSeatDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/RenderSeatDisposition";
 import {FaHouse} from "react-icons/fa6";
-import {FaCalendar,
-    FaChair,
-    FaClock,
-    FaDollarSign,
-    FaMoneyBill,
-    FaUsers
-} from "react-icons/fa";
-import RenderBusDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/RenderSeatDisposition";
+import {FaCalendar, FaChair, FaClock, FaDollarSign, FaMoneyBill, FaUsers} from "react-icons/fa";
+import Bus70SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus70SeatsDisposition";
+import Bus75SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus75SeatsDisposition";
+import Bus80SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus80SeatsDisposition";
+import Bus56SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus56SeatsDisposition";
 
 
 
@@ -28,6 +24,8 @@ export default function ReservationModal({ isOpen, onClose, tripDetails }) {
         {icon: MapPin, label: "Departure location", value: tripDetails.lieuDepart },
         { icon: MapPin, label: "Arrival Location", value: tripDetails.lieuArrive },
     ];
+
+
 
 
     useEffect(() => {
@@ -113,21 +111,24 @@ export default function ReservationModal({ isOpen, onClose, tripDetails }) {
                     <h3 className="text-2xl font-semibold text-reservation-color mb-1">Selection of places</h3>
                     <p className="italic text-md mb-6 text-gray-600">Please choose the seat(s) you want
                         to book</p>
-                    <div className="flex gap-4 mb-6">
+                    <div className="ml-7 flex gap-4 mb-6">
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 border-2 border-reservation-color"/>
-                            <span className="text-sm text-reservation-color font-medium">Available</span>
+                            <div className="w-8 h-8 rounded-lg border-2 border-gray-500 bg-gray-200"/>
+                            <span className="text-sm text-gray-500 font-medium">Available</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6  bg-green-300 border-2 border-green-500"/>
+                            <div className="w-8 h-8 rounded-lg  bg-green-300 border-2 border-green-500"/>
                             <span className="text-sm text-green-600 font-medium">Selected </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-6  bg-red-300 border-2 border-red-500"/>
+                            <div className="w-8 h-8 rounded-lg  bg-red-300 border-2 border-red-500"/>
                             <span className="text-sm text-red-600 font-medium">Reserved </span>
                         </div>
                     </div>
-                    <RenderBusDisposition setSeats={setSelectedSeats}/>
+                    {/*<Bus70SeatsDisposition setSeats={setSelectedSeats}/>*/}
+                    {/*<Bus75SeatsDisposition setSelectedSeats={setSelectedSeats}/> */}
+                    {/*<Bus80SeatsDisposition setSelectedSeats={setSelectedSeats}/>*/}
+                    <Bus56SeatsDisposition setSelectedSeats={setSelectedSeats}/>
                 </div>
             </div>
         </div>
