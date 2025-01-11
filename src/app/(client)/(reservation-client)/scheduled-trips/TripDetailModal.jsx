@@ -1,7 +1,6 @@
 'use client';
 import PropTypes from 'prop-types';
 import {AlertCircle, CheckCircle2, X, MapPin, Calendar, Clock, Timer, Wallet} from "lucide-react";
-import {BsInfo} from "react-icons/bs";
 import React from "react";
 import {FaInfo, FaLandmark} from "react-icons/fa";
 import {Tooltip} from "antd";
@@ -24,7 +23,7 @@ export function TripDetailsModal({ isOPen, trip, onClose }) {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
-            <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-start mb-6">
                     <div className="flex gap-2 ml-16">
                         <div className="bg-blue-200 p-2 rounded-full">

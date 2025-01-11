@@ -9,8 +9,9 @@ import axiosInstance from "@/Utils/AxiosInstance";
 import {ErrorModal} from "@/components/Modals/ErrorModal";
 import busImage1 from "../../../../../../public/bus-image.jpeg";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
-import TripDetailsSkeleton from "@/components/Loadings/Skip-details-skeleton";
+import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton";
 import {useAuthentication} from "@/Utils/Provider";
+import ReservationModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservationModal";
 
 
 
@@ -355,6 +356,7 @@ export default function TripDetails({params}) {
             </div>
 
             <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
+            <ReservationModal isOpen={false} onClose={()=>{setCanOpenErrorModal(false)}} tripDetails={tripDetails}/>
         </div>
     );
 }

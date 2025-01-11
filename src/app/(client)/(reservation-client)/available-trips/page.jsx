@@ -49,6 +49,7 @@ export default function AvailableTrips() {
     }, []);
 
 
+
     async function fetchAvailableTrips() {
 
         try
@@ -59,7 +60,6 @@ export default function AvailableTrips() {
             {
                 setIsLoading(false);
                 setCanRenderPaginationContent(true);
-                console.log(response.data);
                 setAvailableTrips(response.data);
                 setCanOpenErrorModal(false);
                 setErrorMessage("");
@@ -84,7 +84,6 @@ export default function AvailableTrips() {
                     <h1 className="text-3xl font-bold text-reservation-color mt-1 ml-2">
                         Available Trips
                     </h1>
-
                     <div className="flex gap-3">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div
