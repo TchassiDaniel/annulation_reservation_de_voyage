@@ -26,6 +26,7 @@ export default function TripDetails({params}) {
     const [isLoading, setIsLoading] = useState(false);
     const [tripDetails, setTripDetail] = useState({});
     const [images, setImages] = useState([busImage1]);
+    const [canOpenReservationModal, setCanOpenReservationModal] = useState(false);
 
 
 
@@ -161,7 +162,7 @@ export default function TripDetails({params}) {
                     <div className="max-w-7xl mx-auto">
                         <h1 className="text-5xl font-bold mb-4">{tripDetails.lieuDepart + " - " + tripDetails.lieuArrive}</h1>
                         <p className="text-2xl opacity-90">Travel comfortably with General Voyages</p>
-                        <button
+                        <button  onClick={() => {setCanOpenReservationModal(true)}}
                             className="absolute bottom-8 right-8 bg-reservation-color text-white px-8 py-4 text-2xl hover:bg-white hover:text-reservation-color hover:border-4 hover:border-reservation-color rounded-lg font-bold shadow-lg transition-all duration-300 flex items-center gap-2 ">
                             <span>Book Now</span>
                         </button>
@@ -334,15 +335,14 @@ export default function TripDetails({params}) {
                                 <div className="flex items-center gap-2">
                                     <Calendar className="h-7 w-7 text-reservation-color"/>
                                     <div>
+
                                         <p className="text-sm text-gray-500">Validity of the offer</p>
                                         <p className="font-medium">{ tripDetails.dateLimiteReservation ? new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,}).format(new Date(tripDetails?.dateLimiteReservation)) : ""}</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <button onClick={() => {
-                                alert("reservation")
-                            }}
+                            <button onClick={() => {setCanOpenReservationModal(true)}}
                                     className="w-full bg-reservation-color font-bold  text-xl text-white rounded-lg px-4 py-3 hover:bg-blue-800 transition-all duration-300">
                                 Book Now
                             </button>
@@ -356,7 +356,7 @@ export default function TripDetails({params}) {
             </div>
 
             <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
-            <ReservationModal isOpen={false} onClose={()=>{setCanOpenErrorModal(false)}} tripDetails={tripDetails}/>
+            <ReservationModal isOpen={canOpenReservationModal} onClose={()=>{setCanOpenReservationModal(false)}} tripDetails={tripDetails}/>
         </div>
     );
 }

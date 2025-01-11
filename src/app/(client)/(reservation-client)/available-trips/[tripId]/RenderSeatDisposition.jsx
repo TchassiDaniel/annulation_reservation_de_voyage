@@ -1,21 +1,25 @@
 'use client';
 import  { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
 
-const BusSeats = () => {
+export default  function RenderBusDisposition ({setSeats}) {
 
+    RenderBusDisposition.propTypes = {
+        setSeats: PropTypes.func.isRequired,
+    }
 
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [reservedSeats, setReservedSeats] = useState([]);
 
 
     useEffect(() => {
-
         async function fetchReservedSeats () {
-            const mockReservedSeats = [3, 12, 25, 44,1,2,15];
+            const mockReservedSeats = [3, 12, 25, 44, 2, 15];
             setReservedSeats(mockReservedSeats);
         }
         console.log(selectedSeats);
         fetchReservedSeats();
+        setSeats(selectedSeats);
     }, [selectedSeats.length]);
 
 
@@ -33,25 +37,27 @@ const BusSeats = () => {
     }
 
 
+
     function getSeatClass (seatNumber) {
-        const baseClass = "w-10 h-10 border-2 ";
+        const baseClass = "w-12 h-12 border-2 rounded-lg ";
         if (reservedSeats.includes(seatNumber)) {
             return baseClass + "border-red-500 bg-red-300 cursor-not-allowed";
         }
         if (selectedSeats.includes(seatNumber)) {
             return baseClass + "border-green-500 bg-green-300";
         }
-        return baseClass + "border-reservation-color";
+        return baseClass + "border-gray-400 bg-gray-200";
     }
 
+
     return (
-        <>
-            <div className="grid grid-cols-2 w-fit gap-16 min-h-screen overflow-y-auto">
+        <div className="p-5">
+            <div className="grid grid-cols-2 w-fit gap-12 min-h-screen overflow-y-auto">
 
                 {/* Première rangée */}
-                <div className="grid gap-2 w-fit grid-cols-3 min-h-screen p-2">
-                    <div className="col-span-3 border-2 border-reservation-color font-bold h-10 text-center mt-1">
-                        Chauffeur
+                <div className="grid gap-3 w-fit grid-cols-3 min-h-screen p-2">
+                    <div className="col-span-3 border-2 border-gray-400 flex justify-center items-center rounded-lg font-bold h-12  mt-1">
+                        <p className="text-xl text-reservation-color">Chauffeur</p>
                     </div>
                     {Array.from({length: 42}, (_, index) => (
                         <button
@@ -103,7 +109,7 @@ const BusSeats = () => {
             </div>
 
             {/* Dernier banc */}
-            <div className="grid  gap-3.5 w-fit grid-cols-6 p-2">
+            <div className="grid  gap-2 w-fit grid-cols-6 p-2">
                 {Array.from({length: 6}, (_, index) => (
                     <button
                         key={index}
@@ -115,13 +121,7 @@ const BusSeats = () => {
                     </button>
                 ))}
             </div>
-
-            {/* Affichage des sièges sélectionnés */}
-            <div className="mt-4 p-4 border-2 border-reservation-color rounded">
-                <h3 className="font-bold mb-2">Sièges sélectionnés: {selectedSeats.sort((a, b) => a - b).join(", ")}</h3>
-            </div>
-        </>
+        </div>
     );
 };
 
-export default BusSeats;
