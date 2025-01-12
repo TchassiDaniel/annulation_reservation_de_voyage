@@ -3,6 +3,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Rese
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.PassagerDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,5 @@ public class ReservationDTO {
   private double montantPaye;
   private UUID idUser;
   private UUID idVoyage;
+  private PassagerDTO[] passagerDTO;
 }

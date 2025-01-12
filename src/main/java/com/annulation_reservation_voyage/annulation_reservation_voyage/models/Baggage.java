@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class Baggage {
   @PrimaryKey
   private UUID idBaggage;
+  private String nbreBaggage;
   private UUID idPassager;
 }
-

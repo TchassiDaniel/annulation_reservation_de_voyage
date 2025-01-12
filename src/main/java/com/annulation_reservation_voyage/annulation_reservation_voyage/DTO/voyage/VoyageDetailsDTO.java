@@ -37,4 +37,5 @@ public class VoyageDetailsDTO {
     private String nomClasseVoyage;
     private double prix;
     private String nomAgence;
+    private String pointDeDepart;
 }

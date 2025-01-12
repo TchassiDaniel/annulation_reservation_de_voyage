@@ -27,6 +27,7 @@ public class Voyage {
   private LocalDate dateArriveEffectif;
   private String lieuArrive;
   private LocalTime heureDepartEffectif;
+  private String pointDeDepart;
   private String dureeVoyage;
   private LocalTime heureArrive;
   private int nbrPlaceReservable;// Nbre de place qu'on peut encore reserve

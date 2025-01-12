@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.repositories;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.repository.CassandraRepository;
@@ -10,4 +11,5 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Pa
 @Repository
 public interface PassagerRepository extends CassandraRepository<Passager, UUID> {
 
+  List<Passager> findAllByIdReservation(UUID idReservation);
 }

@@ -13,7 +13,8 @@ public class VoyageMapper {
     public VoyagePreviewDTO toVoyagePreviewDTO(Voyage voyage, User user, ClassVoyage classVoyage) {
         VoyagePreviewDTO voyagePreviewDTO = new VoyagePreviewDTO();
         voyagePreviewDTO.setIdVoyage(voyage.getIdVoyage());
-        voyagePreviewDTO.setNomAgence(user.getNom());  // je suppose ici que le service c'est occupé de verifier que cette utilisateur est bien une agence
+        voyagePreviewDTO.setNomAgence(user.getNom()); // je suppose ici que le service c'est occupé de verifier que
+                                                      // cette utilisateur est bien une agence
         voyagePreviewDTO.setLieuDepart(voyage.getLieuDepart());
         voyagePreviewDTO.setLieuArrive(voyage.getLieuArrive());
         voyagePreviewDTO.setNbrPlaceRestante(voyage.getNbrPlaceRestante());
@@ -50,6 +51,7 @@ public class VoyageMapper {
         voyageDetailsDTO.setNomAgence(user.getNom());
         voyageDetailsDTO.setPrix(classVoyage.getPrix());
         voyageDetailsDTO.setNomClasseVoyage(classVoyage.getNom());
+        voyageDetailsDTO.setPointDeDepart(voyage.getPointDeDepart());
         return voyageDetailsDTO;
     }
 }

@@ -18,9 +18,9 @@ public class Passager {
   private UUID idPassager;
   private String numeroPieceIdentific;
   private String nom;
-  private String prenom;
   private String genre;
   private int age;
   private int nbrBaggage;
   private UUID idReservation;
+  private int placeChoisis;
 }

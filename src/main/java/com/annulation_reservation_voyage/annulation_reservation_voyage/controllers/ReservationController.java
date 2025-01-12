@@ -3,6 +3,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.controll
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class ReservationController {
     })
     @GetMapping
     public ResponseEntity<Page<Reservation>> getAllReservations(@RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size) {
         Page<Reservation> reservations = reservationService.findAll(page, size);
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
@@ -47,25 +48,26 @@ public class ReservationController {
             @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/{idUser}")
-    public ResponseEntity<?> getAllReservationsForUser(@PathVariable UUID idUser, @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size) {
-        try{
+    public ResponseEntity<?> getAllReservationsForUser(@PathVariable UUID idUser,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        try {
             Page<Reservation> reservations = reservationService.findAllForUser(idUser, page, size);
             return new ResponseEntity<>(reservations, HttpStatus.OK);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @Operation(summary = "Obtenir une réservation par ID", description = "Récupère une réservation spécifique par ID.")
+    @Operation(summary = "Obtenir une réservation et la liste de ses passagers par ID", description = "Récupère une réservation spécifique par ID Ainsi que la liste de tout ses passagers.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Réservation trouvée", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),
+            @ApiResponse(responseCode = "200", description = "Réservation trouvée", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservationDetailDTO.class))),
             @ApiResponse(responseCode = "404", description = "Réservation non trouvée")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable UUID id) {
-        Reservation reservation = reservationService.findById(id);
+    public ResponseEntity<ReservationDetailDTO> getReservationById(@PathVariable UUID id) {
+        ReservationDetailDTO reservation = reservationService.findById(id);
         if (reservation == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

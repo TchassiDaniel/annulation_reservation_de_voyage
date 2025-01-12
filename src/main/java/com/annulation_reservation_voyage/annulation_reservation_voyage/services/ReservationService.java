@@ -3,6 +3,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
@@ -34,10 +35,13 @@ public class ReservationService {
     private final VoyageRepository voyageRepository;
     private final LigneVoyageRepository ligneVoyageRepository;
     private final ClassVoyageRepository classVoyageRepository;
+    private final PassagerRepository passagerRepository;
     private final UserRepository userRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository, CouponRepository couponRepository
-    , VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository, UserRepository userRepository){
+    public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository,
+            CouponRepository couponRepository, VoyageRepository voyageRepository,
+            LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository,
+            UserRepository userRepository, PassagerRepository passagerRepository) {
         this.couponRepository = couponRepository;
         this.reservationRepository = reservationRepository;
         this.historiqueRepository = historiqueRepository;
@@ -45,6 +49,7 @@ public class ReservationService {
         this.ligneVoyageRepository = ligneVoyageRepository;
         this.classVoyageRepository = classVoyageRepository;
         this.userRepository = userRepository;
+        this.passagerRepository = passagerRepository;
     }
 
     public Page<Reservation> findAll(int page, int size) {
@@ -54,19 +59,26 @@ public class ReservationService {
         return PaginationUtils.SliceToPage(slice, total);
     }
 
-    public Page<Reservation> findAllForUser(UUID idUser, int page, int size){
+    public Page<Reservation> findAllForUser(UUID idUser, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("L'utilisateur dont l'id est spécifié n'existe pas."));
-        if (user.getRole() == RoleType.AGENCE_VOYAGE){
-            throw new RuntimeException("L'utilisateur dont l'id est spécifié est une agence de voyage et ne peut donc pas réservé");
+        User user = userRepository.findById(idUser)
+                .orElseThrow(() -> new RuntimeException("L'utilisateur dont l'id est spécifié n'existe pas."));
+        if (user.getRole() == RoleType.AGENCE_VOYAGE) {
+            throw new RuntimeException(
+                    "L'utilisateur dont l'id est spécifié est une agence de voyage et ne peut donc pas réservé");
         }
         Slice<Reservation> slice = reservationRepository.findByIdUser(idUser, pageable);
         long total = slice.getContent().size();
         return PaginationUtils.SliceToPage(slice, total);
     }
 
-    public Reservation findById(UUID id) {
-        return reservationRepository.findById(id).orElse(null);
+    public ReservationDetailDTO findById(UUID id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("La reservation dont l'id est spécifique n'existe pas."));
+        ReservationDetailDTO reservationDetailDTO = new ReservationDetailDTO(reservation);
+        // On charge les passager dans la liste
+        reservationDetailDTO.setPassager(passagerRepository.findAllByIdReservation(id));
+        return reservationDetailDTO;
     }
 
     public Reservation create(ReservationDTO reservationDTO) {
@@ -78,14 +90,22 @@ public class ReservationService {
                 .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas."));
 
         // verifier si l'utilisateur à déjà reserver ce voyage
-        Reservation reservationOpt = reservationRepository.findByIdUserAndIdVoyage(reservationDTO.getIdUser(), reservationDTO.getIdVoyage()).orElse(null);
-        if (reservationOpt != null){
+        Reservation reservationOpt = reservationRepository
+                .findByIdUserAndIdVoyage(reservationDTO.getIdUser(), reservationDTO.getIdVoyage()).orElse(null);
+        if (reservationOpt != null) {
             throw new RuntimeException("Cet utilisateur à déjà une réservation pour ce voyage.");
         }
 
-        // Vérifier que la date actuelle est inférieure à la date limite de reservation du voyage
+        // Verifier que la liste des passagers est non vide
+        if (reservationDTO.getPassagerDTO().length < 0) {
+            throw new RuntimeException("La liste des passagers est vide.");
+        }
+
+        // Vérifier que la date actuelle est inférieure à la date limite de reservation
+        // du voyage
         if (now.isAfter(voyage.getDateLimiteReservation())) {
-            throw new RuntimeException("La date de réservation doit être antérieure à la date limite de reservation du voyage.");
+            throw new RuntimeException(
+                    "La date de réservation doit être antérieure à la date limite de reservation du voyage.");
         }
 
         // Vérifier qu'il y a suffisamment de places reservable
@@ -95,7 +115,6 @@ public class ReservationService {
 
         LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
         ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
-
 
         // Créer la réservation
         Reservation reservation = new Reservation();
@@ -107,6 +126,20 @@ public class ReservationService {
         reservation.setNbrPassager(reservationDTO.getNbrPassager());
         reservation.setMontantPaye(reservationDTO.getMontantPaye());
         reservation.setPrixTotal(reservationDTO.getNbrPassager() * classVoyage.getPrix());
+
+        // On cree le passager
+        for (int i = 0; i < reservationDTO.getPassagerDTO().length; i++) {
+            Passager passager = new Passager();
+            passager.setIdPassager(UUID.randomUUID());
+            passager.setNumeroPieceIdentific(reservationDTO.getPassagerDTO()[i].getNumeroPieceIdentific());
+            passager.setNom(reservationDTO.getPassagerDTO()[i].getNom());
+            passager.setGenre(reservationDTO.getPassagerDTO()[i].getGenre());
+            passager.setAge(reservationDTO.getPassagerDTO()[i].getAge());
+            passager.setNbrBaggage(reservationDTO.getPassagerDTO()[i].getNbrBaggage());
+            passager.setPlaceChoisis(reservationDTO.getPassagerDTO()[i].getPlaceChoisis());
+            passager.setIdReservation(reservation.getIdReservation());
+            passagerRepository.save(passager);
+        }
 
         // Mettre à jour le nombre de places réservées et réservables
         voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() + reservation.getNbrPassager());
@@ -142,14 +175,15 @@ public class ReservationService {
 
         // On récupère l'historique
         Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
-                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas")
-        );
+                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas"));
 
         Voyage voyage = voyageRepository.findById(reservation.getIdVoyage()).orElse(null);
 
-        // Vérifier que la date actuelle est inférieure à la date limite de confirmation du voyage
+        // Vérifier que la date actuelle est inférieure à la date limite de confirmation
+        // du voyage
         if (now.isAfter(voyage.getDateLimiteConfirmation())) {
-            throw new RuntimeException("La date de confirmation doit être antérieure à la date limite de confirmation du voyage.");
+            throw new RuntimeException(
+                    "La date de confirmation doit être antérieure à la date limite de confirmation du voyage.");
         }
 
         // Vérifier qu'il y a suffisamment de places reservable
@@ -157,9 +191,8 @@ public class ReservationService {
             throw new RuntimeException("Il n'y a pas suffisamment de places libre pour confirmation");
         }
 
-        //verifier que le prix total a été payé
-        if (reservation.getMontantPaye() + reservationConfirmDTO.getMontantPaye() < reservation.getPrixTotal())
-        {
+        // verifier que le prix total a été payé
+        if (reservation.getMontantPaye() + reservationConfirmDTO.getMontantPaye() < reservation.getPrixTotal()) {
             throw new RuntimeException("Le prix total pour le voyage n'est pas complet");
         }
 
@@ -187,18 +220,16 @@ public class ReservationService {
 
         // On récupère l'historique
         Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
-                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas")
-        );
+                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas"));
 
         Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
         // On crée l'historique
         historique.setDateAnnulation(now);
-        if (reservation.getStatutReservation() == StatutReservation.RESERVER){
+        if (reservation.getStatutReservation() == StatutReservation.RESERVER) {
             historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_RESERVATION);
             voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
             voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
-        }
-        else if (reservation.getStatutReservation() == StatutReservation.CONFIRMER){
+        } else if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
             historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION);
             voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
             voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
@@ -210,30 +241,32 @@ public class ReservationService {
         historique.setTauxAnnulation(0);
         historique.setOrigineAnnulation(reservationCancelDTO.getOrigineAnnulation());
 
-
         // On cree le coupon si l'annulation c'est faite après la confirmation
         /*
-        if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
-            Coupon coupon = new Coupon();
-            coupon.setIdCoupon(UUID.randomUUID());
-            coupon.setDateDebut(LocalDateTime.now());
-            coupon.setDateFin(LocalDateTime.now().plusYears(1));
-            coupon.setStatusCoupon(StatutCoupon.VALIDE);
-            coupon.setIdHistorique(historique.getIdHistorique());
-            // Si c'est l'agence qui annule alors...
-            if (reservationCancelDTO.getStatusHistorique() == StatutHistorique.ANNULER_PAR_AGENCE_APRES_CONFIRMATION) {
-                coupon.setValeur(reservationCancelDTO.getCompensation());
-                historique.setCompensation(reservationCancelDTO.getCompensation());
-            } else {
-                coupon.setValeur(reservation.getPrixTotal() * reservationCancelDTO.getTauxAnnulation());
-                historique.setTauxAnnulation(reservationCancelDTO.getTauxAnnulation());
-                // On augmente le nombre de reservation restante
-                voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() - reservation.getNbrPassager());
-            }
-            // On enregistre le coupon
-            this.couponRepository.save(coupon);
-        }
-        */
+         * if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
+         * Coupon coupon = new Coupon();
+         * coupon.setIdCoupon(UUID.randomUUID());
+         * coupon.setDateDebut(LocalDateTime.now());
+         * coupon.setDateFin(LocalDateTime.now().plusYears(1));
+         * coupon.setStatusCoupon(StatutCoupon.VALIDE);
+         * coupon.setIdHistorique(historique.getIdHistorique());
+         * // Si c'est l'agence qui annule alors...
+         * if (reservationCancelDTO.getStatusHistorique() ==
+         * StatutHistorique.ANNULER_PAR_AGENCE_APRES_CONFIRMATION) {
+         * coupon.setValeur(reservationCancelDTO.getCompensation());
+         * historique.setCompensation(reservationCancelDTO.getCompensation());
+         * } else {
+         * coupon.setValeur(reservation.getPrixTotal() *
+         * reservationCancelDTO.getTauxAnnulation());
+         * historique.setTauxAnnulation(reservationCancelDTO.getTauxAnnulation());
+         * // On augmente le nombre de reservation restante
+         * voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() -
+         * reservation.getNbrPassager());
+         * }
+         * // On enregistre le coupon
+         * this.couponRepository.save(coupon);
+         * }
+         */
 
         this.historiqueRepository.save(historique);
 
