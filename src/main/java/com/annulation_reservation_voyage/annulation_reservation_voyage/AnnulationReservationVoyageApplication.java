@@ -14,6 +14,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 
 @SpringBootApplication
+@EnableCassandraRepositories
 public class AnnulationReservationVoyageApplication {
 
 	public static void main(String[] args) {

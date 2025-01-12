@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Setter
@@ -18,19 +16,19 @@ public class VoyageDetailsDTO {
     private UUID idVoyage;
     private String titre;
     private String description;
-    private LocalDate dateDepartPrev;
+    private Date dateDepartPrev;
     private String lieuDepart;
-    private LocalDate dateDepartEffectif;
-    private LocalDate dateArriveEffectif;
+    private Date dateDepartEffectif;
+    private Date dateArriveEffectif;
     private String lieuArrive;
-    private LocalTime heureDepartEffectif;
+    private Date heureDepartEffectif;
     private String dureeVoyage;
-    private LocalTime heureArrive;
+    private Date heureArrive;
     private int nbrPlaceReservable;
     private int nbrPlaceRestante;
-    private LocalDate datePublication;
-    private LocalDateTime dateLimiteReservation;
-    private LocalDateTime dateLimiteConfirmation;
+    private Date datePublication;
+    private Date dateLimiteReservation;
+    private Date dateLimiteConfirmation;
     private String statusVoyage;
     private String smallImage;
     private String bigImage;

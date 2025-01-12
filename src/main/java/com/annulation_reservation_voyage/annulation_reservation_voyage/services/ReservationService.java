@@ -78,6 +78,9 @@ public class ReservationService {
         ReservationDetailDTO reservationDetailDTO = new ReservationDetailDTO(reservation);
         // On charge les passager dans la liste
         reservationDetailDTO.setPassager(passagerRepository.findAllByIdReservation(id));
+        // On charge le voyage
+        reservationDetailDTO.setVoyage(voyageRepository.findById(reservation.getIdVoyage())
+                .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas.")));
         return reservationDetailDTO;
     }
 

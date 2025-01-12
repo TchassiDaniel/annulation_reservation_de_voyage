@@ -2,6 +2,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.BilletDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.PassagerDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Passager;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
@@ -58,13 +59,13 @@ public class PassagerService {
                 .orElseThrow(() -> new EntityNotFoundException("Le passager dont l'id est spécifique n'existe pas."));
 
         // Récupérer la réservation du passager
-        Reservation reservation = reservationService.findById(passager.getIdReservation());
+        ReservationDetailDTO reservation = reservationService.findById(passager.getIdReservation());
         if (reservation == null) {
             throw new EntityNotFoundException("La réservation dont l'id est spécifique n'existe pas.");
         }
 
         // Récupérer les détails du voyage associés à la réservation
-        VoyageDetailsDTO voyage = voyageService.findById(reservation.getIdVoyage());
+        VoyageDetailsDTO voyage = voyageService.findById(reservation.getReservation().getIdVoyage());
         if (voyage == null) {
             throw new EntityNotFoundException("Le voyage dont l'id est spécifique n'existe pas.");
         }
