@@ -41,6 +41,23 @@ public class ReservationController {
         return new ResponseEntity<>(reservations, HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtenir toutes les réservations d'un utilisateur", description = "Récupère la liste de toutes les réservations d'un utilisateur.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Reservation.class)))),
+            @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @GetMapping("/{idUser}")
+    public ResponseEntity<?> getAllReservationsForUser(@PathVariable UUID idUser, @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int size) {
+        try{
+            Page<Reservation> reservations = reservationService.findAllForUser(idUser, page, size);
+            return new ResponseEntity<>(reservations, HttpStatus.OK);
+        }catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @Operation(summary = "Obtenir une réservation par ID", description = "Récupère une réservation spécifique par ID.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Réservation trouvée", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Reservation.class))),

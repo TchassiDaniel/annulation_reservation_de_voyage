@@ -3,6 +3,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
@@ -33,21 +34,34 @@ public class ReservationService {
     private final VoyageRepository voyageRepository;
     private final LigneVoyageRepository ligneVoyageRepository;
     private final ClassVoyageRepository classVoyageRepository;
+    private final UserRepository userRepository;
 
     public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository, CouponRepository couponRepository
-    , VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository){
+    , VoyageRepository voyageRepository, LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository, UserRepository userRepository){
         this.couponRepository = couponRepository;
         this.reservationRepository = reservationRepository;
         this.historiqueRepository = historiqueRepository;
         this.voyageRepository = voyageRepository;
         this.ligneVoyageRepository = ligneVoyageRepository;
         this.classVoyageRepository = classVoyageRepository;
+        this.userRepository = userRepository;
     }
 
     public Page<Reservation> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Slice<Reservation> slice = reservationRepository.findAll(pageable);
         long total = reservationRepository.count();
+        return PaginationUtils.SliceToPage(slice, total);
+    }
+
+    public Page<Reservation> findAllForUser(UUID idUser, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        User user = userRepository.findById(idUser).orElseThrow(() -> new RuntimeException("L'utilisateur dont l'id est spécifié n'existe pas."));
+        if (user.getRole() == RoleType.AGENCE_VOYAGE){
+            throw new RuntimeException("L'utilisateur dont l'id est spécifié est une agence de voyage et ne peut donc pas réservé");
+        }
+        Slice<Reservation> slice = reservationRepository.findByIdUser(idUser, pageable);
+        long total = slice.getContent().size();
         return PaginationUtils.SliceToPage(slice, total);
     }
 
@@ -62,6 +76,12 @@ public class ReservationService {
         // Vérifier si le voyage existe
         Voyage voyage = voyageRepository.findById(reservationDTO.getIdVoyage())
                 .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas."));
+
+        // verifier si l'utilisateur à déjà reserver ce voyage
+        Reservation reservationOpt = reservationRepository.findByIdUserAndIdVoyage(reservationDTO.getIdUser(), reservationDTO.getIdVoyage()).orElse(null);
+        if (reservationOpt != null){
+            throw new RuntimeException("Cet utilisateur à déjà une réservation pour ce voyage.");
+        }
 
         // Vérifier que la date actuelle est inférieure à la date limite de reservation du voyage
         if (now.isAfter(voyage.getDateLimiteReservation())) {
