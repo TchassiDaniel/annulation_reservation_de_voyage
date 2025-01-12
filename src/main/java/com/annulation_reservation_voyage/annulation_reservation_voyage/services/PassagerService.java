@@ -5,8 +5,6 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Passa
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Passager;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.PassagerRepository;
 
 import lombok.AllArgsConstructor;

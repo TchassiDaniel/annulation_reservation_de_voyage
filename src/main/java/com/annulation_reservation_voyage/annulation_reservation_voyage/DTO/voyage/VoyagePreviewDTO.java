@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage;
 
+import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class VoyagePreviewDTO {
     private String lieuArrive;
     private int nbrPlaceRestante;
     private int nbrPlaceReservable;
-    private String dureeVoyage;
+    private Date dureeVoyage;
     private String nomClasseVoyage;
     private double prix;
     private String smallImage;

@@ -2,8 +2,6 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Rese
 
 import java.util.UUID;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

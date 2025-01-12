@@ -17,6 +17,9 @@ public class Vehicule {
     private UUID idVehicule;
     private String nom;
     private String modele;
+    private String description;
     private int nbrPlaces;
+    private String PlaqueMatricule;
+    private String lienPhoto;
     private UUID idAgenceVoyage;
 }

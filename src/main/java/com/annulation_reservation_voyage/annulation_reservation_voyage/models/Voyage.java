@@ -1,8 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -21,22 +19,22 @@ public class Voyage {
   private UUID idVoyage;
   private String titre;
   private String description;
-  private LocalDate dateDepartPrev;
+  private Date dateDepartPrev;
   private String lieuDepart;
-  private LocalDate dateDepartEffectif;
-  private LocalDate dateArriveEffectif;
+  private Date dateDepartEffectif;
+  private Date dateArriveEffectif;
   private String lieuArrive;
-  private LocalTime heureDepartEffectif;
+  private Date heureDepartEffectif;
   private String pointDeDepart;
-  private String dureeVoyage;
-  private LocalTime heureArrive;
+  private Date dureeVoyage;
+  private Date heureArrive;
   private int nbrPlaceReservable;// Nbre de place qu'on peut encore reserve
   private int nbrPlaceReserve;// Nbre de place qu'on a reserve
   private int nbrPlaceConfirm;// Nbre de place qu'on a confirmer
   private int nbrPlaceRestante;//
-  private LocalDate datePublication;
-  private LocalDateTime dateLimiteReservation;
-  private LocalDateTime dateLimiteConfirmation;
+  private Date datePublication;
+  private Date dateLimiteReservation;
+  private Date dateLimiteConfirmation;
   private String statusVoyage;
   private String smallImage;
   private String bigImage;

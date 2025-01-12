@@ -1,6 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class Reservation {
   @PrimaryKey
   private UUID idReservation;
-  private LocalDateTime dateReservation;
-  private LocalDateTime dateConfirmation;
+  private Date dateReservation;
+  private Date dateConfirmation;
   private int nbrPassager;
   private double montantPaye;
   private double prixTotal;
@@ -28,4 +28,3 @@ public class Reservation {
   private UUID idUser;
   private UUID idVoyage;
 }
-

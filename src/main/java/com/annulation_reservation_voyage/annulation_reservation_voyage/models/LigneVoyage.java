@@ -1,7 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
 import java.util.UUID;
-import java.time.LocalDateTime;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;

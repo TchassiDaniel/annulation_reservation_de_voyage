@@ -1,6 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -20,9 +20,9 @@ public class Historique {
   @PrimaryKey
   private UUID idHistorique;
   private StatutHistorique statusHistorique;
-  private LocalDateTime dateReservation;
-  private LocalDateTime dateConfirmation;
-  private LocalDateTime dateAnnulation;
+  private Date dateReservation;
+  private Date dateConfirmation;
+  private Date dateAnnulation;
   private String causeAnnulation;
   private String origineAnnulation;
   private double tauxAnnulation;

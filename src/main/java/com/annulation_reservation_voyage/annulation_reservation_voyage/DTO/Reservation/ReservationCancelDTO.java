@@ -1,9 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
-
-import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

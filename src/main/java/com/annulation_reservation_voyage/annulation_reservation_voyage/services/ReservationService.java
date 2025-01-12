@@ -5,14 +5,12 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reser
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.*;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.*;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
-import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,10 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
-import java.util.List;
-import java.util.Optional;
+import java.util.Date;
+
 import java.util.UUID;
 
 @Service
@@ -86,7 +82,7 @@ public class ReservationService {
 
     public Reservation create(ReservationDTO reservationDTO) {
         // Récupérer la date et l'heure actuelles
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
 
         // Vérifier si le voyage existe
         Voyage voyage = voyageRepository.findById(reservationDTO.getIdVoyage())
@@ -106,7 +102,7 @@ public class ReservationService {
 
         // Vérifier que la date actuelle est inférieure à la date limite de reservation
         // du voyage
-        if (now.isAfter(voyage.getDateLimiteReservation())) {
+        if (now.after(voyage.getDateLimiteReservation())) {
             throw new RuntimeException(
                     "La date de réservation doit être antérieure à la date limite de reservation du voyage.");
         }
@@ -170,7 +166,7 @@ public class ReservationService {
 
     public Reservation confirmerReservation(ReservationConfirmDTO reservationConfirmDTO) {
         // Récupérer la date et l'heure actuelles
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
 
         // On update la reservation
         Reservation reservation = this.reservationRepository.findById(reservationConfirmDTO.getIdReservation())
@@ -184,7 +180,7 @@ public class ReservationService {
 
         // Vérifier que la date actuelle est inférieure à la date limite de confirmation
         // du voyage
-        if (now.isAfter(voyage.getDateLimiteConfirmation())) {
+        if (now.after(voyage.getDateLimiteConfirmation())) {
             throw new RuntimeException(
                     "La date de confirmation doit être antérieure à la date limite de confirmation du voyage.");
         }
@@ -215,7 +211,7 @@ public class ReservationService {
 
     public void annulerReservation(ReservationCancelDTO reservationCancelDTO) {
         // Récupérer la date et l'heure actuelles
-        LocalDateTime now = LocalDateTime.now();
+        Date now = new Date();
 
         // On update la reservation
         Reservation reservation = this.reservationRepository.findById(reservationCancelDTO.getIdReservation())

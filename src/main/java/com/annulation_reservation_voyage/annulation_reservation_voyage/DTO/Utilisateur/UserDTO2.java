@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

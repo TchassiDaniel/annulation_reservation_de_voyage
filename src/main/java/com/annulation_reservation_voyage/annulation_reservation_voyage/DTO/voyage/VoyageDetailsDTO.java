@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.Date;
 import java.util.UUID;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vehicule;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class VoyageDetailsDTO {
     private Date dateArriveEffectif;
     private String lieuArrive;
     private Date heureDepartEffectif;
-    private String dureeVoyage;
+    private Date dureeVoyage;
     private Date heureArrive;
     private int nbrPlaceReservable;
     private int nbrPlaceRestante;
@@ -36,4 +38,5 @@ public class VoyageDetailsDTO {
     private double prix;
     private String nomAgence;
     private String pointDeDepart;
+    private Vehicule vehicule;
 }

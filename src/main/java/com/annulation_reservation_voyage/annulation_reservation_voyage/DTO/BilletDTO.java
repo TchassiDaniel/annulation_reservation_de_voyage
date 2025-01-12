@@ -1,9 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.UUID;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,14 +14,14 @@ import lombok.Setter;
 public class BilletDTO {
   private String titre;
   private String description;
-  private LocalDate dateDepartPrev;
+  private Date dateDepartPrev;
   private String lieuDepart;
-  private LocalDate dateDepartEffectif;
-  private LocalDate dateArriveEffectif;
+  private Date dateDepartEffectif;
+  private Date dateArriveEffectif;
   private String lieuArrive;
-  private LocalTime heureDepartEffectif;
-  private String dureeVoyage;
-  private LocalTime heureArrive;
+  private Date heureDepartEffectif;
+  private Date dureeVoyage;
+  private Date heureArrive;
   private String statusVoyage;
   private String smallImage;
   private String bigImage;

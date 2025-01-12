@@ -1,6 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class PolitiqueAnnulation {
   @PrimaryKey
   private UUID idPolitique;
-  private LocalDateTime dateDebut;
-  private LocalDateTime dateFin;
+  private Date dateDebut;
+  private Date dateFin;
   private double taux;
 }

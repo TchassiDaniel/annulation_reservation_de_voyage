@@ -1,6 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.data.cassandra.core.mapping.PrimaryKey;
@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class Coupon {
   @PrimaryKey
   private UUID idCoupon;
-  private LocalDateTime dateDebut;
-  private LocalDateTime dateFin;
+  private Date dateDebut;
+  private Date dateFin;
   private StatutCoupon statusCoupon;
   private double valeur;
   private UUID idHistorique;
