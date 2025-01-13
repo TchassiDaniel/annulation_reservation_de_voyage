@@ -12,6 +12,7 @@ import {MdAirlineSeatReclineNormal} from "react-icons/md";
 import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton";
 import {useAuthentication} from "@/Utils/Provider";
 import ReservationModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservationModal";
+import ReservationModale from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservation";
 
 
 
@@ -356,7 +357,7 @@ export default function TripDetails({params}) {
             </div>
 
             <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
-            <ReservationModal isOpen={canOpenReservationModal} onClose={()=>{setCanOpenReservationModal(false)}} tripDetails={tripDetails}/>
+            <ReservationModale isOpen={canOpenReservationModal} onClose={()=>{setCanOpenReservationModal(false)}} tripDetails={tripDetails}/>
         </div>
     );
 }

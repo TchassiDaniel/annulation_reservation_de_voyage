@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import { Search, Clock, MapPin, Calendar, Users, Filter, ArrowRight, Star } from 'lucide-react';
 import Image from "next/image";
-import bus from "../../../../../public/bus1.jpeg";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {useRouter} from "next/navigation";
@@ -10,15 +9,11 @@ import axiosInstance from "@/Utils/AxiosInstance";
 import {ErrorModal} from "@/components/Modals/ErrorModal";
 import AvailableTripsLoadingSkeleton from "@/components/Loadings/Available-Trips-Skeleton";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
+import ErrorHandler from "@/components/ErrorHandler/ErrorHandler";
 
 
 export default function AvailableTrips() {
-    const [activeFilter, setActiveFilter] = useState('all');
-
     const router = useRouter();
-
-
-
     const trips =
         {
             id: 1,
@@ -37,15 +32,18 @@ export default function AvailableTrips() {
         }
 
     const [availableTrips, setAvailableTrips] = useState([]);
-    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] =useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
+    const [activeFilter, setActiveFilter] = useState('all');
+    const [isSearch, setIsSearch] = useState(false);
+
 
 
 
     useEffect(() => {
         fetchAvailableTrips();
+       // console.log("error status", errorStatus);
     }, []);
 
 
@@ -58,11 +56,20 @@ export default function AvailableTrips() {
             const response = await axiosInstance.get("/voyage");
             if (response.status === 200)
             {
+                console.log(response.data);
                 setIsLoading(false);
-                setCanRenderPaginationContent(true);
-                setAvailableTrips(response.data);
-                setCanOpenErrorModal(false);
-                setErrorMessage("");
+                setAvailableTrips(response.data.content);
+                if (response.data.empty === true)
+                {
+                    setIsSearch(false);
+                    setCanRenderPaginationContent(false);
+                }
+                else
+                {
+                    setCanRenderPaginationContent(true);
+                }
+
+                setError(null);
             }
         }
         catch (error)
@@ -70,9 +77,8 @@ export default function AvailableTrips() {
             setIsLoading(false);
             setCanRenderPaginationContent(false);
             console.log(error);
-            setAvailableTrips({});
-            setErrorMessage("Somethings went wrong, please try again later !");
-            setCanOpenErrorModal(true);
+            setAvailableTrips(null);
+            setError(error);
         }
     }
 
@@ -143,7 +149,7 @@ export default function AvailableTrips() {
 
                 {/* Grille des voyages */}
                 <div>
-                    {isLoading ? (<AvailableTripsLoadingSkeleton/>) :
+                    {isLoading ? (<AvailableTripsLoadingSkeleton/>) : !error &&
                         (
                             <div className="flex flex-col">
                                 <div className="grid grid-cols-3 gap-6">
@@ -253,8 +259,8 @@ export default function AvailableTrips() {
                 </div>
             </div>
 
-            {/*Modal Content*/}
-            <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={() => {setCanOpenErrorModal(false)}} message={errorMessage}/>
+            {/* Error Management */}
+            <ErrorHandler error={error} data={availableTrips} isSearch={isSearch}/>
         </div>
     );
 }
