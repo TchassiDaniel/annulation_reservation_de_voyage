@@ -1,9 +1,5 @@
 'use client';
-
-import { Calendar, Search } from 'lucide-react';
 import PropTypes from "prop-types";
-import noTrip from "../../../public/noTripFound.svg"
-import Image from "next/image";
 import NotFoundSVG from "@/components/NotFoundSVG";
 
 export default function NoTripsPage({isSearch}) {

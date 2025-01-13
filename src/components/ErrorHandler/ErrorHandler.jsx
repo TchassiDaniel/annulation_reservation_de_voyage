@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 export default function ErrorHandler({ error, data, isSearch }) {
 
     ErrorHandler.propTypes = {
-        error: PropTypes.object.isRequired,
+        error: PropTypes.object,
         data: PropTypes.object,
         isSearch: PropTypes.bool,
     }

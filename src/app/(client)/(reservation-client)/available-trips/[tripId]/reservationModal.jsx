@@ -4,10 +4,10 @@ import React, {useEffect, useState} from 'react';
 import {MapPin, X} from 'lucide-react';
 import {FaHouse} from "react-icons/fa6";
 import {FaCalendar, FaChair, FaClock, FaDollarSign, FaMoneyBill, FaUsers} from "react-icons/fa";
-import Bus70SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus70SeatsDisposition";
-import Bus75SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus75SeatsDisposition";
-import Bus80SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus80SeatsDisposition";
-import Bus56SeatsDisposition from "@/app/(client)/(reservation-client)/available-trips/[tripId]/Bus56SeatsDisposition";
+import Bus70SeatsDisposition from "@/components/SeatsDisposition/Bus70SeatsDisposition";
+import Bus75SeatsDisposition from "@/components/SeatsDisposition/Bus75SeatsDisposition";
+import Bus80SeatsDisposition from "@/components/SeatsDisposition/Bus80SeatsDisposition";
+import Bus56SeatsDisposition from "@/components/SeatsDisposition/Bus56SeatsDisposition";
 
 
 

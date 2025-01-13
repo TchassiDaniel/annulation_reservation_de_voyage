@@ -1,12 +1,11 @@
 'use client';
-import React, {useEffect, useState} from 'react';
-import { Search, Clock, MapPin, Calendar, Users, Filter, ArrowRight, Star } from 'lucide-react';
+import {useEffect, useState} from 'react';
+import { Search, Clock, MapPin, Calendar, Filter, ArrowRight} from 'lucide-react';
 import Image from "next/image";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {useRouter} from "next/navigation";
 import axiosInstance from "@/Utils/AxiosInstance";
-import {ErrorModal} from "@/components/Modals/ErrorModal";
 import AvailableTripsLoadingSkeleton from "@/components/Loadings/Available-Trips-Skeleton";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler";
@@ -43,7 +42,6 @@ export default function AvailableTrips() {
 
     useEffect(() => {
         fetchAvailableTrips();
-       // console.log("error status", errorStatus);
     }, []);
 
 
