@@ -43,7 +43,12 @@ public class DataSeeder implements CommandLineRunner {
   private final List<String> villesCameroun = Arrays.asList(
       "Yaoundé", "Douala", "Maroua", "Bertoua", "Baffoussam",
       "MBouda", "Bangangté", "Ngaoudéré");
-
+  // Points de départ communs au Cameroun
+  private final List<String> pointsDepart = Arrays.asList(
+      "Gare routière principale", "Station Total", "Carrefour MEEC",
+      "Rond-point Express", "Entrée de la ville", "Carrefour Bancaire",
+      "Station Mobile", "Marché central", "Carrefour Sise",
+      "Monument de la Réunification", "Place des fêtes");
   // Liste des agences de voyage
   private final List<String> agencesVoyage = Arrays.asList(
       "Charter Express", "Touristique", "General", "Vatican Express");
@@ -55,7 +60,12 @@ public class DataSeeder implements CommandLineRunner {
   private final List<String> busImages = Arrays.asList(
       "https://st.depositphotos.com/1019192/4338/i/950/depositphotos_43389909-stock-photo-tourist-bus-traveling-on-road.jpg",
       "https://c.wallhere.com/photos/d8/b5/travel_sunset_sea_italy_public_night_landscape_dawn-751857.jpg!d",
-      "https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg");
+      "https://bougna.net/wp-content/uploads/2018/08/Bus-de-transport-de-Finex-Voyages-Mini-696x461.jpg",
+      "https://media.istockphoto.com/id/2171315771/photo/car-for-traveling-with-a-mountain-road.jpg?s=1024x1024&w=is&k=20&c=TUgprCSRnVZD7eTGTilieHJq6fu1zK7cDiqOUY7jk5I=",
+      "https://media.istockphoto.com/id/2171315718/photo/car-for-traveling-with-a-mountain-road.jpg?s=1024x1024&w=is&k=20&c=y5XqIYLzxfb4kDTZpQgElyeiIGL34YzJrvHxbgp4Ud0=",
+      "https://media.istockphoto.com/id/1161674685/photo/two-white-buses-traveling-on-the-asphalt-road-in-rural-landscape-at-sunset-with-dramatic.jpg?s=1024x1024&w=is&k=20&c=MfOEF5o2as5hiKtaVJUO94Xqn3JoU9rY-MgGjLe3pz0=",
+      "https://media.istockphoto.com/id/157526603/photo/white-bus-crossing-the-alpes.jpg?s=1024x1024&w=is&k=20&c=AOCRwt95N_M2HgHzSAXkdYCqjca4-p2H3XYrGFgYkDU=",
+      "https://media.istockphoto.com/id/1095141322/photo/bus-traveling-on-the-asphalt-road-in-rural-landscape-at-sunset.jpg?s=1024x1024&w=is&k=20&c=C0Cn3oPbEfhe9cf-FDyw7VaLqavkcbdCEsPJ7Q3alPI=");
 
   @Override
   public void run(String... args) {
@@ -126,25 +136,49 @@ public class DataSeeder implements CommandLineRunner {
   private List<Voyage> createVoyages() {
     List<Voyage> voyages = new ArrayList<>();
 
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 20; i++) {
       Voyage voyage = new Voyage();
       voyage.setIdVoyage(UUID.randomUUID());
 
+      // Sélection des villes
       String villeDepart = villesCameroun.get(faker.random().nextInt(villesCameroun.size()));
       String villeArrivee;
       do {
         villeArrivee = villesCameroun.get(faker.random().nextInt(villesCameroun.size()));
       } while (villeDepart.equals(villeArrivee));
 
+      // Configuration du voyage
       voyage.setTitre(villeDepart + " - " + villeArrivee);
-      voyage.setDescription("Voyage confortable de " + villeDepart + " à " + villeArrivee);
+      voyage.setDescription("Voyage confortable en bus climatisé de " + villeDepart +
+          " à " + villeArrivee + ". Wifi à bord. Arrêts prévus pour votre confort.");
 
-      LocalDateTime dateDepart = LocalDateTime.now().plusDays(faker.random().nextInt(1, 30));
-      voyage.setDateDepartPrev(Date.from(dateDepart.atZone(ZoneId.systemDefault()).toInstant()));
+      // Dates et heures
+      LocalDateTime now = LocalDateTime.now();
+      LocalDateTime depart = now.plusDays(faker.random().nextInt(1, 30))
+          .withHour(faker.random().nextInt(5, 23))
+          .withMinute(faker.random().nextInt(0, 59));
+
+      voyage.setDateDepartPrev(Date.from(depart.atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDateDepartEffectif(Date.from(depart.plusMinutes(faker.random().nextInt(0, 30))
+          .atZone(ZoneId.systemDefault()).toInstant()));
+
+      // Calcul de la durée du voyage (entre 3 et 8 heures)
+      int dureeEnHeures = faker.random().nextInt(3, 8);
+      LocalDateTime arrivee = depart.plusHours(dureeEnHeures);
+
+      voyage.setDateArriveEffectif(Date.from(arrivee.atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDureeVoyage(Date.from(arrivee.atZone(ZoneId.systemDefault()).toInstant()));
+
+      // Heures de départ et d'arrivée
+      voyage.setHeureDepartEffectif(Date.from(depart.atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setHeureArrive(Date.from(arrivee.atZone(ZoneId.systemDefault()).toInstant()));
+
+      // Lieux
       voyage.setLieuDepart(villeDepart);
       voyage.setLieuArrive(villeArrivee);
+      voyage.setPointDeDepart(pointsDepart.get(faker.random().nextInt(pointsDepart.size())));
 
-      // Initialiser les places
+      // Gestion des places
       int totalPlaces = nbrePlaces.get(faker.random().nextInt(nbrePlaces.size()));
       voyage.setNbrPlaceReservable(totalPlaces);
       voyage.setNbrPlaceReserve(0);
@@ -152,11 +186,16 @@ public class DataSeeder implements CommandLineRunner {
       voyage.setNbrPlaceRestante(totalPlaces);
 
       // Dates limites
-      voyage.setDatePublication(new Date());
-      voyage.setDateLimiteReservation(Date.from(dateDepart.minusDays(1).atZone(ZoneId.systemDefault()).toInstant()));
-      voyage.setDateLimiteConfirmation(Date.from(dateDepart.minusHours(2).atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDatePublication(Date.from(now.atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDateLimiteReservation(Date.from(depart.minusDays(1)
+          .atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDateLimiteConfirmation(Date.from(depart.minusHours(2)
+          .atZone(ZoneId.systemDefault()).toInstant()));
 
-      voyage.setStatusVoyage("PLANIFIÉ");
+      // Status et images
+      String[] statuts = { "PLANIFIÉ", "EN_ATTENTE", "CONFIRMÉ", "EN_COURS" };
+      voyage.setStatusVoyage(statuts[faker.random().nextInt(statuts.length)]);
+
       voyage.setSmallImage(busImages.get(faker.random().nextInt(busImages.size())));
       voyage.setBigImage(busImages.get(faker.random().nextInt(busImages.size())));
 

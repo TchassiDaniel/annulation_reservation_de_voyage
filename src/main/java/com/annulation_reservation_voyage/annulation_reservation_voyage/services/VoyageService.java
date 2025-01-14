@@ -77,7 +77,7 @@ public class VoyageService {
 
         Voyage voyage = voyageRepository.findById(id).orElse(null);
         if (voyage != null) {
-            LigneVoyage ligneVoyage = ligneVoyageRepository.findById(id).orElse(null);
+            LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
             ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
             User agenceVoyage = userRepository.findById(ligneVoyage.getIdAgenceVoyage()).orElse(null);
             Vehicule vehicule = this.vehiculeService.findById(ligneVoyage.getIdVehicule());
