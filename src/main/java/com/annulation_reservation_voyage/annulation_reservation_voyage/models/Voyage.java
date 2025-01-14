@@ -38,5 +38,4 @@ public class Voyage {
   private String statusVoyage;
   private String smallImage;
   private String bigImage;
-
 }
