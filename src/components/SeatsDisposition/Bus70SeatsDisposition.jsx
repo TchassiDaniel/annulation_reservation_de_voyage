@@ -1,7 +1,7 @@
 'use client';
 
 import PropTypes from "prop-types";
-import {useSeatManager} from "@/Utils/utilsMethods";
+import {useSeatManager} from "@/Utils/seatDispositionMethods";
 import {useEffect} from "react";
 
 export default  function Bus70SeatsDisposition ({setSeats}) {

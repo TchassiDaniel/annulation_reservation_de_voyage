@@ -1,9 +1,8 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FaArrowLeft, FaCalendarCheck, FaCalendarTimes, FaDollarSign, FaInfoCircle, FaLandmark, FaStar, FaTools} from 'react-icons/fa';
 import {Calendar, ChevronLeft, ChevronRight, Clock, Coffee, MapPin, Usb, Users, Wifi} from 'lucide-react';
-import Image from "next/image";
 import {useRouter} from "next/navigation";
 import axiosInstance from "@/Utils/AxiosInstance";
 import {ErrorModal} from "@/components/Modals/ErrorModal";
@@ -11,8 +10,8 @@ import busImage1 from "../../../../../../public/bus-image.jpeg";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
 import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton";
 import {useAuthentication} from "@/Utils/Provider";
-import ReservationModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservationModal";
 import ReservationModale from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservation";
+import {formatDateOnly, formatDurationSimple, formatFullDateTime, formatDateToTime} from "@/Utils/formatDateMethods";
 
 
 
@@ -22,6 +21,8 @@ export default function TripDetails({params}) {
     const {userData} = useAuthentication();
     const router = useRouter();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [direction, setDirection] = useState('right');
+    const interval = 5000;
     const [errorMessage, setErrorMessage] = useState("");
     const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,7 @@ export default function TripDetails({params}) {
             const response = await axiosInstance.get(`/voyage/${tripId}`);
             if (response.status === 200)
             {
-                //console.log(response?.data);
+                console.log(response?.data);
                 setIsLoading(false);
                 setTripDetail(response?.data);
                 setImages([response.data?.smallImage, response?.data.bigImage]);
@@ -92,30 +93,44 @@ export default function TripDetails({params}) {
     ];
 
 
-    function nextImage ()
-    {
+
+
+    const nextImage = useCallback(() => {
+        setDirection('right');
         setCurrentImageIndex((prev) => (prev + 1) % images.length);
-    }
+    }, [images.length]);
 
-
-    function prevImage ()
-    {
+    const previousImage = useCallback(() => {
+        setDirection('left');
         setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
-    }
+    }, [images.length]);
+
 
 
     useEffect(() => {
-        fetchTripDetails(tripId);
-        setInterval( () => {
-            setCurrentImageIndex((prev) => (prev + 1) % images.length);
-        },10000)
-    }, []);
+        if (tripId)
+        {
+            fetchTripDetails(tripId);
+        }
+    }, [tripId]);
+
+
+    const imageNext = useCallback(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, [images.length]);
+
+
+
+    useEffect(() => {
+        const timer = setInterval(nextImage, interval);
+        return () => clearInterval(timer);
+    }, [imageNext, interval]);
+
 
 
     if (isLoading) {
         return <TripDetailsSkeleton />
     }
-
     return (
         <div className="min-h-screen p-4">
 
@@ -126,19 +141,31 @@ export default function TripDetails({params}) {
                 </button>
             </div>
 
-            <div className="relative h-[470px] ">
-                <div className="absolute inset-0">
-                    <Image
-                        layout="fill"
-                        objectFit="cover"
-                        src={images[currentImageIndex]}
-                        alt="Trip view"
-                        className="w-full h-full object-cover opacity-80 rounded-lg transition-all duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg"/>
+            <div className="relative h-[470px] rounded-lg overflow-hidden ">
+                <div
+                    className="flex w-full h-full relative"
+                    style={{
+                        transform: `translateX(-${currentImageIndex * 100}%)`,
+                        transition: 'transform 0.5s ease-in-out'
+                    }}
+                >
+                    {images.map((image, index) => (
+                        <div
+                            key={index}
+                            className="min-w-full h-full flex-shrink-0"
+                        >
+                            <img
+                                src={image}
+                                alt={`Image ${index + 1}`}
+                                className="w-full h-full object-cover"
+                            />
+                            <div
+                                className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-b-lg"/>
+                        </div>
+                    ))}
                 </div>
                 <button
-                    onClick={prevImage}
+                    onClick={previousImage}
                     className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/80 p-2 rounded-full duration-300 transition-all"
                 >
                     <ChevronLeft className="h-6 w-6 text-white"/>
@@ -162,7 +189,7 @@ export default function TripDetails({params}) {
                 <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
                     <div className="max-w-7xl mx-auto">
                         <h1 className="text-5xl font-bold mb-4">{tripDetails.lieuDepart + " - " + tripDetails.lieuArrive}</h1>
-                        <p className="text-2xl opacity-90">Travel comfortably with General Voyages</p>
+                        <p className="text-2xl opacity-90">Travel comfortably with {tripDetails.nomAgence}</p>
                         <button  onClick={() => {setCanOpenReservationModal(true)}}
                             className="absolute bottom-8 right-8 bg-reservation-color text-white px-8 py-4 text-2xl hover:bg-white hover:text-reservation-color hover:border-4 hover:border-reservation-color rounded-lg font-bold shadow-lg transition-all duration-300 flex items-center gap-2 ">
                             <span>Book Now</span>
@@ -185,7 +212,7 @@ export default function TripDetails({params}) {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Travel Date</p>
-                                    <p className="font-medium">{ new Date(tripDetails.dateDepartPrev).toLocaleDateString('en-EN', {dateStyle: 'long'})}</p>
+                                    <p className="font-medium">{tripDetails?.dateDepartPrev ? formatDateOnly(tripDetails?.dateDepartPrev): "not specified"}</p>
                                 </div>
                             </div>
 
@@ -196,7 +223,7 @@ export default function TripDetails({params}) {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Departure Time</p>
-                                    <p className="font-semibold">{tripDetails?.heureDepartEffectif?.hour + ":" + tripDetails?.heureDepartEffectif?.minute}</p>
+                                    <p className="font-semibold">{ tripDetails?.heureDepartEffectif ? formatDateToTime(tripDetails?.heureDepartEffectif) : "not specified"}</p>
                                 </div>
                             </div>
 
@@ -207,7 +234,7 @@ export default function TripDetails({params}) {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Duration</p>
-                                    <p className=" font-semibold">{tripDetails.dureeVoyage}</p>
+                                    <p className=" font-semibold">{tripDetails.dureeVoyage ? formatDurationSimple(tripDetails?.dureeVoyage) : "not specified"}</p>
                                 </div>
                             </div>
 
@@ -291,7 +318,7 @@ export default function TripDetails({params}) {
                                     <div>
                                         <p className="text-sm text-gray-500 font-semibold">From</p>
                                         <div className="flex gap-1">
-                                            <p className="text-4xl font-bold text-reservation-color">7800</p>
+                                            <p className="text-4xl font-bold text-reservation-color">{tripDetails.prix}</p>
                                             <div className="flex gap-3">
                                                 <p className="text-md text-reservation-color mt-3 font-semibold"> FCFA</p>
                                                 <p className="text-xl text-gray-500 font-semibold mt-2">/person</p>
@@ -305,7 +332,7 @@ export default function TripDetails({params}) {
                                 <FaStar className="h-7 w-7 text-yellow-400"/>
                                 <div>
                                     <p className="text-sm text-gray-500">Trip Class</p>
-                                    <p className="font-medium">VIP</p>
+                                    <p className="font-medium">{tripDetails.nomClasseVoyage}</p>
                                 </div>
                             </div>
 
@@ -314,21 +341,21 @@ export default function TripDetails({params}) {
                                     <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Departure location</p>
-                                        <p className="font-medium">{tripDetails.lieuDepart}</p>
+                                        <p className="font-medium">{tripDetails.pointDeDepart}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <MapPin className="h-7 w-7 text-red-600"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival location</p>
-                                        <p className="font-medium">{tripDetails.lieuArrive}</p>
+                                        <p className="font-medium">{tripDetails.pointArrivee}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Clock className="h-7 w-7 text-reservation-color"/>
                                     <div>
                                         <p className="text-sm text-gray-500">Arrival Time</p>
-                                        <p className="font-medium">{tripDetails?.heureArrive?.hour + ":" + tripDetails?.heureArrive?.minute}</p>
+                                        <p className="font-medium">{ tripDetails?.heureArrive ? formatDateToTime(tripDetails?.heureArrive): "not specified"}</p>
                                     </div>
                                 </div>
 
@@ -338,7 +365,7 @@ export default function TripDetails({params}) {
                                     <div>
 
                                         <p className="text-sm text-gray-500">Validity of the offer</p>
-                                        <p className="font-medium">{ tripDetails.dateLimiteReservation ? new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true,}).format(new Date(tripDetails?.dateLimiteReservation)) : ""}</p>
+                                        <p className="font-medium">{ tripDetails?.dateLimiteReservation ? formatFullDateTime(tripDetails?.dateLimiteReservation) : "not specified"}</p>
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +376,7 @@ export default function TripDetails({params}) {
                             </button>
 
                             <p className="text-center text-sm text-gray-500 mt-4">
-                                Only 23 places left at this price
+                                Only {tripDetails.nbrPlaceRestante} places left at this price
                             </p>
                         </div>
                     </div>

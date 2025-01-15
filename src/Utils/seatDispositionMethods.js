@@ -22,9 +22,7 @@ export function useSeatManager ()  {
     function handleSeatClick  (seatNumber) {
         if (reservedSeats.includes(seatNumber)) return;
         setSelectedSeats(prev =>
-            prev.includes(seatNumber)
-                ? prev.filter(seat => seat !== seatNumber)
-                : [...prev, seatNumber]
+            prev.includes(seatNumber) ? prev.filter(seat => seat !== seatNumber) : [...prev, seatNumber]
         );
     }
 

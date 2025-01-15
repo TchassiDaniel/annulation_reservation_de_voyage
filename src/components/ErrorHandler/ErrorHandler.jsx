@@ -21,6 +21,7 @@ export default function ErrorHandler({ error, data, isSearch }) {
         } else if (error?.status === 500 || error?.status === 403) {
             setErrorType('server');
         } else if (data?.length === 0) {
+            console.log(data);
             setErrorType('noTrips');
         }
     }, [error, data]);

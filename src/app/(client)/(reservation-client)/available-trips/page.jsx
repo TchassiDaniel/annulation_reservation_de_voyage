@@ -9,6 +9,7 @@ import axiosInstance from "@/Utils/AxiosInstance";
 import AvailableTripsLoadingSkeleton from "@/components/Loadings/Available-Trips-Skeleton";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler";
+import {formatDurationSimple} from "@/Utils/formatDateMethods";
 
 
 export default function AvailableTrips() {
@@ -40,6 +41,7 @@ export default function AvailableTrips() {
 
 
 
+
     useEffect(() => {
         fetchAvailableTrips();
     }, []);
@@ -54,7 +56,7 @@ export default function AvailableTrips() {
             const response = await axiosInstance.get("/voyage");
             if (response.status === 200)
             {
-                console.log(response.data);
+                 console.log(response.data);
                 setIsLoading(false);
                 setAvailableTrips(response.data.content);
                 if (response.data.empty === true)
@@ -147,23 +149,24 @@ export default function AvailableTrips() {
 
                 {/* Grille des voyages */}
                 <div>
-                    {isLoading ? (<AvailableTripsLoadingSkeleton/>) : !error &&
+                    {isLoading ? (<AvailableTripsLoadingSkeleton/>) :
                         (
                             <div className="flex flex-col">
                                 <div className="grid grid-cols-3 gap-6">
                                     {availableTrips.map((trip, index) => (
                                         <div key={trip.idVoyage || index}
-                                             className="bg-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                                             className="bg-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-2 transform transition duration-300">
                                             <div className="relative h-48">
                                                 <Image
-                                                    layout="fill"
-                                                    objectFit="cover"
+                                                    width={100}
+                                                    height={100}
                                                     src={trip.bigImage}
                                                     alt={"agency image"}
+                                                    className="w-full h-full object-cover transform transition-all duration-700 hover:scale-110"
                                                 />
                                                 <div
                                                     className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-semibold text-blue-600">
-                                                    {trips.comfort}
+                                                    {trip.nomClasseVoyage}
                                                 </div>
                                             </div>
 
@@ -176,7 +179,7 @@ export default function AvailableTrips() {
                                                         </h3>
                                                     </div>
                                                     <div className="text-right ml-2">
-                                                        <p className="text-2xl font-bold text-reservation-color">{trips.price} FCFA</p>
+                                                        <p className="text-2xl font-bold text-reservation-color">{trip.prix} FCFA</p>
                                                         <p className="text-sm text-reservation-color">per Person</p>
                                                     </div>
                                                 </div>
@@ -190,7 +193,7 @@ export default function AvailableTrips() {
                                                         <div>
                                                             <p className="text-sm text-gray-500">Departure
                                                                 at: {trip.lieuDepart}</p>
-                                                            <p className="text-sm font-medium">Duration: {trips.duration}</p>
+                                                            <p className="text-sm font-medium">Duration: {formatDurationSimple(trip?.dureeVoyage)}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
@@ -251,6 +254,7 @@ export default function AvailableTrips() {
                                         </div>
                                     </div>
                                 )}
+                                <ErrorHandler error={error} data={!error && availableTrips} isSearch={isSearch}/>
                             </div>
                         )
                     }
@@ -258,7 +262,7 @@ export default function AvailableTrips() {
             </div>
 
             {/* Error Management */}
-            <ErrorHandler error={error} data={availableTrips} isSearch={isSearch}/>
+
         </div>
     );
 }
