@@ -18,5 +18,4 @@ public class PassagerDTO {
   int age;
   int nbrBaggage;
   int placeChoisis;
-  UUID idReservation;
 }
