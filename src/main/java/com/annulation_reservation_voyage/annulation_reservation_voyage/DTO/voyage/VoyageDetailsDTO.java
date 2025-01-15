@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vehicule;
@@ -41,4 +42,5 @@ public class VoyageDetailsDTO {
     private String pointDeDepart;
     private String pointArrivee;
     private Vehicule vehicule;
+    private List<Integer> placeReservees;
 }

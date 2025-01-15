@@ -6,6 +6,9 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Cl
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vehicule;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
+
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,7 +31,8 @@ public class VoyageMapper {
         return voyagePreviewDTO;
     }
 
-    public VoyageDetailsDTO tovoyageDetailsDTO(Voyage voyage, User user, ClassVoyage classVoyage, Vehicule vehicule) {
+    public VoyageDetailsDTO tovoyageDetailsDTO(Voyage voyage, User user, ClassVoyage classVoyage, Vehicule vehicule,
+            List<Integer> placesReservees) {
         VoyageDetailsDTO voyageDetailsDTO = new VoyageDetailsDTO();
         voyageDetailsDTO.setIdVoyage(voyage.getIdVoyage());
         voyageDetailsDTO.setTitre(voyage.getTitre());
@@ -55,6 +59,7 @@ public class VoyageMapper {
         voyageDetailsDTO.setPointDeDepart(voyage.getPointDeDepart());
         voyageDetailsDTO.setPointArrivee(voyage.getPointArrivee());
         voyageDetailsDTO.setVehicule(vehicule);
+        voyageDetailsDTO.setPlaceReservees(placesReservees);
         return voyageDetailsDTO;
     }
 }

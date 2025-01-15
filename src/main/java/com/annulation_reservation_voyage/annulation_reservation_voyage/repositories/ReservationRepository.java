@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,4 +17,8 @@ public interface ReservationRepository extends CassandraRepository<Reservation, 
     Optional<Reservation> findByIdUserAndIdVoyage(UUID IdUser, UUID IdVoyage);
 
     Slice<Reservation> findByIdUser(UUID idUser, Pageable pageable);
+
+    List<Reservation> findByIdUser(UUID idUser);
+
+    List<Reservation> findByIdVoyage(UUID idVoyage);
 }

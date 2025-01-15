@@ -5,11 +5,15 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyag
 import com.annulation_reservation_voyage.annulation_reservation_voyage.mappers.VoyageMapper;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.ClassVoyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.LigneVoyage;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Passager;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vehicule;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.ClassVoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.LigneVoyageRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.PassagerRepository;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.ReservationRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
@@ -40,6 +44,10 @@ public class VoyageService {
     private final ClassVoyageRepository classVoyageRepository;
 
     private final VehiculeService vehiculeService;
+
+    private final ReservationRepository reservationRepository;
+
+    private final PassagerRepository passagerRepository;
 
     public Page<Voyage> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -81,7 +89,15 @@ public class VoyageService {
             ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
             User agenceVoyage = userRepository.findById(ligneVoyage.getIdAgenceVoyage()).orElse(null);
             Vehicule vehicule = this.vehiculeService.findById(ligneVoyage.getIdVehicule());
-            return voyageMapper.tovoyageDetailsDTO(voyage, agenceVoyage, classVoyage, vehicule);
+            List<Integer> placesReservees = new ArrayList<>();
+            List<Reservation> reservations = reservationRepository.findByIdVoyage(voyage.getIdVoyage());
+            for (Reservation reservation : reservations) {
+                List<Passager> passagers = passagerRepository.findAllByIdReservation(reservation.getIdReservation());
+                for (Passager passager : passagers) {
+                    placesReservees.add(passager.getPlaceChoisis());
+                }
+            }
+            return voyageMapper.tovoyageDetailsDTO(voyage, agenceVoyage, classVoyage, vehicule, placesReservees);
         }
         return null;
     }
