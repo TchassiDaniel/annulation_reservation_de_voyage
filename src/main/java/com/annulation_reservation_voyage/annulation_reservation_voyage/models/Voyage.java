@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.models;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
 
@@ -26,7 +27,8 @@ public class Voyage {
   private String lieuArrive;
   private Date heureDepartEffectif;
   private String pointDeDepart;
-  private Date dureeVoyage;
+  private String pointArrivee;
+  private Duration dureeVoyage;
   private Date heureArrive;
   private int nbrPlaceReservable;// Nbre de place qu'on peut encore reserve
   private int nbrPlaceReserve;// Nbre de place qu'on a reserve

@@ -87,6 +87,7 @@ public class PassagerService {
         billet.setPrix(voyage.getPrix());
         billet.setNomClasseVoyage(voyage.getNomClasseVoyage());
         billet.setPointDeDepart(voyage.getPointDeDepart());
+        billet.setPointArrivee(voyage.getPointArrivee());
         billet.setNom(passager.getNom());
         billet.setGenre(passager.getGenre());
         billet.setAge(passager.getAge());

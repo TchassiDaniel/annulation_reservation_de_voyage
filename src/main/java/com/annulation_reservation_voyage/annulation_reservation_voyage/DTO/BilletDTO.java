@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.DTO;
 
+import java.time.Duration;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
@@ -20,7 +21,7 @@ public class BilletDTO {
   private Date dateArriveEffectif;
   private String lieuArrive;
   private Date heureDepartEffectif;
-  private Date dureeVoyage;
+  private Duration dureeVoyage;
   private Date heureArrive;
   private String statusVoyage;
   private String smallImage;
@@ -29,6 +30,7 @@ public class BilletDTO {
   private double prix;
   private String nomAgence;
   private String pointDeDepart;
+  private String pointArrivee;
   String numeroPieceIdentific;
   String nom;
   String genre;

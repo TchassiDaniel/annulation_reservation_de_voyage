@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -167,7 +168,7 @@ public class DataSeeder implements CommandLineRunner {
       LocalDateTime arrivee = depart.plusHours(dureeEnHeures);
 
       voyage.setDateArriveEffectif(Date.from(arrivee.atZone(ZoneId.systemDefault()).toInstant()));
-      voyage.setDureeVoyage(Date.from(arrivee.atZone(ZoneId.systemDefault()).toInstant()));
+      voyage.setDureeVoyage(Duration.ofHours(dureeEnHeures).plusMinutes(30));
 
       // Heures de départ et d'arrivée
       voyage.setHeureDepartEffectif(Date.from(depart.atZone(ZoneId.systemDefault()).toInstant()));
@@ -177,7 +178,7 @@ public class DataSeeder implements CommandLineRunner {
       voyage.setLieuDepart(villeDepart);
       voyage.setLieuArrive(villeArrivee);
       voyage.setPointDeDepart(pointsDepart.get(faker.random().nextInt(pointsDepart.size())));
-
+      voyage.setPointArrivee(pointsDepart.get(faker.random().nextInt(pointsDepart.size())));
       // Gestion des places
       int totalPlaces = nbrePlaces.get(faker.random().nextInt(nbrePlaces.size()));
       voyage.setNbrPlaceReservable(totalPlaces);

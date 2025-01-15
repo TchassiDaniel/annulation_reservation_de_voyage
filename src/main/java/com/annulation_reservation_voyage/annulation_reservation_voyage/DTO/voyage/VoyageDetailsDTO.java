@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ public class VoyageDetailsDTO {
     private Date dateArriveEffectif;
     private String lieuArrive;
     private Date heureDepartEffectif;
-    private Date dureeVoyage;
+    private Duration dureeVoyage;
     private Date heureArrive;
     private int nbrPlaceReservable;
     private int nbrPlaceRestante;
@@ -38,5 +39,6 @@ public class VoyageDetailsDTO {
     private double prix;
     private String nomAgence;
     private String pointDeDepart;
+    private String pointArrivee;
     private Vehicule vehicule;
 }

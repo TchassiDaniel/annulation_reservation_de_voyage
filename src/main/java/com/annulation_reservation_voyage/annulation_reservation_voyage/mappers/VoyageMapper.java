@@ -53,6 +53,7 @@ public class VoyageMapper {
         voyageDetailsDTO.setPrix(classVoyage.getPrix());
         voyageDetailsDTO.setNomClasseVoyage(classVoyage.getNom());
         voyageDetailsDTO.setPointDeDepart(voyage.getPointDeDepart());
+        voyageDetailsDTO.setPointArrivee(voyage.getPointArrivee());
         voyageDetailsDTO.setVehicule(vehicule);
         return voyageDetailsDTO;
     }
