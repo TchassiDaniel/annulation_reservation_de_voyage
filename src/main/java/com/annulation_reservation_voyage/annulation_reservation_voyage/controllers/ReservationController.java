@@ -51,7 +51,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReservationPreviewDTO.class)))),
             @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @GetMapping("/{idUser}")
+    @GetMapping("/utilisateur/{idUser}")
     public ResponseEntity<Page<ReservationPreviewDTO>> getAllReservationsForUser(@PathVariable UUID idUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
