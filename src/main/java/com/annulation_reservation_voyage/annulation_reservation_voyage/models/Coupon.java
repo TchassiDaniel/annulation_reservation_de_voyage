@@ -24,4 +24,5 @@ public class Coupon {
   private StatutCoupon statusCoupon;
   private double valeur;
   private UUID idHistorique;
+  private UUID idSoldeIndemnisation;
 }

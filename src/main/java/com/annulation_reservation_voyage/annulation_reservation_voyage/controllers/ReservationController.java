@@ -150,17 +150,27 @@ public class ReservationController {
     @Operation(summary = "Annuler une réservation", description = "Permet d'annuler une réservation en par un utilisateur. Si l'annulation a lieu après confirmation, un coupon est généré.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Réservation annulée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+            @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "reservation inexistante.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @PutMapping("/annuler")
-    public ResponseEntity<String> annulerReservation(
+    public ResponseEntity<?> annulerReservation(
             @Parameter(description = "Données nécessaires pour annuler la réservation (ID de la réservation et informations supplémentaires).", required = true) @RequestBody ReservationCancelDTO reservationCancelDTO) {
 
         try {
-            reservationService.annulerReservation(reservationCancelDTO);
-            return ResponseEntity.ok("Réservation annulée avec succès.");
+            double risqueAnnulation = reservationService.annulerReservation(reservationCancelDTO);
+            if (risqueAnnulation > 0){
+                return new ResponseEntity<>(risqueAnnulation, HttpStatus.OK);
+            }
+            else{
+                return ResponseEntity.ok("Réservation annulée avec succès.");
+            }
         } catch (RuntimeException e) {
-            return ResponseEntity.status(400).body("Erreur: " + e.getMessage());
+            if (e.getMessage().contains("n'existe pas")) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
         }
     }
 }

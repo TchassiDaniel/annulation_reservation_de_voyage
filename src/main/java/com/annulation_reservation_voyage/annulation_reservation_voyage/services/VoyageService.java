@@ -1,5 +1,7 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelByAgenceDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.mappers.VoyageMapper;
@@ -47,6 +49,8 @@ public class VoyageService {
     private final VehiculeService vehiculeService;
 
     private final ReservationRepository reservationRepository;
+
+    private final ReservationService reservationService;
 
     private final PassagerRepository passagerRepository;
 
@@ -126,6 +130,34 @@ public class VoyageService {
 
     public void delete(UUID id) {
         voyageRepository.deleteById(id);
+    }
+
+    public double annulerVoyage(VoyageCancelDTO voyageCancelDTO) {
+
+        // On cherche le voyage
+        Voyage voyage = voyageRepository.findById(voyageCancelDTO.getIdVoyage()).orElseThrow(
+                () -> new RuntimeException("Le voyage dont l'id est donné n'existe pas")
+        );
+
+        // on cherche la liste des reservations de ce voyage
+        List<Reservation> reservations = reservationRepository.findByIdVoyage(voyage.getIdVoyage());
+
+        double risque = 0.0;
+
+        for (Reservation reservation : reservations) {
+            // on effectue l'annulation
+            ReservationCancelByAgenceDTO reservationCancelByAgenceDTO = new ReservationCancelByAgenceDTO();
+            reservationCancelByAgenceDTO.setVoyage(voyage);
+            reservationCancelByAgenceDTO.setIdReservation(reservation.getIdReservation());
+            reservationCancelByAgenceDTO.setCanceled(voyageCancelDTO.isCanceled());
+            reservationCancelByAgenceDTO.setCauseAnnulation(voyageCancelDTO.getCauseAnnulation());
+            reservationCancelByAgenceDTO.setOrigineAnnulation(voyageCancelDTO.getOrigineAnnulation());
+
+            risque += reservationService.annulerReservationByAgence(reservationCancelByAgenceDTO);
+
+        }
+
+        return risque;
     }
 
 }
