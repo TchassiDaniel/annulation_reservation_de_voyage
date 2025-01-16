@@ -3,7 +3,8 @@ import axios from "axios";
 
 
 let token = null;
-if (typeof window !== "undefined") {
+if (typeof window !== "undefined")
+{
     token = localStorage.getItem("mooving_app_token");
 }
 

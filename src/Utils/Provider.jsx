@@ -97,6 +97,7 @@ function useLogin() {
                         const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
                         if (response.status === 200)
                         {
+                            console.log(response.data);
                             setUserData(response.data);
                             setIsLogged(true);
                         }

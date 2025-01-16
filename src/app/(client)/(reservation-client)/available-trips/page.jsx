@@ -1,24 +1,19 @@
 'use client';
-import React, {useEffect, useState} from 'react';
-import { Search, Clock, MapPin, Calendar, Users, Filter, ArrowRight, Star } from 'lucide-react';
+import {useEffect, useState} from 'react';
+import { Search, Clock, MapPin, Calendar, Filter, ArrowRight} from 'lucide-react';
 import Image from "next/image";
-import bus from "../../../../../public/bus1.jpeg";
 import {FaArrowLeft, FaArrowRight} from "react-icons/fa";
 import {Tooltip} from "antd";
 import {useRouter} from "next/navigation";
 import axiosInstance from "@/Utils/AxiosInstance";
-import {ErrorModal} from "@/components/Modals/ErrorModal";
 import AvailableTripsLoadingSkeleton from "@/components/Loadings/Available-Trips-Skeleton";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
+import ErrorHandler from "@/components/ErrorHandler/ErrorHandler";
+import {formatDurationSimple} from "@/Utils/formatDateMethods";
 
 
 export default function AvailableTrips() {
-    const [activeFilter, setActiveFilter] = useState('all');
-
     const router = useRouter();
-
-
-
     const trips =
         {
             id: 1,
@@ -37,16 +32,20 @@ export default function AvailableTrips() {
         }
 
     const [availableTrips, setAvailableTrips] = useState([]);
-    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] =useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
+    const [activeFilter, setActiveFilter] = useState('all');
+    const [isSearch, setIsSearch] = useState(false);
+
+
 
 
 
     useEffect(() => {
         fetchAvailableTrips();
     }, []);
+
 
 
     async function fetchAvailableTrips() {
@@ -57,12 +56,20 @@ export default function AvailableTrips() {
             const response = await axiosInstance.get("/voyage");
             if (response.status === 200)
             {
+                 console.log(response.data);
                 setIsLoading(false);
-                setCanRenderPaginationContent(true);
-                console.log(response.data);
-                setAvailableTrips(response.data);
-                setCanOpenErrorModal(false);
-                setErrorMessage("");
+                setAvailableTrips(response.data.content);
+                if (response.data.empty === true)
+                {
+                    setIsSearch(false);
+                    setCanRenderPaginationContent(false);
+                }
+                else
+                {
+                    setCanRenderPaginationContent(true);
+                }
+
+                setError(null);
             }
         }
         catch (error)
@@ -70,9 +77,8 @@ export default function AvailableTrips() {
             setIsLoading(false);
             setCanRenderPaginationContent(false);
             console.log(error);
-            setAvailableTrips({});
-            setErrorMessage("Somethings went wrong, please try again later !");
-            setCanOpenErrorModal(true);
+            setAvailableTrips(null);
+            setError(error);
         }
     }
 
@@ -84,7 +90,6 @@ export default function AvailableTrips() {
                     <h1 className="text-3xl font-bold text-reservation-color mt-1 ml-2">
                         Available Trips
                     </h1>
-
                     <div className="flex gap-3">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div
@@ -150,17 +155,18 @@ export default function AvailableTrips() {
                                 <div className="grid grid-cols-3 gap-6">
                                     {availableTrips.map((trip, index) => (
                                         <div key={trip.idVoyage || index}
-                                             className="bg-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                                             className="bg-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-2 transform transition duration-300">
                                             <div className="relative h-48">
                                                 <Image
-                                                    layout="fill"
-                                                    objectFit="cover"
+                                                    width={100}
+                                                    height={100}
                                                     src={trip.bigImage}
                                                     alt={"agency image"}
+                                                    className="w-full h-full object-cover transform transition-all duration-700 hover:scale-110"
                                                 />
                                                 <div
                                                     className="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-semibold text-blue-600">
-                                                    {trips.comfort}
+                                                    {trip.nomClasseVoyage}
                                                 </div>
                                             </div>
 
@@ -173,7 +179,7 @@ export default function AvailableTrips() {
                                                         </h3>
                                                     </div>
                                                     <div className="text-right ml-2">
-                                                        <p className="text-2xl font-bold text-reservation-color">{trips.price} FCFA</p>
+                                                        <p className="text-2xl font-bold text-reservation-color">{trip.prix} FCFA</p>
                                                         <p className="text-sm text-reservation-color">per Person</p>
                                                     </div>
                                                 </div>
@@ -187,7 +193,7 @@ export default function AvailableTrips() {
                                                         <div>
                                                             <p className="text-sm text-gray-500">Departure
                                                                 at: {trip.lieuDepart}</p>
-                                                            <p className="text-sm font-medium">Duration: {trips.duration}</p>
+                                                            <p className="text-sm font-medium">Duration: {formatDurationSimple(trip?.dureeVoyage)}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-3">
@@ -248,14 +254,15 @@ export default function AvailableTrips() {
                                         </div>
                                     </div>
                                 )}
+                                <ErrorHandler error={error} data={!error && availableTrips} isSearch={isSearch}/>
                             </div>
                         )
                     }
                 </div>
             </div>
 
-            {/*Modal Content*/}
-            <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={() => {setCanOpenErrorModal(false)}} message={errorMessage}/>
+            {/* Error Management */}
+
         </div>
     );
 }
