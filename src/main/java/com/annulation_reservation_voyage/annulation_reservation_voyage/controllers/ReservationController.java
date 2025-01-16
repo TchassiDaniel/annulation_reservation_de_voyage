@@ -6,6 +6,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reser
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationPreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.services.AnnulationService;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -27,9 +28,11 @@ import java.util.UUID;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final AnnulationService annulationService;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService, AnnulationService annulationService) {
         this.reservationService = reservationService;
+        this.annulationService = annulationService;
     }
 
     @Operation(summary = "Obtenir toutes les réservations", description = "Récupère la liste de toutes les réservations.")
@@ -158,7 +161,7 @@ public class ReservationController {
             @Parameter(description = "Données nécessaires pour annuler la réservation (ID de la réservation et informations supplémentaires).", required = true) @RequestBody ReservationCancelDTO reservationCancelDTO) {
 
         try {
-            double risqueAnnulation = reservationService.annulerReservation(reservationCancelDTO);
+            double risqueAnnulation = annulationService.annulerReservation(reservationCancelDTO);
             if (risqueAnnulation > 0){
                 return new ResponseEntity<>(risqueAnnulation, HttpStatus.OK);
             }

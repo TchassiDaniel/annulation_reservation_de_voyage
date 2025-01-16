@@ -4,6 +4,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyag
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.services.AnnulationService;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.VoyageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -24,9 +25,11 @@ import java.util.UUID;
 public class VoyageController {
 
     private final VoyageService voyageService;
+    private final AnnulationService annulationService;
 
-    public VoyageController(VoyageService voyageService) {
+    public VoyageController(VoyageService voyageService, AnnulationService annulationService) {
         this.voyageService = voyageService;
+        this.annulationService = annulationService;
     }
 
     @Operation(summary = "Obtenir tous les voyages", description = "Récupère la liste de tous les voyages (champs stricts pour le preview) enregistrés.")
@@ -75,7 +78,7 @@ public class VoyageController {
     @PutMapping("/annuler")
     public ResponseEntity<?> annulerVoyage(VoyageCancelDTO voyageCancelDTO){
         try {
-            double risqueAnnulation = voyageService.annulerVoyage(voyageCancelDTO);
+            double risqueAnnulation = annulationService.annulerVoyage(voyageCancelDTO);
             if (risqueAnnulation > 0){
                 return new ResponseEntity<>(risqueAnnulation, HttpStatus.OK);
             }
