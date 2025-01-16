@@ -1,12 +1,12 @@
 import {ArrowLeft, X} from "lucide-react";
 import {FaUsers} from "react-icons/fa";
-import PassengerForm from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PassengerForm";
+import TravellerInfosForm from "@/app/(client)/(reservation-client)/available-trips/[tripId]/TravellerInfosForm";
 import TicketPreview from "@/app/(client)/(reservation-client)/available-trips/[tripId]/TicketPreview";
 import {useState} from "react";
 import PropTypes from "prop-types";
 
 
-export default function ReservationStep2({selectedSeats, tripDetails, onBack, onClose,  setStep})
+export default function ReservationStep2({selectedSeats, tripDetails, onBack, onClose,  setStep, setPassengers})
 {
 
     ReservationStep2.propTypes = {
@@ -14,8 +14,7 @@ export default function ReservationStep2({selectedSeats, tripDetails, onBack, on
         tripDetails: PropTypes.object.isRequired,
         onBack: PropTypes.func.isRequired,
         onClose: PropTypes.func.isRequired,
-      //  passengersData: PropTypes.object.isRequired,
-      //  setPassengersData: PropTypes.func.isRequired,
+        setPassengers: PropTypes.func.isRequired,
         setStep: PropTypes.func.isRequired
     };
 
@@ -42,9 +41,8 @@ export default function ReservationStep2({selectedSeats, tripDetails, onBack, on
     }
 
     return (
-        <div className="flex h-full">
-            {/* Formulaire à gauche */}
-            <div className="w-1/2 p-6 overflow-y-auto">
+        <div className="flex max-h-[630px]">
+            <div className="w-1/2 p-6 overflow-y-auto h-full">
                 <div className="flex gap-4 mb-6 items-center">
                     <button
                         onClick={onBack}
@@ -55,24 +53,18 @@ export default function ReservationStep2({selectedSeats, tripDetails, onBack, on
                     <div className="flex gap-1 ml-10 mt-1">
                         <FaUsers className="text-reservation-color text-3xl"/>
                         <h2 className="text-2xl font-semibold text-reservation-color">
-                            Passenger Information
+                            Traveler information
                         </h2>
                     </div>
                 </div>
-
-                {selectedSeats.map((seatNumber, index) => (
-                    <PassengerForm
-                        key={seatNumber}
-                        seatNumber={seatNumber}
-                        index={index}
-                        onChange={handlePassengerDataChange}
-                        passengerData={passengersData[seatNumber]}
-                    />
-                ))}
-
+                {selectedSeats.map((seatNumber ) => (<TravellerInfosForm key={seatNumber}
+                                                                        seatNumber={seatNumber}
+                                                                        onChange={handlePassengerDataChange}
+                                                                        passengerData={passengersData[seatNumber]}
+                />))}
                 <div className="flex justify-center">
                     <button
-                        onClick={() => setStep(2)}
+                        onClick={() => {setStep(3), setPassengers(passengersData)}}
                         disabled={!isPassengerDataComplete()}
                         className="bg-reservation-color text-white py-3 px-6 rounded-lg font-semibold disabled:bg-gray-400 mt-4"
                     >
@@ -81,8 +73,8 @@ export default function ReservationStep2({selectedSeats, tripDetails, onBack, on
                 </div>
             </div>
 
-            {/* Prévisualisation à droite */}
-            <div className="w-1/2 bg-gray-50 p-6 overflow-y-auto">
+
+            <div className="w-1/2 bg-gray-50 p-6 overflow-y-auto h-full">
                 <div className="mt-1 flex justify-between">
                     <h2 className="text-2xl font-semibold text-reservation-color mb-6">
                         Ticket Preview

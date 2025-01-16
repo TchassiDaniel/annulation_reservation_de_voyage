@@ -10,7 +10,7 @@ import busImage1 from "../../../../../../public/bus-image.jpeg";
 import {MdAirlineSeatReclineNormal} from "react-icons/md";
 import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton";
 import {useAuthentication} from "@/Utils/Provider";
-import ReservationModale from "@/app/(client)/(reservation-client)/available-trips/[tripId]/reservation";
+import ReservationProcessModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationProcess";
 import {formatDateOnly, formatDurationSimple, formatFullDateTime, formatDateToTime} from "@/Utils/formatDateMethods";
 
 
@@ -384,7 +384,7 @@ export default function TripDetails({params}) {
             </div>
 
             <ErrorModal isOpen={canOpenErrorModal} onCloseErrorModal={()=>{setCanOpenErrorModal(false)}} message={errorMessage}/>
-            <ReservationModale isOpen={canOpenReservationModal} onClose={()=>{setCanOpenReservationModal(false)}} tripDetails={tripDetails}/>
+            <ReservationProcessModal isOpen={canOpenReservationModal} onClose={()=>{setCanOpenReservationModal(false)}} tripDetails={tripDetails}/>
         </div>
     );
 }

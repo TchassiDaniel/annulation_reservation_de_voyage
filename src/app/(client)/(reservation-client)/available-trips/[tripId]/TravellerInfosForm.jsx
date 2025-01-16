@@ -1,6 +1,14 @@
 import {Briefcase, Calendar, CreditCard, User, Users} from "lucide-react";
+import PropTypes from 'prop-types';
 
-export default function PassengerForm ({ seatNumber, index, onChange, passengerData }) {
+export default function TravellerInfosForm ({ seatNumber, onChange, passengerData }) {
+
+    TravellerInfosForm.propTypes = {
+        seatNumber: PropTypes.number.isRequired,
+        onChange: PropTypes.func.isRequired,
+        passengerData: PropTypes.object.isRequired
+    }
+
     return (
         <div className="rounded-lg border-2 border-gray-200 p-4 mb-6 shadow-sm hover:shadow-md transition-shadow duration-300">
             <h3 className="text-md font-semibold text-reservation-color mb-4 flex items-center">
@@ -8,8 +16,8 @@ export default function PassengerForm ({ seatNumber, index, onChange, passengerD
                 Seat {seatNumber}
             </h3>
             <div className="space-y-4">
-                <div className="flex flex-col md:flex-row md:space-x-4">
-                    <div className="flex-grow mb-4 md:mb-0">
+                <div className="flex flex-row space-x-4">
+                    <div className="flex-grow mb-0">
                         <div className="relative">
                             <input
                                 type="text"
@@ -21,7 +29,7 @@ export default function PassengerForm ({ seatNumber, index, onChange, passengerD
                             <User className="w-4 h-4 absolute left-3 top-3.5 text-gray-400"/>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/4">
+                    <div className="w-1/4">
                         <div className="relative">
                             <select
                                 className="w-full p-2 pl-9 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-reservation-color appearance-none"
@@ -34,7 +42,7 @@ export default function PassengerForm ({ seatNumber, index, onChange, passengerD
                             </select>
                             <Users className="w-4 h-4 absolute left-3 top-3.5 text-gray-400"/>
                             <div
-                                className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                                className="pointer-events-none absolute inset-y-0 -right-1.5 flex items-center px-2 text-gray-700">
                                 <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                      viewBox="0 0 20 20">
                                     <path
@@ -57,7 +65,7 @@ export default function PassengerForm ({ seatNumber, index, onChange, passengerD
                             <Calendar className="w-4 h-4  absolute left-3 top-3.5 text-gray-400"/>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3 mb-4 md:mb-0">
+                    <div className="w-1/3">
                         <div className="relative">
                             <input
                                 type="number"
@@ -71,7 +79,7 @@ export default function PassengerForm ({ seatNumber, index, onChange, passengerD
                             <Briefcase className="w-4 h-4  absolute left-3 top-3.5 text-gray-400"/>
                         </div>
                     </div>
-                    <div className="w-full md:w-1/3">
+                    <div className="w-1/3">
                         <div className="relative">
                             <input
                                 type="text"
