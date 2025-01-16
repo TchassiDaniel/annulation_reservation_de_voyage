@@ -48,18 +48,18 @@ public class ReservationController {
 
     @Operation(summary = "Obtenir toutes les réservations d'un utilisateur", description = "Récupère la liste de toutes les réservations d'un utilisateur.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = Reservation.class)))),
+            @ApiResponse(responseCode = "200", description = "Liste récupérée avec succès", content = @Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ReservationPreviewDTO.class)))),
             @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
     @GetMapping("/{idUser}")
-    public ResponseEntity<?> getAllReservationsForUser(@PathVariable UUID idUser,
+    public ResponseEntity<Page<ReservationPreviewDTO>> getAllReservationsForUser(@PathVariable UUID idUser,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
             Page<ReservationPreviewDTO> reservations = reservationService.findAllForUser(idUser, page, size);
-            return new ResponseEntity<>(reservations, HttpStatus.OK);
+            return new ResponseEntity<Page<ReservationPreviewDTO>>(reservations, HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -162,10 +162,9 @@ public class ReservationController {
 
         try {
             double risqueAnnulation = annulationService.annulerReservation(reservationCancelDTO);
-            if (risqueAnnulation > 0){
+            if (risqueAnnulation > 0) {
                 return new ResponseEntity<>(risqueAnnulation, HttpStatus.OK);
-            }
-            else{
+            } else {
                 return ResponseEntity.ok("Réservation annulée avec succès.");
             }
         } catch (RuntimeException e) {
