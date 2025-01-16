@@ -15,4 +15,6 @@ public class ReservationCancelDTO {
   private String causeAnnulation;
   private String origineAnnulation;
   private UUID idReservation;
+  private UUID[] idPassagers;
+  private boolean canceled;
 }

@@ -1,5 +1,6 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.controllers;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyagePreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.ws.rs.QueryParam;
 import java.util.UUID;
 
 @RestController
@@ -62,6 +64,32 @@ public class VoyageController {
         Voyage createdVoyage = voyageService.create(voyage);
         // return ResponseEntity.status(HttpStatus.CREATED).body(createdVoyage);
         return new ResponseEntity<>(createdVoyage, HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Annuler un voyage par une agence uniquement", description = "Permet d'annuler un voyage.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Voyage annulé avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Erreur, Voyage non existant ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Voyage inexistant.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @PutMapping("/annuler")
+    public ResponseEntity<?> annulerVoyage(VoyageCancelDTO voyageCancelDTO){
+        try {
+            double risqueAnnulation = voyageService.annulerVoyage(voyageCancelDTO);
+            if (risqueAnnulation > 0){
+                return new ResponseEntity<>(risqueAnnulation, HttpStatus.OK);
+            }
+            else{
+                return ResponseEntity.ok("Voyage annulée avec succès.");
+            }
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("n'existe pas")) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            }
+        }
+
     }
 
     @Operation(summary = "Mettre à jour un voyage", description = "Modifie un voyage existant.")

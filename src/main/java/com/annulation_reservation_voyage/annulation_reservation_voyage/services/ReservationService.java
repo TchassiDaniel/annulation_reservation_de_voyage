@@ -1,15 +1,14 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.*;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.*;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.*;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.AnnulationOperator;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
 
 import org.springframework.data.domain.Page;
@@ -18,8 +17,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Date;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,11 +34,14 @@ public class ReservationService {
     private final ClassVoyageRepository classVoyageRepository;
     private final PassagerRepository passagerRepository;
     private final UserRepository userRepository;
+    private final PolitiqueAnnulationRepository politiqueAnnulationRepository;
+    private final SoldeIndemnisationRepository soldeIndemnisationRepository;
 
     public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository,
-            CouponRepository couponRepository, VoyageRepository voyageRepository,
-            LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository,
-            UserRepository userRepository, PassagerRepository passagerRepository) {
+                              CouponRepository couponRepository, VoyageRepository voyageRepository,
+                              LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository,
+                              UserRepository userRepository, PassagerRepository passagerRepository, PolitiqueAnnulationRepository politiqueAnnulationRepository,
+                              SoldeIndemnisationRepository soldeIndemnisationRepository) {
         this.couponRepository = couponRepository;
         this.reservationRepository = reservationRepository;
         this.historiqueRepository = historiqueRepository;
@@ -46,6 +50,8 @@ public class ReservationService {
         this.classVoyageRepository = classVoyageRepository;
         this.userRepository = userRepository;
         this.passagerRepository = passagerRepository;
+        this.politiqueAnnulationRepository = politiqueAnnulationRepository;
+        this.soldeIndemnisationRepository = soldeIndemnisationRepository;
     }
 
     public Page<Reservation> findAll(int page, int size) {
@@ -88,7 +94,7 @@ public class ReservationService {
         Voyage voyage = voyageRepository.findById(reservationDTO.getIdVoyage())
                 .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas."));
 
-        // verifier si l'utilisateur à déjà reserver ce voyage
+        // verifier si l'utilisateur a déjà reserver ce voyage
         Reservation reservationOpt = reservationRepository
                 .findByIdUserAndIdVoyage(reservationDTO.getIdUser(), reservationDTO.getIdVoyage()).orElse(null);
         if (reservationOpt != null) {
@@ -96,7 +102,7 @@ public class ReservationService {
         }
 
         // Verifier que la liste des passagers est non vide
-        if (reservationDTO.getPassagerDTO().length < 0) {
+        if (reservationDTO.getPassagerDTO().length <= 0) {
             throw new RuntimeException("La liste des passagers est vide.");
         }
 
@@ -110,6 +116,11 @@ public class ReservationService {
         // Vérifier qu'il y a suffisamment de places reservable
         if (voyage.getNbrPlaceReservable() < reservationDTO.getNbrPassager()) {
             throw new RuntimeException("Il n'y a pas suffisamment de places disponibles pour ce voyage.");
+        }
+
+        // verifier que le nombre de passager donné est égale à la taille de la liste de passager
+        if (reservationDTO.getNbrPassager() != reservationDTO.getPassagerDTO().length) {
+            throw new RuntimeException("Il doit avoir autant de passager que le nombre de passager specifier");
         }
 
         LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
@@ -126,7 +137,7 @@ public class ReservationService {
         reservation.setMontantPaye(reservationDTO.getMontantPaye());
         reservation.setPrixTotal(reservationDTO.getNbrPassager() * classVoyage.getPrix());
 
-        // On cree le passager
+        // On cree les passagers
         for (int i = 0; i < reservationDTO.getPassagerDTO().length; i++) {
             Passager passager = new Passager();
             passager.setIdPassager(UUID.randomUUID());
@@ -168,13 +179,14 @@ public class ReservationService {
         // Récupérer la date et l'heure actuelles
         Date now = new Date();
 
-        // On update la reservation
+        // On verifie que la reservation existe la reservation
         Reservation reservation = this.reservationRepository.findById(reservationConfirmDTO.getIdReservation())
                 .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
 
         // On récupère l'historique
         Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
                 () -> new RuntimeException("L'Historique associé à la reservation n'existe pas"));
+
 
         Voyage voyage = voyageRepository.findById(reservation.getIdVoyage()).orElse(null);
 
@@ -185,7 +197,7 @@ public class ReservationService {
                     "La date de confirmation doit être antérieure à la date limite de confirmation du voyage.");
         }
 
-        // Vérifier qu'il y a suffisamment de places reservable
+        // Vérifier qu'il y a suffisamment de places restante
         if (voyage.getNbrPlaceRestante() < reservation.getNbrPassager()) {
             throw new RuntimeException("Il n'y a pas suffisamment de places libre pour confirmation");
         }
@@ -209,70 +221,204 @@ public class ReservationService {
         return this.reservationRepository.save(reservation);
     }
 
-    public void annulerReservation(ReservationCancelDTO reservationCancelDTO) {
+    public double annulerReservation(ReservationCancelDTO reservationCancelDTO) {
         // Récupérer la date et l'heure actuelles
         Date now = new Date();
 
-        // On update la reservation
+        // On cherche la reservation
         Reservation reservation = this.reservationRepository.findById(reservationCancelDTO.getIdReservation())
                 .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
+
+        if (reservation.getStatutReservation() == StatutReservation.ANNULER){
+            throw new RuntimeException("cette reservation est déjà annulé");
+        }
 
         // On récupère l'historique
         Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
                 () -> new RuntimeException("L'Historique associé à la reservation n'existe pas"));
 
+        // on verifie qu'il n'ya pas plus de passager que dans la reservation
+        List<Passager> passagersReservation= passagerRepository.findAllByIdReservation(reservation.getIdReservation());
+        if (passagersReservation.size() < reservationCancelDTO.getIdPassagers().length) {
+            throw new RuntimeException("Il y'a un passager en trop dans la requete d'annulation");
+        }
+
         Voyage voyage = this.voyageRepository.findById(reservation.getIdVoyage()).get();
-        // On crée l'historique
+        LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
+        User agenceVoyage = userRepository.findById(ligneVoyage.getIdAgenceVoyage()).orElse(null);
+        ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
+        PolitiqueAnnulation politiqueAnnulation = politiqueAnnulationRepository.findByIdAgenceVoyage(agenceVoyage.getUserId());
+        double montantSubstitut = 0.0;  // montant sur lequel va être appliqué le model mathématique pour l'obtention du coupon
+        double montantPaye = reservation.getMontantPaye();
+
+        for (int i=0; i < reservationCancelDTO.getIdPassagers().length; i++){
+            // on detruit l'objet passager dans la BD
+            if (reservationCancelDTO.isCanceled()){
+                passagerRepository.deleteById(reservationCancelDTO.getIdPassagers()[i]);
+            }
+            if (montantPaye >= classVoyage.getPrix()){
+                montantPaye -= classVoyage.getPrix();
+                montantSubstitut += classVoyage.getPrix();
+            }
+            else if(montantPaye > 0){
+                montantSubstitut += montantPaye;
+                montantPaye = 0;
+            }
+        }
+        double tauxAnnulation = AnnulationOperator.tauxannualtion(classVoyage.getTauxAnnulation(), politiqueAnnulation, voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
+        if (!reservationCancelDTO.isCanceled()){  // si canceled est à false, alors on veut juste evaluer combien on risque perdre et on s'arrete là
+            return tauxAnnulation;
+        }
+
+        // On update l'historique
         historique.setDateAnnulation(now);
         if (reservation.getStatutReservation() == StatutReservation.RESERVER) {
             historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_RESERVATION);
+            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservationCancelDTO.getIdPassagers().length);
+            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservationCancelDTO.getIdPassagers().length);
+        } else if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
+            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION);
+            voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservationCancelDTO.getIdPassagers().length);
+            voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservationCancelDTO.getIdPassagers().length);
+            voyage.setNbrPlaceConfirm(voyage.getNbrPlaceReserve() - reservationCancelDTO.getIdPassagers().length);
+            voyage.setNbrPlaceRestante(voyage.getNbrPlaceReservable() + reservationCancelDTO.getIdPassagers().length);
+        }
+        historique.setCauseAnnulation(reservationCancelDTO.getCauseAnnulation());
+        historique.setTauxAnnulation(tauxAnnulation);
+        historique.setOrigineAnnulation(reservationCancelDTO.getOrigineAnnulation());
+
+        // On cree le coupon si la reservation avait déjà un certain montant paye
+        if (reservation.getMontantPaye() > 0) {
+            // on cree un soldeIndeminsation si il n'existe pas déjà
+            SoldeIndemnisation soldeIndemnisation = soldeIndemnisationRepository.findByIdUserAndIdAgenceVoyage(reservation.getIdUser(), ligneVoyage.getIdAgenceVoyage()).orElse(null);
+            if (soldeIndemnisation == null) {
+                soldeIndemnisation = new SoldeIndemnisation();
+                soldeIndemnisation.setIdSolde(UUID.randomUUID());
+                soldeIndemnisation.setIdUser(reservation.getIdUser());
+                soldeIndemnisation.setIdAgenceVoyage(ligneVoyage.getIdAgenceVoyage());
+                soldeIndemnisation.setSolde(0);
+            }
+
+            Coupon coupon = new Coupon();
+            coupon.setIdCoupon(UUID.randomUUID());
+            coupon.setDateDebut(now);
+            Instant debutInstant = now.toInstant();
+            Instant finDate = debutInstant.plus(politiqueAnnulation.getDureeCoupon());
+            coupon.setDateFin(Date.from(finDate));
+            coupon.setValeur(montantSubstitut * (1 - tauxAnnulation));  // tauxAnnulation est le pourcentage que l'usager perd sur son montant
+            coupon.setStatusCoupon(StatutCoupon.VALIDE);
+            coupon.setIdHistorique(historique.getIdHistorique());
+            coupon.setIdSoldeIndemnisation(soldeIndemnisation.getIdSolde());
+
+            soldeIndemnisation.setSolde(soldeIndemnisation.getSolde() + montantSubstitut * (1 - tauxAnnulation));
+            couponRepository.save(coupon);
+            soldeIndemnisationRepository.save(soldeIndemnisation);
+        }
+
+        // on met à jour la reservation
+        reservation.setMontantPaye(montantPaye);
+        reservation.setNbrPassager(reservation.getNbrPassager() - reservationCancelDTO.getIdPassagers().length);
+        reservation.setPrixTotal((reservation.getNbrPassager() - reservationCancelDTO.getIdPassagers().length)*classVoyage.getPrix());
+
+        this.historiqueRepository.save(historique);
+
+        if (reservationCancelDTO.getIdPassagers().length == reservation.getNbrPassager()){
+            reservation.setStatutReservation(StatutReservation.ANNULER);
+        }
+        this.voyageRepository.save(voyage);
+        this.reservationRepository.save(reservation);
+        return -1.0;
+    }
+
+    public double annulerReservationByAgence(ReservationCancelByAgenceDTO reservationCancelDTO) {
+        // Récupérer la date et l'heure actuelles
+        Date now = new Date();
+
+        // On cherche la reservation
+        Reservation reservation = this.reservationRepository.findById(reservationCancelDTO.getIdReservation())
+                .orElseThrow(() -> new RuntimeException("La Reservation n'existe pas"));
+
+        if (reservation.getStatutReservation() == StatutReservation.ANNULER){
+            throw new RuntimeException("cette reservation est déjà annulé");
+        }
+
+        // On récupère l'historique
+        Historique historique = historiqueRepository.findByIdReservation(reservation.getIdReservation()).orElseThrow(
+                () -> new RuntimeException("L'Historique associé à la reservation n'existe pas"));
+
+        List<Passager> passagersReservation= passagerRepository.findAllByIdReservation(reservation.getIdReservation());
+
+        Voyage voyage = reservationCancelDTO.getVoyage();
+        LigneVoyage ligneVoyage = ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
+        User agenceVoyage = userRepository.findById(ligneVoyage.getIdAgenceVoyage()).orElse(null);
+        ClassVoyage classVoyage = classVoyageRepository.findById(ligneVoyage.getIdClassVoyage()).orElse(null);
+        PolitiqueAnnulation politiqueAnnulation = politiqueAnnulationRepository.findByIdAgenceVoyage(agenceVoyage.getUserId());
+
+        for (Passager passager : passagersReservation) {
+            // on detruit l'objet passager dans la BD
+            if (reservationCancelDTO.isCanceled()){
+                passagerRepository.deleteById(passager.getIdPassager());
+            }
+        }
+
+        double tauxCompensation = AnnulationOperator.tauxCompensation(classVoyage.getTauxAnnulation(), politiqueAnnulation, voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
+        if (!reservationCancelDTO.isCanceled()){  // si canceled est à false, alors on veut juste evaluer combien on risque perdre et on s'arrete là
+            return tauxCompensation*reservation.getMontantPaye();
+        }
+
+        // On update l'historique
+        historique.setDateAnnulation(now);
+        if (reservation.getStatutReservation() == StatutReservation.RESERVER) {
+            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_AGENCE_APRES_RESERVATION);
             voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
             voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
         } else if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
-            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_USAGER_APRES_CONFIRMATION);
+            historique.setStatusHistorique(StatutHistorique.ANNULER_PAR_AGENCE_APRES_CONFIRMATION);
             voyage.setNbrPlaceReserve(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
             voyage.setNbrPlaceReservable(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
             voyage.setNbrPlaceConfirm(voyage.getNbrPlaceReserve() - reservation.getNbrPassager());
             voyage.setNbrPlaceRestante(voyage.getNbrPlaceReservable() + reservation.getNbrPassager());
         }
         historique.setCauseAnnulation(reservationCancelDTO.getCauseAnnulation());
-        historique.setCompensation(0);
-        historique.setTauxAnnulation(0);
         historique.setOrigineAnnulation(reservationCancelDTO.getOrigineAnnulation());
+        historique.setCompensation(tauxCompensation);
 
-        // On cree le coupon si l'annulation c'est faite après la confirmation
-        /*
-         * if (reservation.getStatutReservation() == StatutReservation.CONFIRMER) {
-         * Coupon coupon = new Coupon();
-         * coupon.setIdCoupon(UUID.randomUUID());
-         * coupon.setDateDebut(LocalDateTime.now());
-         * coupon.setDateFin(LocalDateTime.now().plusYears(1));
-         * coupon.setStatusCoupon(StatutCoupon.VALIDE);
-         * coupon.setIdHistorique(historique.getIdHistorique());
-         * // Si c'est l'agence qui annule alors...
-         * if (reservationCancelDTO.getStatusHistorique() ==
-         * StatutHistorique.ANNULER_PAR_AGENCE_APRES_CONFIRMATION) {
-         * coupon.setValeur(reservationCancelDTO.getCompensation());
-         * historique.setCompensation(reservationCancelDTO.getCompensation());
-         * } else {
-         * coupon.setValeur(reservation.getPrixTotal() *
-         * reservationCancelDTO.getTauxAnnulation());
-         * historique.setTauxAnnulation(reservationCancelDTO.getTauxAnnulation());
-         * // On augmente le nombre de reservation restante
-         * voyage.setNbrPlaceConfirm(voyage.getNbrPlaceConfirm() -
-         * reservation.getNbrPassager());
-         * }
-         * // On enregistre le coupon
-         * this.couponRepository.save(coupon);
-         * }
-         */
+        // On cree le coupon si la reservation avait déjà un certain montant paye
+        if (reservation.getMontantPaye() > 0) {
+            // on cree un soldeIndeminsation si il n'existe pas déjà
+            SoldeIndemnisation soldeIndemnisation = soldeIndemnisationRepository.findByIdUserAndIdAgenceVoyage(reservation.getIdUser(), ligneVoyage.getIdAgenceVoyage()).orElse(null);
+            if (soldeIndemnisation == null) {
+                soldeIndemnisation = new SoldeIndemnisation();
+                soldeIndemnisation.setIdSolde(UUID.randomUUID());
+                soldeIndemnisation.setIdUser(reservation.getIdUser());
+                soldeIndemnisation.setIdAgenceVoyage(ligneVoyage.getIdAgenceVoyage());
+                soldeIndemnisation.setSolde(0);
+            }
+
+            Coupon coupon = new Coupon();
+            coupon.setIdCoupon(UUID.randomUUID());
+            coupon.setDateDebut(now);
+            Instant debutInstant = now.toInstant();
+            Instant finDate = debutInstant.plus(politiqueAnnulation.getDureeCoupon());
+            coupon.setDateFin(Date.from(finDate));
+            coupon.setValeur(reservation.getMontantPaye() * (1 + tauxCompensation));  // tauxAnnulation est le pourcentage que l'usager perd sur son montant
+            coupon.setStatusCoupon(StatutCoupon.VALIDE);
+            coupon.setIdHistorique(historique.getIdHistorique());
+            coupon.setIdSoldeIndemnisation(soldeIndemnisation.getIdSolde());
+
+            soldeIndemnisation.setSolde(soldeIndemnisation.getSolde() + reservation.getMontantPaye() * (1 + tauxCompensation));
+            couponRepository.save(coupon);
+            soldeIndemnisationRepository.save(soldeIndemnisation);
+        }
+
+        // on met à jour la reservation
+        reservation.setStatutReservation(StatutReservation.ANNULER);
 
         this.historiqueRepository.save(historique);
-
-        reservation.setStatutReservation(StatutReservation.ANNULER);
         this.voyageRepository.save(voyage);
         this.reservationRepository.save(reservation);
+        return -1.0;
+
     }
 }
 
-// TODO gerer la modification des places dans le voyages

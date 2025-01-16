@@ -18,5 +18,7 @@ public class SoldeIndemnisation {
   private UUID idSolde;
   private double solde;
   private String type;
+  private UUID idUser;
+  private UUID idAgenceVoyage;
 }
 
