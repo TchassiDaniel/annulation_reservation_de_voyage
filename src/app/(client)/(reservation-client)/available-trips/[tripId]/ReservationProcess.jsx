@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import {useState} from 'react';
 import ReservationStep1 from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationStep1";
 import ReservationStep2 from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationStep2";
 import ReservationStep3 from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationStep3";
@@ -27,8 +27,6 @@ export default function ReservationProcessModal({ isOpen, onClose, tripDetails }
     {
         setStep(1);
     }
-
-
 
 
     if (!isOpen) return null;

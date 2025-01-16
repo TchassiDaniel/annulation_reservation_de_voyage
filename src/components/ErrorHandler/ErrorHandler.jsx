@@ -6,25 +6,29 @@ import ServerErrorPage from './ServerErrorPage';
 import NoTripsPage from './NoTripsPage';
 import PropTypes from "prop-types";
 
-export default function ErrorHandler({ error, data, isSearch }) {
+export default function ErrorHandler({ error, dataLength, isSearch }) {
 
     ErrorHandler.propTypes = {
         error: PropTypes.object,
-        data: PropTypes.object,
+        dataLength: PropTypes.number,
         isSearch: PropTypes.bool,
     }
-    const [errorType, setErrorType] = useState(null);
+    const [errorType, setErrorType] = useState('');
 
     useEffect(() => {
         if (!navigator.onLine) {
             setErrorType('network');
         } else if (error?.status === 500 || error?.status === 403) {
             setErrorType('server');
-        } else if (data?.length === 0) {
-            console.log(data);
+        } else if (!error && dataLength === 0) {
+            console.log(dataLength);
             setErrorType('noTrips');
         }
-    }, [error, data]);
+        else {
+        setErrorType(''); // Reset error type if there's no error
+        }
+
+    }, [error, dataLength]);
 
     if (errorType === 'network') return <NetworkErrorPage />;
     if (errorType === 'server') return <ServerErrorPage errorStatus = {error?.status}/>;

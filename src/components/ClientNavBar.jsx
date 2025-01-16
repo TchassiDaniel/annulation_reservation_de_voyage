@@ -20,7 +20,7 @@ export default function NavBar()
             <div className="border-b-2 m-2  border-b-gray-300">
                 <div className="w-full h-[70px] flex justify-between">
                     <h1 className="ml-3 text-3xl  mt-3.5 font-bold">
-                        Welcome Back {userData.prenom + " " + userData.nom}!!
+                        Welcome Back {userData?.prenom + " " + userData?.nom}!!
                     </h1>
                     <div className="flex gap-3 mt-3.5 mb-4 mr-5">
                         <Tooltip placement={"top"} title={"settings"}>

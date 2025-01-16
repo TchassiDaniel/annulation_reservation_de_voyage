@@ -4,18 +4,20 @@ import PropTypes from "prop-types";
 import {useSeatManager} from "@/Utils/seatDispositionMethods";
 import {useEffect} from "react";
 
-export default  function Bus70SeatsDisposition ({setSeats}) {
+export default  function Bus70SeatsDisposition ({setSeats, _reservedSeats}) {
 
     Bus70SeatsDisposition.propTypes = {
         setSeats: PropTypes.func.isRequired,
+        _reservedSeats: PropTypes.array.isRequired
     }
 
-    const {selectedSeats, reservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
+    const {selectedSeats, reservedSeats,setReservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
 
 
     useEffect(() => {
+        setReservedSeats(_reservedSeats);
         setSeats(selectedSeats);
-    }, [selectedSeats.length]);
+    }, [selectedSeats?.length, _reservedSeats?.length]);
 
 
 
@@ -25,7 +27,7 @@ export default  function Bus70SeatsDisposition ({setSeats}) {
                 {/* Première rangée */}
                 <div className="grid gap-3 w-fit grid-cols-3 min-h-screen p-2">
                     <div className="col-span-3 border-2 border-gray-400 flex justify-center items-center rounded-lg font-bold h-12  mt-1">
-                        <p className="text-xl text-reservation-color">Chauffeur</p>
+                        <p className="text-xl text-reservation-color">Driver</p>
                     </div>
                     {Array.from({length: 42}, (_, index) => (
                         <button
@@ -34,7 +36,7 @@ export default  function Bus70SeatsDisposition ({setSeats}) {
                             disabled={reservedSeats.includes(index + 1)}
                             className={getSeatClass(index + 1)}
                         >
-                            {(index + 1) + " "}
+                            {(index + 1)}
                         </button>
                     ))}
                 </div>

@@ -3,19 +3,21 @@ import {useEffect} from 'react';
 import {useSeatManager} from "@/Utils/seatDispositionMethods";
 import PropTypes from "prop-types";
 
-export default  function Bus80SeatsDisposition({setSelectedSeats}) {
+export default  function Bus80SeatsDisposition({setSelectedSeats ,_reservedSeats}) {
 
     Bus80SeatsDisposition.propTypes =
         {
-            setSelectedSeats: PropTypes.func.isRequired
+            setSelectedSeats: PropTypes.func.isRequired,
+            _reservedSeats: PropTypes.array.isRequired,
         }
 
-    const {selectedSeats, reservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
+    const {selectedSeats, reservedSeats, setReservedSeats,handleSeatClick, getSeatClass} = useSeatManager();
 
 
     useEffect(() => {
+        setReservedSeats(_reservedSeats);
         setSelectedSeats(selectedSeats);
-    }, [selectedSeats.length]);
+    }, [selectedSeats.length,_reservedSeats.length]);
 
 
     return (
@@ -24,7 +26,7 @@ export default  function Bus80SeatsDisposition({setSelectedSeats}) {
                 {/* Premiere rangee */}
                 <div className="grid gap-2 w-fit grid-cols-3 min-h-screen p-2">
                     <div className="col-span-3 border-2 border-gray-400 flex justify-center items-center rounded-lg font-bold h-12  mt-1">
-                        <p className="text-xl text-reservation-color">Chauffeur</p>
+                        <p className="text-xl text-reservation-color">Driver</p>
                     </div>
                     {Array.from({length: 48}, (_, index) => (
                         <button
