@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 export default function ReservationStep2({selectedSeats, tripDetails, onBack, onClose,  setStep, setPassengers})
 {
 
+
     ReservationStep2.propTypes = {
         selectedSeats: PropTypes.array.isRequired,
         tripDetails: PropTypes.object.isRequired,

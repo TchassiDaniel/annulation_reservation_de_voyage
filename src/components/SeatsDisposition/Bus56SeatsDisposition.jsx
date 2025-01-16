@@ -3,19 +3,21 @@ import {useEffect} from 'react';
 import {useSeatManager} from "@/Utils/seatDispositionMethods";
 import PropTypes from "prop-types";
 
-export default  function Bus56SeatsDisposition({setSelectedSeats}) {
+export default  function Bus56SeatsDisposition({setSelectedSeats, _reservedSeats}) {
 
     Bus56SeatsDisposition.propTypes =
         {
-            setSelectedSeats: PropTypes.func.isRequired
+            setSelectedSeats: PropTypes.func.isRequired,
+            _reservedSeats: PropTypes.array.isRequired
         }
 
-    const {selectedSeats, reservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
+    const {selectedSeats, reservedSeats,setReservedSeats, handleSeatClick, getSeatClass} = useSeatManager();
 
 
     useEffect(() => {
+        setReservedSeats(_reservedSeats);
         setSelectedSeats(selectedSeats);
-    }, [selectedSeats.length]);
+    }, [selectedSeats?.length, _reservedSeats?.length]);
 
 
     return (

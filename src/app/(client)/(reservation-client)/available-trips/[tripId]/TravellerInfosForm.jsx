@@ -52,8 +52,8 @@ export default function TravellerInfosForm ({ seatNumber, onChange, passengerDat
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col md:flex-row md:space-x-4">
-                    <div className="w-full md:w-1/3 mb-4 md:mb-0">
+                <div className="flex flex-row space-x-4">
+                    <div className="w-1/3">
                         <div className="relative">
                             <input
                                 type="number"
