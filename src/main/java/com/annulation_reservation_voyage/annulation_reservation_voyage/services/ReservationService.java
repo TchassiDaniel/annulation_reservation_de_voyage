@@ -50,24 +50,6 @@ public class ReservationService {
     private final PolitiqueAnnulationRepository politiqueAnnulationRepository;
     private final SoldeIndemnisationRepository soldeIndemnisationRepository;
 
-    public ReservationService(ReservationRepository reservationRepository, HistoriqueRepository historiqueRepository,
-            CouponRepository couponRepository, VoyageRepository voyageRepository,
-            LigneVoyageRepository ligneVoyageRepository, ClassVoyageRepository classVoyageRepository,
-            UserRepository userRepository, PassagerRepository passagerRepository,
-            PolitiqueAnnulationRepository politiqueAnnulationRepository,
-            SoldeIndemnisationRepository soldeIndemnisationRepository) {
-        this.couponRepository = couponRepository;
-        this.reservationRepository = reservationRepository;
-        this.historiqueRepository = historiqueRepository;
-        this.voyageRepository = voyageRepository;
-        this.ligneVoyageRepository = ligneVoyageRepository;
-        this.classVoyageRepository = classVoyageRepository;
-        this.userRepository = userRepository;
-        this.passagerRepository = passagerRepository;
-        this.politiqueAnnulationRepository = politiqueAnnulationRepository;
-        this.soldeIndemnisationRepository = soldeIndemnisationRepository;
-    }
-
     public Page<Reservation> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Slice<Reservation> slice = reservationRepository.findAll(pageable);
