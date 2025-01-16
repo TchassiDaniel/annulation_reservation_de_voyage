@@ -17,6 +17,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.repositor
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.UserRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.VoyageRepository;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
+import com.datastax.oss.driver.api.core.cql.PagingState;
 
 import lombok.AllArgsConstructor;
 
@@ -57,8 +58,17 @@ public class VoyageService {
     }
 
     public Page<VoyagePreviewDTO> findAllPreview(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(0, size);
         Slice<Voyage> voyagesSlice = voyageRepository.findAll(pageable);
+        pageable = voyagesSlice.getPageable();
+        if (page > 0) {
+            for (int i = 0; i < page; i++) {
+
+                pageable = voyagesSlice.nextPageable();
+                voyagesSlice = voyageRepository.findAll(pageable);
+            }
+            pageable = PageRequest.of(page, size);
+        }
         // Récupère tous les voyages et les traite en un flux
         List<VoyagePreviewDTO> previewVoyageList = voyagesSlice.stream()
                 .map(voyage -> {
@@ -76,7 +86,7 @@ public class VoyageService {
                 .filter(Objects::nonNull) // Exclut les valeurs null
                 .collect(Collectors.toList()); // Convertit en liste
 
-        long total = previewVoyageList.size();
+        long total = voyageRepository.count();
 
         return PaginationUtils.ContentToPage(previewVoyageList, pageable, total);
     }
@@ -119,3 +129,58 @@ public class VoyageService {
     }
 
 }
+
+/*
+ * 
+ * Just to save
+ * public Page<VoyagePreviewDTO> findAllPreview(String pagingState, String
+ * previousOrNext) {
+ * Pageable pageable = null;
+ * Slice<Voyage> voyagesSlice = null;
+ * if (pagingState == null) {
+ * pageable = PageRequest.of(0, PAGE_SIZE);
+ * voyagesSlice = voyageRepository.findAll(pageable);
+ * } else {
+ * System.out.println(pagingState);
+ * pageable = PageRequest.of(0, PAGE_SIZE);
+ * PagingState pagingState1 = PagingState.fromString(pagingState);
+ * CassandraPageRequest cassandraPageRequest = CassandraPageRequest.of(pageable,
+ * pagingState1.getRawPagingState());
+ * voyagesSlice = voyageRepository.findAll(cassandraPageRequest);
+ * }
+ * pageable = voyagesSlice.getPageable();
+ * /*
+ * if (page > 0) {
+ * for (int i = 0; i < page; i++) {
+ * 
+ * pageable = voyagesSlice.nextPageable();
+ * voyagesSlice = voyageRepository.findAll(pageable);
+ * }
+ * }
+ * 
+ * // Récupère tous les voyages et les traite en un flux
+ * List<VoyagePreviewDTO> previewVoyageList = voyagesSlice.stream()
+ * .map(voyage -> {
+ * // Récupère la première ligne de voyage associée
+ * LigneVoyage ligneVoyage =
+ * ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage());
+ * 
+ * ClassVoyage classVoyage =
+ * classVoyageRepository.findById(ligneVoyage.getIdClassVoyage())
+ * .orElse(null);
+ * 
+ * // Trouve l'agence associée et mappe les informations si présente
+ * return userRepository.findById(ligneVoyage.getIdAgenceVoyage())
+ * .map(agenceVoyage -> voyageMapper.toVoyagePreviewDTO(voyage, agenceVoyage,
+ * classVoyage))
+ * .orElse(null); // Retourne null si aucune agence n'est trouvée
+ * })
+ * .filter(Objects::nonNull) // Exclut les valeurs null
+ * .collect(Collectors.toList()); // Convertit en liste
+ * 
+ * long total = voyageRepository.count();
+ * 
+ * return PaginationUtils.ContentToPage(previewVoyageList, pageable, total);
+ * }
+ * 
+ */

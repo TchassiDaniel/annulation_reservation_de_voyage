@@ -33,7 +33,7 @@ public class VoyageController {
     })
     @GetMapping
     public ResponseEntity<Page<VoyagePreviewDTO>> getAllVoyages(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "12") int size) {
         Page<VoyagePreviewDTO> voyages = voyageService.findAllPreview(page, size);
         return new ResponseEntity<>(voyages, HttpStatus.OK);
     }

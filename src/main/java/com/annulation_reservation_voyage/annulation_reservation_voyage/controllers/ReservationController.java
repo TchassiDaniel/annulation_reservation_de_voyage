@@ -4,6 +4,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reser
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationPreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +53,7 @@ public class ReservationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
-            Page<Reservation> reservations = reservationService.findAllForUser(idUser, page, size);
+            Page<ReservationPreviewDTO> reservations = reservationService.findAllForUser(idUser, page, size);
             return new ResponseEntity<>(reservations, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
