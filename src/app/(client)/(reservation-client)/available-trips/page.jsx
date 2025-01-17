@@ -117,13 +117,13 @@ export default function AvailableTrips() {
 
 
                 <div className="flex justify-end gap-2 mb-8">
-                    <button onClick={() => setActiveFilter('all')} className={`px-4 py-2 rounded-full ${activeFilter === 'all' ? 'bg-reservation-color text-white' : 'bg-gray-100 text-reservation-color hover:bg-gray-200'} transition-all font-bold duration-300 shadow-sm`}>
+                    <button onClick={() => setActiveFilter('all')} className={`px-4 py-2 rounded-full ${activeFilter === 'all' ? 'bg-reservation-details-color text-white' : 'bg-gray-100 text-reservation-details-color hover:bg-gray-200'} transition-all font-bold duration-300 shadow-sm`}>
                         All
                     </button>
                     {['Douala', 'Yaoundé', 'Limbé', 'Kribi'].map((city, index) => (
                         <button key={city || index}
                             onClick={() => setActiveFilter(city)}
-                            className={`px-4 py-2 rounded-full ${activeFilter === city ? 'bg-reservation-color text-white' : 'bg-gray-100 text-reservation-color hover:bg-gray-200'} transition-all font-bold duration-300 shadow-sm`}
+                            className={`px-4 py-2 rounded-full ${activeFilter === city ? 'bg-reservation-details-color text-white' : 'bg-gray-100 text-reservation-details-color hover:bg-gray-200'} transition-all font-bold duration-300 shadow-sm`}
                         >
                             {city}
                         </button>

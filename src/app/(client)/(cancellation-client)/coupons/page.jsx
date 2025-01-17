@@ -65,7 +65,7 @@ const Coupons = () => {
             onClick={() => setActiveTab("all")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
               activeTab === "all"
-                ? "bg-reservation-color text-white"
+                ? "bg-reservation-details-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             All
@@ -75,7 +75,7 @@ const Coupons = () => {
             onClick={() => setActiveTab("VALIDE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
               activeTab === "confirmed"
-                ? "bg-reservation-color text-white"
+                ? "bg-reservation-details-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Valid
@@ -85,7 +85,7 @@ const Coupons = () => {
             onClick={() => setActiveTab("EXPIRE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
               activeTab === "reserved"
-                ? "bg-reservation-color text-white"
+                ? "bg-reservation-details-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Expired
