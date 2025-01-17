@@ -12,7 +12,7 @@ export default function NavBar()
     const {logout, userData} = useAuthentication();
 
     const applyNavLinkBtnStyle = () => {
-        return " w-12 h-10 mt-1 border-2 bg-gray-50 flex justify-center items-center rounded-xl shadow-xl hover:bg-reservation-color text-reservation-color text-xl hover:text-white transition-all duration-300";
+        return " w-12 h-10 mt-1 border-2 bg-gray-50 flex justify-center items-center rounded-xl shadow-xl hover:bg-reservation-details-color text-reservation-details-color text-xl hover:text-white transition-all duration-300";
     }
 
     return (
