@@ -1,0 +1,119 @@
+{
+  "historiques": [
+    {
+      "idHistorique": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "statusHistorique": "ANNULER_PAR_AGENCE_APRES_RESERVATION",
+      "dateReservation": "2025-01-31T08:55:36.173Z",
+      "dateConfirmation": "2025-01-31T08:55:36.173Z",
+      "dateAnnulation": "2025-01-31T08:55:36.173Z",
+      "causeAnnulation": "Conditions météorologiques",
+      "origineAnnulation": "Agence de voyage",
+      "tauxAnnulation": 50,
+      "compensation": 150,
+      "idReservation": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "lieuDepart": "Douala",
+      "lieuArrivee": "Paris",
+      "heureDepart": "2025-02-15T10:00:00.000Z",
+      "classeVoyage": "Business",
+      "estVIP": true,
+      "passagerDetails": {
+        "nom": "John Doe",
+        "age": 35,
+        "carteID": "ID123456",
+        "bagages": 2,
+        "genre": "Male",
+        "siege": "23A",
+        "prixBillet": 7000
+      }
+    },
+    {
+      "idHistorique": "4fa85f64-5717-4562-b3fc-2c963f66afa7",
+      "statusHistorique": "CONFIRME",
+      "dateReservation": "2025-02-15T10:30:00.000Z",
+      "dateConfirmation": "2025-02-16T14:45:22.173Z",
+      "tauxAnnulation": 0,
+      "compensation": 0,
+      "idReservation": "4fa85f64-5717-4562-b3fc-2c963f66afa7",
+      "lieuDepart": "Paris",
+      "lieuArrivee": "New York",
+      "heureDepart": "2025-03-15T14:00:00.000Z",
+      "classeVoyage": "Économie",
+      "estVIP": false,
+      "passagerDetails": {
+        "nom": "Jane Smith",
+        "age": 28,
+        "carteID": "ID789012",
+        "bagages": 1,
+        "genre": "Female",
+        "siege": "12C",
+        "prixBillet": 5500
+      }
+
+    },
+    {
+      "idHistorique": "5fa85f64-5717-4562-b3fc-2c963f66afa8",
+      "statusHistorique": "EN_ATTENTE",
+      "dateReservation": "2025-03-01T09:15:00.000Z",
+      "idReservation": "5fa85f64-5717-4562-b3fc-2c963f66afa8",
+      "lieuDepart": "Yaoundé",
+      "lieuArrivee": "Londres",
+      "heureDepart": "2025-04-10T08:30:00.000Z",
+      "classeVoyage": "Première",
+      "estVIP": true,
+      "passagerDetails": {
+        "nom": "Marie Dupont",
+        "age": 42,
+        "carteID": "ID345678",
+        "bagages": 3,
+        "genre": "Female",
+        "siege": "1A",
+        "prixBillet": 12000
+      }
+    },
+    {
+      "idHistorique": "6fa85f64-5717-4562-b3fc-2c963f66afa9",
+      "statusHistorique": "CONFIRME",
+      "dateReservation": "2025-02-20T14:45:00.000Z",
+      "dateConfirmation": "2025-02-22T10:20:22.173Z",
+      "idReservation": "6fa85f64-5717-4562-b3fc-2c963f66afa9",
+      "lieuDepart": "Dakar",
+      "lieuArrivee": "Bruxelles",
+      "heureDepart": "2025-05-05T12:15:00.000Z",
+      "classeVoyage": "Économie Premium",
+      "estVIP": false,
+      "passagerDetails": {
+        "nom": "Ahmed Sall",
+        "age": 31,
+        "carteID": "ID901234",
+        "bagages": 2,
+        "genre": "Male",
+        "siege": "18D",
+        "prixBillet": 8500
+      }
+    },
+    {
+      "idHistorique": "7fa85f64-5717-4562-b3fc-2c963f66afaa",
+      "statusHistorique": "ANNULE",
+      "dateReservation": "2025-02-10T11:30:00.000Z",
+      "dateAnnulation": "2025-02-25T15:40:00.000Z",
+      "causeAnnulation": "Changement de plans personnels",
+      "tauxAnnulation": 25,
+      "compensation": 75,
+      "idReservation": "7fa85f64-5717-4562-b3fc-2c963f66afaa",
+      "lieuDepart": "Abidjan",
+      "lieuArrivee": "Madrid",
+      "heureDepart": "2025-06-20T16:45:00.000Z",
+      "classeVoyage": "Business",
+      "estVIP": true,
+      "passagerDetails": {
+        "nom": "Fatou Diop",
+        "age": 38,
+        "carteID": "ID567890",
+        "bagages": 1,
+        "genre": "Female",
+        "siege": "7C",
+        "prixBillet": 9800
+      }
+    }
+  ]
+}
