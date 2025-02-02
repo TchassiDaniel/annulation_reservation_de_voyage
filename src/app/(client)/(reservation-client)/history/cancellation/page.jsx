@@ -1,8 +1,5 @@
-export default function CancellationHistory()
-{
-    return (
-        <div>
-            Cancellation History
-        </div>
-    )
+import CancellationHistoryVoyage from './CancellationHistoryVoyage';
+
+export default function Page() {
+  return <CancellationHistoryVoyage />;
 }
