@@ -1,8 +1,6 @@
-export default function ReservationHistory()
-{
-    return (
-        <div>
-            Reservation History
-        </div>
-    )
+
+import HistoriqueVoyage from './HistoriqueVoyage';
+
+export default function Page() {
+  return <HistoriqueVoyage />;
 }
