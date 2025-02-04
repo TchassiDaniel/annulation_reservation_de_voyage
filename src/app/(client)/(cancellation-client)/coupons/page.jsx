@@ -74,7 +74,7 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("VALIDE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "confirmed"
+              activeTab === "VALIDE"
                 ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
@@ -84,7 +84,7 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("EXPIRE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "reserved"
+              activeTab === "EXPIRE"
                 ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>

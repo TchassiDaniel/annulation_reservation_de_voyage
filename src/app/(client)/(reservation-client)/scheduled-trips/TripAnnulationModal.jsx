@@ -7,9 +7,74 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [selectedCause, setSelectedCause] = useState("");
   const [customCause, setCustomCause] = useState("");
-  const refundAmount = 3000;
+  const [selectedPassengers, setSelectedPassengers] = useState([]);
+  const [cancelAll, setCancelAll] = useState(true);
 
-  if (!isOpen) return null;
+  const refundAmount = 3000;
+  const reservation = {
+    idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    dateReservation: "2025-01-10T14:23:39.491Z",
+    dateConfirmation: "2025-01-11T14:23:39.491Z",
+    nbrPassager: 2,
+    montantPaye: 6000,
+    prixTotal: 12000,
+    statutReservation: "RESERVER",
+    idUser: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    idVoyage: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    passager: [
+      {
+        idPassager: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        numeroPieceIdentific: "123456789",
+        nom: "John Doe",
+        genre: "M",
+        age: 30,
+        nbrBaggage: 2,
+        idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        placeChoisis: 1,
+      },
+      {
+        idPassager: "4fa85f64-5717-4562-b3fc-2c963f66afa7",
+        numeroPieceIdentific: "987654321",
+        nom: "Jane Doe",
+        genre: "F",
+        age: 28,
+        nbrBaggage: 1,
+        idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        placeChoisis: 2,
+      },
+    ],
+    voyage: {
+      idVoyage: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      titre: "Trip to Douala",
+      description: "A wonderful trip to Douala",
+      dateDepartPrev: "2025-01-15T14:23:39.491Z",
+      lieuDepart: "Yaoundé",
+      dateDepartEffectif: "2025-01-15T14:23:39.491Z",
+      dateArriveEffectif: "2025-01-15T18:23:39.491Z",
+      lieuArrive: "Douala",
+      heureDepartEffectif: "2025-01-15T14:23:39.491Z",
+      pointDeDepart: "Point A",
+      pointArrivee: "Point C",
+      dureeVoyage: {
+        seconds: 14400,
+        zero: false,
+        nano: 0,
+        negative: false,
+        units: [],
+      },
+      heureArrive: "2025-01-15T18:23:39.491Z",
+      nbrPlaceReservable: 50,
+      nbrPlaceReserve: 20,
+      nbrPlaceConfirm: 15,
+      nbrPlaceRestante: 30,
+      datePublication: "2025-01-01T14:23:39.491Z",
+      dateLimiteReservation: "2025-01-14T14:23:39.491Z",
+      dateLimiteConfirmation: "2025-01-14T14:23:39.491Z",
+      statusVoyage: "CONFIRMER",
+      smallImage: "small.jpg",
+      bigImage: "big.jpg",
+    },
+  };
 
   const handleCauseChange = (e) => {
     setSelectedCause(e.target.value);
@@ -19,6 +84,22 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     setCustomCause(e.target.value);
   };
 
+  const handlePassengerChange = (id) => {
+    setSelectedPassengers((prev) =>
+      prev.includes(id)
+        ? prev.filter((passengerId) => passengerId !== id)
+        : [...prev, id]
+    );
+  };
+
+  const handleCancelAllChange = () => {
+    setCancelAll((prev) => !prev);
+    if (!cancelAll) {
+      setSelectedPassengers(reservation.passager.map((p) => p.idPassager));
+    } else {
+      setSelectedPassengers([]);
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Logique pour soumettre le formulaire
@@ -41,6 +122,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     }
   };
 
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
       <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -60,6 +142,46 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
           </button>
         </div>
         <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Select Passengers to Cancel
+            </label>
+            <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
+              {reservation.passager.map((passenger) => (
+                <div
+                  key={passenger.idPassager}
+                  className="flex items-center mb-2">
+                  <input
+                    type="checkbox"
+                    id={`passenger-${passenger.idPassager}`}
+                    name="passenger"
+                    value={passenger.idPassager}
+                    checked={selectedPassengers.includes(passenger.idPassager)}
+                    onChange={() => handlePassengerChange(passenger.idPassager)}
+                    className="mr-2 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label
+                    htmlFor={`passenger-${passenger.idPassager}`}
+                    className="text-gray-700">
+                    {passenger.nom}
+                  </label>
+                </div>
+              ))}
+              <div className="flex items-center mt-4">
+                <input
+                  type="checkbox"
+                  id="cancel-all"
+                  name="cancel-all"
+                  checked={cancelAll}
+                  onChange={handleCancelAllChange}
+                  className="mr-2 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                />
+                <label htmlFor="cancel-all" className="text-red-700 font-bold">
+                  Cancel Entire Trip
+                </label>
+              </div>
+            </div>
+          </div>
           <div className="mb-4">
             <label
               className="block text-gray-700 text-sm font-bold mb-2"
