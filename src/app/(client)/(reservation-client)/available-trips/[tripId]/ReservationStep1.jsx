@@ -4,9 +4,10 @@ import Bus70SeatsDisposition from "@/components/SeatsDisposition/Bus70SeatsDispo
 import Bus75SeatsDisposition from "@/components/SeatsDisposition/Bus75SeatsDisposition";
 import Bus80SeatsDisposition from "@/components/SeatsDisposition/Bus80SeatsDisposition";
 import Bus56SeatsDisposition from "@/components/SeatsDisposition/Bus56SeatsDisposition";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {FaHouse} from "react-icons/fa6";
 import PropTypes from "prop-types";
+import {formatDateOnly} from "@/Utils/formatDateMethods";
 
 export default function ReservationStep1({tripDetails, setSelectedSeats, selectedSeats, onClose, onContinue}) {
 
@@ -35,10 +36,10 @@ export default function ReservationStep1({tripDetails, setSelectedSeats, selecte
 
     const reservationDetails = [
         { icon: FaHouse, label: "Travel agency", value: tripDetails.nomAgence },
-        { icon: FaCalendar, label: "Travel date", value: new Date(tripDetails.dateDepartPrev).toLocaleDateString('en-EN', {dateStyle: 'long'}) },
-        {icon: MapPin, label: "Departure location", value: tripDetails.lieuDepart },
-        { icon: MapPin, label: "Arrival Location", value: tripDetails.lieuArrive  },
-        { icon: FaMoneyBill, label: "Unit price", value: tripDetails.prix + " FCFA" },
+        { icon: FaCalendar, label: "Travel date", value: formatDateOnly(tripDetails?.dateDepartPrev) },
+        {icon: MapPin, label: "Departure location", value: tripDetails?.lieuDepart },
+        { icon: MapPin, label: "Arrival Location", value: tripDetails?.lieuArrive  },
+        { icon: FaMoneyBill, label: "Unit price", value: tripDetails?.prix + " FCFA" },
     ];
 
     return (
@@ -108,7 +109,7 @@ export default function ReservationStep1({tripDetails, setSelectedSeats, selecte
                 </div>
 
 
-                <div className="w-1/2 p-6 bg-gray-50 min-h-screen overflow-y-auto">
+                <div className="w-1/2 p-6 bg-gray-50 h-full overflow-y-auto">
                     <h3 className="text-2xl font-semibold text-reservation-color mb-1">Selection of places</h3>
                     <p className="italic text-md mb-6 text-gray-600">Please choose the seat(s) you want to book</p>
                     <div className="ml-7 flex gap-4 mb-6">
@@ -126,10 +127,10 @@ export default function ReservationStep1({tripDetails, setSelectedSeats, selecte
                             <span className="text-sm text-red-600 font-medium">Reserved </span>
                         </div>
                     </div>
-                    {tripDetails.nbrPlaceReservable === 70 && <Bus70SeatsDisposition setSeats={setSelectedSeats}/>}
-                    {tripDetails.nbrPlaceReservable === 75 && <Bus75SeatsDisposition setSelectedSeats={setSelectedSeats}/>}
-                    {tripDetails.nbrPlaceReservable === 80 && <Bus80SeatsDisposition setSelectedSeats={setSelectedSeats}/>}
-                    {tripDetails.nbrPlaceReservable === 56 && <Bus56SeatsDisposition setSelectedSeats={setSelectedSeats}/>}
+                    {tripDetails.nbrPlaceRestante === 70 && <Bus70SeatsDisposition setSeats={setSelectedSeats} _reservedSeats={tripDetails?.placeReservees}/>}
+                    {tripDetails.nbrPlaceRestante === 75 && <Bus75SeatsDisposition setSelectedSeats={setSelectedSeats} _reservedSeats={tripDetails?.placeReservees}/>}
+                    {tripDetails.nbrPlaceRestante === 80 && <Bus80SeatsDisposition setSelectedSeats={setSelectedSeats} _reservedSeats={tripDetails?.placeReservees}/>}
+                    {tripDetails.nbrPlaceRestante === 56 && <Bus56SeatsDisposition setSelectedSeats={setSelectedSeats} _reservedSeats={tripDetails?.placeReservees}/>}
                 </div>
             </div>
 

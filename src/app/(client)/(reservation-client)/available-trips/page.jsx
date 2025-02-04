@@ -13,24 +13,9 @@ import {formatDurationSimple} from "@/Utils/formatDateMethods";
 
 
 export default function AvailableTrips() {
-    const router = useRouter();
-    const trips =
-        {
-            id: 1,
-            company: "General Voyages",
-            from: "Douala",
-            to: "Yaoundé",
-            departure: "08:00",
-            duration: "4h",
-            price: 6000,
-            seatsAvailable: 23,
-            totalSeats: 70,
-            rating: 4.5,
-            comfort: "VIP",
-            imageUrl: "/placeholder.svg?height=200&width=300",
-            amenities: ["WiFi", "Climatisé", "USB"]
-        }
 
+
+    const router = useRouter();
     const [availableTrips, setAvailableTrips] = useState([]);
     const [error, setError] =useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -39,13 +24,16 @@ export default function AvailableTrips() {
     const [isSearch, setIsSearch] = useState(false);
 
 
-
-
-
     useEffect(() => {
         fetchAvailableTrips();
     }, []);
 
+
+
+    const trips =
+        {
+            amenities: ['wifi', 'Air conditioning', 'USB'],
+        }
 
 
     async function fetchAvailableTrips() {
@@ -56,7 +44,7 @@ export default function AvailableTrips() {
             const response = await axiosInstance.get("/voyage");
             if (response.status === 200)
             {
-                 console.log(response.data);
+                console.log(response.data);
                 setIsLoading(false);
                 setAvailableTrips(response.data.content);
                 if (response.data.empty === true)
@@ -153,7 +141,7 @@ export default function AvailableTrips() {
                         (
                             <div className="flex flex-col">
                                 <div className="grid grid-cols-3 gap-6">
-                                    {availableTrips.map((trip, index) => (
+                                    { availableTrips && availableTrips.length > 0 && availableTrips?.map((trip, index) => (
                                         <div key={trip.idVoyage || index}
                                              className="bg-gray-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-lg hover:-translate-y-2 transform transition duration-300">
                                             <div className="relative h-48">
@@ -202,7 +190,7 @@ export default function AvailableTrips() {
                                                         </div>
                                                         <div>
                                                             <p className="text-sm text-gray-500">Available Seat</p>
-                                                            <p className="text-sm font-medium">{trip.nbrPlaceRestante}/{trip.nbrPlaceReservable} seats</p>
+                                                            <p className="text-sm font-medium">{trip.nbrPlaceReservable}/{trip.nbrPlaceRestante} seats</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -234,35 +222,55 @@ export default function AvailableTrips() {
 
                                 {/*Pagination content */}
                                 {canRenderPaginationContent && (
-                                    <div className="w-full justify-center flex mt-6 mb-4">
-                                        <div className="flex gap-4">
+                                    <div className="w-full flex justify-center mt-8 mb-6">
+                                        <div className="flex items-center gap-4">
+
                                             <Tooltip placement={"left"} title={"previous slide"}>
-                                                <button onClick={async () => {
-                                                }}
-                                                        className="w-14 h-14 border-2 rounded-lg bg-gray-100 hover:bg-reservation-color text-xl  text-reservation-color hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                <button
+                                                    className="w-10 h-10  text-reservation-color flex items-center justify-center"
+                                                >
                                                     <FaArrowLeft/>
                                                 </button>
                                             </Tooltip>
-                                            <p className="text-reservation-color text-2xl font-bold mt-4">{"1/10"}</p>
+
+
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    className="w-10 h-10 rounded-lg bg-reservation-color text-white font-medium flex items-center justify-center shadow-sm">
+                                                    1
+                                                </button>
+                                                <button
+                                                    className="w-10 h-10 rounded-lg bg-white text-reservation-color hover:bg-gray-50 font-medium flex items-center justify-center border-2 border-gray-200">
+                                                    2
+                                                </button>
+                                                <button
+                                                    className="w-10 h-10 rounded-lg bg-white text-reservation-color hover:bg-gray-50 font-medium flex items-center justify-center border-2 border-gray-200">
+                                                    3
+                                                </button>
+                                                <span
+                                                    className="flex items-center justify-center px-2 text-gray-500">...</span>
+                                                <button
+                                                    className="w-10 h-10 rounded-lg bg-white text-reservation-color hover:bg-gray-50 font-medium flex items-center justify-center border-2 border-gray-200">
+                                                    {availableTrips?.length}
+                                                </button>
+                                            </div>
+
                                             <Tooltip placement={"right"} title={"next slide"}>
-                                                <button onClick={async () => {
-                                                }}
-                                                        className="w-14 h-14 border-2 rounded-lg bg-gray-100 hover:bg-reservation-color text-xl  text-reservation-color hover:text-2xl duration-300 transition-all  hover:text-white shadow-xl flex justify-center items-center mt-2">
+                                                <button
+                                                    className="w-10 h-10  text-reservation-color flex items-center justify-center"
+                                                >
                                                     <FaArrowRight/>
                                                 </button>
                                             </Tooltip>
                                         </div>
                                     </div>
                                 )}
-                                <ErrorHandler error={error} data={!error && availableTrips} isSearch={isSearch}/>
                             </div>
                         )
                     }
+                    <ErrorHandler error={error} dataLength={availableTrips?.length} isSearch={isSearch}/>
                 </div>
             </div>
-
-            {/* Error Management */}
-
         </div>
     );
 }

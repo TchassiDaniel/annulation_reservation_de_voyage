@@ -1,21 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export function useSeatManager ()  {
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [reservedSeats, setReservedSeats] = useState([]);
-
-
-    useEffect(() => {
-        async function fetchReservedSeats ()  {
-            try {
-                const mockReservedSeats = [3, 12, 25, 44];
-                setReservedSeats(mockReservedSeats);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des sièges réservés:', error);
-            }
-        }
-        fetchReservedSeats();
-    }, []);
 
 
 
