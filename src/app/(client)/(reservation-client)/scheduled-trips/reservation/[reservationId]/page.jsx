@@ -1,11 +1,24 @@
-'use client';
+"use client"
 
-import React, { useState } from 'react';
-import { ArrowLeft, Printer, Download, Share2, MapPin, Calendar, Clock, Building, CreditCard, Users, CheckCircle, Truck, AlertTriangle, AlertCircle } from 'lucide-react';
-import {useRouter} from "next/navigation";
+import React from "react"
+import {
+    ArrowLeft,
+    Printer,
+    Download,
+    Share2,
+    MapPin,
+    Calendar,
+    Clock,
+    Building,
+    CreditCard,
+    Users,
+    Truck,
+    AlertTriangle,
+    AlertCircle,
+} from "lucide-react"
+import { useRouter } from "next/navigation"
 
-export default function ReservationDetails({params}) {
-
+export default function ReservationDetails({ params }) {
     const reservation = {
         id: 1,
         reference: "RES123456",
@@ -23,7 +36,8 @@ export default function ReservationDetails({params}) {
         price: 7000,
         amountPaid: 14000,
         totalAmount: 21000,
-        cancellationPolicy: "Free cancellation up to 24 hours before departure. 50% refund for cancellations made less than 24 hours before departure.",
+        cancellationPolicy:
+            "Free cancellation up to 24 hours before departure. 50% refund for cancellations made less than 24 hours before departure.",
         passengers: [
             {
                 id: "1",
@@ -36,7 +50,7 @@ export default function ReservationDetails({params}) {
                 phone: "+237 123456789",
                 email: "john@example.com",
                 luggageCount: 2,
-                ticketPrice: 7000
+                ticketPrice: 7000,
             },
             {
                 id: "2",
@@ -49,7 +63,7 @@ export default function ReservationDetails({params}) {
                 phone: "+237 987654321",
                 email: "jane@example.com",
                 luggageCount: 1,
-                ticketPrice: 7000
+                ticketPrice: 7000,
             },
             {
                 id: "3",
@@ -62,21 +76,24 @@ export default function ReservationDetails({params}) {
                 phone: "+237 567891234",
                 email: "alice@example.com",
                 luggageCount: 1,
-                ticketPrice: 7000
-            }
-        ]
-    };
-    const reservationId = React.use(params).reservationId;
-    const router = useRouter();
-
+                ticketPrice: 7000,
+            },
+        ],
+    }
+    const reservationId = React.use(params).reservationId
+    const router = useRouter()
 
     return (
-        <div className="max-w-5xl mx-auto p-6">
+        <div className=" mx-auto p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                    <button onClick={()=>{router.back()}}
-                        className="p-2 hover:bg-gray-100 rounded-lg">
+                    <button
+                        onClick={() => {
+                            router.back()
+                        }}
+                        className="p-2 hover:bg-gray-100 rounded-lg"
+                    >
                         <ArrowLeft className="h-5 w-5" />
                     </button>
                     <div>
@@ -105,15 +122,15 @@ export default function ReservationDetails({params}) {
 
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                <span className={`px-2 py-1 rounded-full text-sm font-medium ${
-                    "reservation.status" === 'Confirmed'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                }`}>
-                  {"reservation.status"}
+                <span
+                    className={`px-2 py-1 rounded-full text-sm font-medium ${
+                        reservation.status === "Confirmed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                    }`}
+                >
+                  {reservation.status}
                 </span>
                                 <span className="px-2 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                  {"reservation.class"}
+                  {reservation.class}
                 </span>
                             </div>
 
@@ -123,7 +140,9 @@ export default function ReservationDetails({params}) {
                                     <MapPin className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Route</p>
-                                        <p className="font-medium"></p>
+                                        <p className="font-medium">
+                                            {reservation.departure} - {reservation.arrival}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -132,7 +151,7 @@ export default function ReservationDetails({params}) {
                                     <Building className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Agency</p>
-                                        <p className="font-medium"></p>
+                                        <p className="font-medium">{reservation.agencyName}</p>
                                     </div>
                                 </div>
 
@@ -141,7 +160,7 @@ export default function ReservationDetails({params}) {
                                     <Truck className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Bus</p>
-                                        <p className="font-medium">{}</p>
+                                        <p className="font-medium">{reservation.busRegistration}</p>
                                     </div>
                                 </div>
 
@@ -150,9 +169,7 @@ export default function ReservationDetails({params}) {
                                     <Calendar className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Date</p>
-                                        <p className="font-medium">
-                                            {}
-                                        </p>
+                                        <p className="font-medium">{reservation.departureDate}</p>
                                     </div>
                                 </div>
 
@@ -161,7 +178,7 @@ export default function ReservationDetails({params}) {
                                     <Clock className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Time</p>
-                                        <p className="font-medium">{}</p>
+                                        <p className="font-medium">{reservation.departureTime}</p>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +191,7 @@ export default function ReservationDetails({params}) {
                                     <Users className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Passengers</p>
-                                        <p className="font-medium">{} passengers</p>
+                                        <p className="font-medium">{reservation.passengers.length} passengers</p>
                                     </div>
                                 </div>
 
@@ -183,7 +200,7 @@ export default function ReservationDetails({params}) {
                                     <CreditCard className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Payment</p>
-                                        <p className="font-medium">{} FCFA</p>
+                                        <p className="font-medium">{reservation.amountPaid} FCFA</p>
                                     </div>
                                 </div>
 
@@ -192,7 +209,7 @@ export default function ReservationDetails({params}) {
                                     <AlertCircle className="text-gray-500 h-5 w-5" />
                                     <div>
                                         <p className="text-sm text-gray-500">Payment Deadline</p>
-                                        <p className="font-medium">{}</p>
+                                        <p className="font-medium">{reservation.paymentDeadline}</p>
                                     </div>
                                 </div>
                             </div>
@@ -203,7 +220,7 @@ export default function ReservationDetails({params}) {
                                     <AlertTriangle className="h-5 w-5" />
                                     Cancellation Policy
                                 </h3>
-                                <p className="text-sm text-yellow-700">{}</p>
+                                <p className="text-sm text-yellow-700">{reservation.cancellationPolicy}</p>
                             </div>
                         </div>
                     </div>
@@ -214,17 +231,42 @@ export default function ReservationDetails({params}) {
                     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                         <h2 className="text-xl font-semibold p-6 border-b border-gray-200">Passenger Details</h2>
                         <div className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {reservation.passengers.map((passenger, index) => (
-                                    <div key={index} className="bg-gray-50 p-4 rounded-lg">
-                                        <h3 className="font-semibold mb-2">{passenger.name}</h3>
-                                        <div className="space-y-2 text-sm">
-                                            <p><span className="text-gray-500">Age:</span> {passenger.age}</p>
-                                            <p><span className="text-gray-500">ID Card:</span> {passenger.idNumber}</p>
-                                            <p><span className="text-gray-500">Luggage:</span> {passenger.luggageCount}</p>
-                                            <p><span className="text-gray-500">Gender:</span> {passenger.gender}</p>
-                                            <p><span className="text-gray-500">Seat:</span> {passenger.seatNumber}</p>
-                                            <p><span className="text-gray-500">Ticket Price:</span> {passenger.ticketPrice} FCFA</p>
+                                    <div key={index} className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <h3 className="font-semibold text-lg">{passenger.name}</h3>
+                                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                        {passenger.type}
+                      </span>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <p>
+                                                <span className="text-gray-500">Age:</span> {passenger.age}
+                                            </p>
+                                            <p>
+                                                <span className="text-gray-500">Gender:</span> {passenger.gender}
+                                            </p>
+                                            <p>
+                                                <span className="text-gray-500">ID Card:</span> {passenger.idNumber}
+                                            </p>
+                                            <p>
+                                                <span className="text-gray-500">Seat:</span> {passenger.seatNumber}
+                                            </p>
+                                            <p>
+                                                <span className="text-gray-500">Luggage:</span> {passenger.luggageCount}
+                                            </p>
+                                            <p>
+                                                <span className="text-gray-500">Ticket Price:</span> {passenger.ticketPrice} FCFA
+                                            </p>
+                                        </div>
+                                        <div className="mt-4 pt-4 border-t border-gray-200">
+                                            <p className="text-sm">
+                                                <span className="text-gray-500">Phone:</span> {passenger.phone}
+                                            </p>
+                                            <p className="text-sm">
+                                                <span className="text-gray-500">Email:</span> {passenger.email}
+                                            </p>
                                         </div>
                                         <button className="mt-4 w-full px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-300 flex items-center justify-center gap-2">
                                             <Printer className="h-4 w-4" />
@@ -238,6 +280,6 @@ export default function ReservationDetails({params}) {
                 </div>
             </div>
         </div>
-    );
+    )
 }
 
