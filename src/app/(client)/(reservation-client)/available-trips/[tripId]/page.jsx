@@ -21,6 +21,7 @@ import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton"
 import ReservationProcessModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationProcess"
 import { formatDateOnly, formatDurationSimple, formatFullDateTime, formatDateToTime } from "@/Utils/formatDateMethods"
 import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
+import SuccessModal from "@/components/Modals/SuccessModal";
 
 export default function TripDetails({ params }) {
     const tripId = React.use(params).tripId;
@@ -35,7 +36,9 @@ export default function TripDetails({ params }) {
     const [images, setImages] = useState([busImage1]);
     const [canOpenReservationModal, setCanOpenReservationModal] = useState(false);
     const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal]= useState(false);
-    const [reservationPrice, setReservationPrice] = useState(0)
+    const [reservationPrice, setReservationPrice] = useState(0);
+    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     async function fetchTripDetails(tripId) {
         setIsLoading(true)
@@ -375,7 +378,21 @@ export default function TripDetails({ params }) {
                 setReservationPrice={setReservationPrice}
             />
 
-            <PaymentModal onClose={()=>setCanOpenPaymentRequestModal(false)} isOpen={canOpenPaymentRequestModal} reservationAmount={reservationPrice} setIsLoading={setIsLoading} />
+            <PaymentModal
+                onClose={()=>setCanOpenPaymentRequestModal(false)}
+                isOpen={canOpenPaymentRequestModal}
+                reservationAmount={reservationPrice}
+                setIsLoading={setIsLoading}
+                setCanOpenSuccessModal={setCanOpenSuccessModal}
+                setSuccessMessage={setSuccessMessage}
+            />
+
+            <SuccessModal
+                canOpenSuccessModal={setCanOpenSuccessModal}
+                isOpen={canOpenSuccessModal}
+                message={successMessage}
+                makeAction={()=> {setCanOpenPaymentRequestModal(false);  router.push("/available-trips");}}
+            />
         </div>
     )
 }
