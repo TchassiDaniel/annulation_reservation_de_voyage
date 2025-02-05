@@ -41,7 +41,7 @@ public class PayementService {
     this.restTemplate = restTemplate;
   }
 
-  public PayInResult pay(String mobilePhone, String mobilePhoneName, String message, double amount, UUID userId) {
+  public PayInResult pay(String mobilePhone, String mobilePhoneName, double amount, UUID userId) {
 
     // On se rassure que l'utilisateur exite
     User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Utilisateur non existant"));
@@ -54,7 +54,7 @@ public class PayementService {
 
     payInDTO.setPayer_email(user.getEmail());
     payInDTO.setPayer_name(mobilePhoneName);
-    payInDTO.setPayer_reference(message);
+    payInDTO.setPayer_reference(user.getUserId().toString());
 
     UUID transactionReference = UUID.randomUUID();
     payInDTO.setTransaction_reference(transactionReference.toString());

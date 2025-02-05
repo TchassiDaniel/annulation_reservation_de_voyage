@@ -250,7 +250,7 @@ public class ReservationService {
                 .orElseThrow(() -> new RuntimeException("Reservation non existante"));
 
         PayInResult payInResult = this.payementService.pay(payRequestDTO.getMobilePhone(),
-                payRequestDTO.getMobilePhoneName(), payRequestDTO.getMessage(), payRequestDTO.getAmount(),
+                payRequestDTO.getMobilePhoneName(), payRequestDTO.getAmount(),
                 payRequestDTO.getUserId());
 
         if (payInResult.getStatus() == ResultStatus.SUCCESS) {

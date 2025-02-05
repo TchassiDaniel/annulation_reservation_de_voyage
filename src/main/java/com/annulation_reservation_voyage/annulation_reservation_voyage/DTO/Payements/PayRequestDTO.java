@@ -8,7 +8,6 @@ import lombok.Data;
 public class PayRequestDTO {
   String mobilePhone;
   String mobilePhoneName;
-  String message;
   double amount;
   UUID userId;
   UUID reservationId;
