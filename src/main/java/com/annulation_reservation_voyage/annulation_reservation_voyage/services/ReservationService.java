@@ -48,6 +48,8 @@ public class ReservationService {
     private final PayementService payementService;
 
     public Page<Reservation> findAll(int page, int size) {
+        // TODO, ajouter un filtre pour ne retourner que les voyages qui ne sont pas
+        // déjà passé
         Pageable pageable = PageRequest.of(page, size);
         Slice<Reservation> slice = reservationRepository.findAll(pageable);
         long total = reservationRepository.count();
@@ -267,20 +269,23 @@ public class ReservationService {
         for (Reservation reservation : reservations) {
             // Si la reservation a un status de PENDING alors on regarde s'il a déjà été
             // payé
-            if (reservation.getStatutPayement() != StatutPayement.NO_PAYMENT
-                    || reservation.getStatutPayement() != StatutPayement.PAID) {
+            if (reservation.getStatutPayement() == StatutPayement.PENDING) {
                 StatusResult statusResult = this.payementService.payStatus(reservation.getTransactionCode());
                 if (statusResult.getStatus() == ResultStatus.SUCCESS) {
                     reservation.setStatutPayement(StatutPayement.PAID);
                     reservation.setMontantPaye(
                             reservation.getMontantPaye() + statusResult.getData().getTransaction_amount());
-                    reservationRepository.save(reservation);
                     if (reservation.getMontantPaye() >= reservation.getPrixTotal()) {
                         confirmerReservation(new ReservationConfirmDTO(reservation.getIdReservation(),
                                 reservation.getMontantPaye()));
                     }
-                    System.out.print(statusResult.toString());
+                    System.out.print("Voici le result" + statusResult.toString());
+                } else if (statusResult.getStatus() == ResultStatus.FAILED) {
+                    reservation.setStatutPayement(StatutPayement.FAILED);
+
                 }
+                reservationRepository.save(reservation);
+
             }
         }
     }

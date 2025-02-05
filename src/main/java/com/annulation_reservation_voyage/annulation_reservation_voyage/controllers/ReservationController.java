@@ -3,6 +3,7 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.controll
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayInErrors;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayInResult;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayRequestDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.ResultStatus;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
@@ -209,7 +210,7 @@ public class ReservationController {
             @Parameter(description = "Données nécessaires pour payer la réservation (détails du paiement).", required = true) @RequestBody PayRequestDTO payRequestDTO) {
 
         PayInResult payInResult = this.reservationService.payerReservation(payRequestDTO);
-        if (payInResult.isOk()) {
+        if (payInResult.getStatus() == ResultStatus.SUCCESS) {
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(payInResult.getErrors(), HttpStatus.BAD_REQUEST);
