@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Calendar, Timer, MapPin, MapPinHouse } from "lucide-react";
-import dynamic from "next/dynamic";
-//import html2pdf from "html2pdf.js";
-//const DynamicComponent = dynamic(() => import("html2pdf.js"), { ssr: false });
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const Coupons = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -31,19 +30,18 @@ const Coupons = () => {
     },
   ];
 
-  const generatePDF = async (couponId) => {
-    const element = document.getElementById(`pdf-content-${couponId}`); // L'élément HTML à convertir
-    const html2pdf = (await import("html2pdf.js")).default;
+  const printCoupon = (couponId) => {
+    const element = document.getElementById(
+      `pdf-content-${couponId}`
+    ).innerHTML; // L'élément HTML à convertir
 
-    const options = {
-      margin: 1,
-      filename: `coupon-${couponId}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-    //    DynamicComponent().then((html2pdf) => {
-    html2pdf().set(options).from(element).save();
-    //    });
+    const printWindow = window.open("", "", "height=600,width=800");
+    printWindow.document.write("<html><head><title>Coupon</title>");
+    printWindow.document.write("</head><body >");
+    printWindow.document.write(element);
+    printWindow.document.write("</body></html>");
+    printWindow.document.close();
+    printWindow.print();
   };
 
   return (
@@ -174,7 +172,7 @@ const Coupons = () => {
                 </div>
                 <div className="mt-5 flex justify-end">
                   <button
-                    onClick={generatePDF}
+                    onClick={() => printCoupon(coupon.idCoupon)}
                     className="bg-reservation-color px-4 py-2 rounded-md text-white font-bold hover:bg-reservation-color/90 transition-all duration-300">
                     Print PDF
                   </button>
