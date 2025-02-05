@@ -284,25 +284,24 @@ export default function HistoriqueVoyage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-0">
-            Historique des Réservations
+    <div className="min-h-screen p-2">
+      <div className="mx-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl lg:text-3xl text-reservation-color font-bold  mb-4 sm:mb-0">
+            Reservation History
           </h1>
-          <div className="text-lg font-bold text-blue-600">Mooving Voyages</div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {historiqueData.historiques
             .filter(reservation => reservation.etatVoyage !== 'annulé')
             .map((reservation) => (
               <div 
                 key={reservation.idHistorique} 
-                className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="bg-gray-100 shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 <div className="p-4">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
+                  <div className="flex  justify-between  mb-3">
                     <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-0">
                       Réservation #{reservation.idHistorique}
                     </h2>
@@ -329,7 +328,7 @@ export default function HistoriqueVoyage() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-7">
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-blue-500 mr-2" />
                       <div>
@@ -406,9 +405,9 @@ export default function HistoriqueVoyage() {
                       onClick={() => setSelectedReservation(
                         selectedReservation === reservation ? null : reservation
                       )}
-                      className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition text-xs w-full"
+                      className="bg-reservation-color text-white px-4 py-2 font-semibold rounded-lg hover:bg-blue-700 transition text-sm lg:text-md"
                     >
-                      Voir Détails
+                      View Details
                     </button>
                   </div>
                 </div>

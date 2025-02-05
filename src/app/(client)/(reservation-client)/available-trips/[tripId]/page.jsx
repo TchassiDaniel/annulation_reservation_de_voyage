@@ -375,7 +375,7 @@ export default function TripDetails({ params }) {
                 setReservationPrice={setReservationPrice}
             />
 
-            <PaymentModal onClose={()=>setCanOpenPaymentRequestModal(false)} isOpen={true /*canOpenPaymentRequestModal*/} reservationAmount={reservationPrice} setIsLoading={setIsLoading} />
+            <PaymentModal onClose={()=>setCanOpenPaymentRequestModal(false)} isOpen={canOpenPaymentRequestModal} reservationAmount={reservationPrice} setIsLoading={setIsLoading} />
         </div>
     )
 }

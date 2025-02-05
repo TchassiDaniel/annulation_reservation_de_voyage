@@ -6,7 +6,7 @@ import WaitForPageLoad from "@/components/Modals/WaitForPageLoad";
 
 
 
-export function PaymentModal({ isOpen, onClose, reservationAmount}) {
+export function PaymentModal({ isOpen, onClose, reservationAmount, setCanOpenSuccessModal, setSuccessMessage, idReservation}) {
     const [step, setStep] = useState(1);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [name, setName] = useState("");
@@ -16,20 +16,21 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleConfirmPayment = () => {
+    function handleConfirmPayment () {
         setStep(2);
-    };
+    }
+
+
 
     async function handleSubmitPayment (e){
         e.preventDefault();
         setIsLoading(true);
         let paymentData = {
-            mobilePhone: phoneNumber,
+            mobilePhone: '+237'+phoneNumber,
             mobilePhoneName: name,
             amount: amount,
             userId: userData?.userId,
-            reservationId: localStorage.getItem('idCurrentReservation'),
-            message:'Payment',
+            reservationId: idReservation ? idReservation : localStorage.getItem('idCurrentReservation'),
         };
 
         console.log(paymentData);
@@ -40,7 +41,8 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
             if (paymentResponse.status === 200)
             {
                 localStorage.removeItem('idCurrentReservation');
-
+                setSuccessMessage("transaction initiated successfully, follow steps on your phone to complete the transaction");
+                setCanOpenSuccessModal(true);
             }
 
         }
@@ -48,32 +50,29 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
         {
             console.log(error);
             setIsLoading(false);
+            setSuccessMessage("");
+            setCanOpenSuccessModal(false);
             if (error.response.status === 400)
             {
-                setError(error.response.data);
-
+                setError("Any mobile account is associated with your phone number .... please retry !");
             }
             else if (error.response.status === 404)
             {
-                setError(error.response.data);
-
+                setError("Your phone number doesn't exist!");
             }
             else
             {
                 setError("Something went wrong when initializing the payment, please retry !!");
-
             }
         }
 
     }
 
-    const resetAndClose = () => {
+    function resetAndClose ()  {
         setStep(1);
-        setPhoneNumber("");
-        setName("");
-        setAmount(reservationAmount.toString());
+        localStorage.removeItem('idCurrentReservation');
         onClose();
-    };
+    }
 
     if (!isOpen) return null;
 

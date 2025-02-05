@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { AlertCircle, Calendar, CheckCircle2, Clock, MapPin, Users, Wallet } from "lucide-react"
 import { BsInfo } from "react-icons/bs"
 import { MdCancel } from "react-icons/md"
@@ -13,6 +13,8 @@ import { Tooltip } from "antd"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import { formatDateOnly, formatDateToTime, formatFullDateTime } from "@/Utils/formatDateMethods"
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler"
+import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
+import SuccessModal from "@/components/Modals/SuccessModal";
 
 // Données simulées mises à jour pour la prévisualisation
 const mockReservation = {
@@ -78,42 +80,46 @@ const mockReservation = {
 }
 
 export default function Page() {
-    const router = useRouter()
-    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null)
-    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false)
-    const [selectedTrip, setSelectedTrip] = useState({})
-    const { userData } = useAuthentication()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(false)
-    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false)
-    const [isSearch, setIsSearch] = useState(false)
-    const [totalPages, setTotalPages] = useState(1)
+    const router = useRouter();
+    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null);
+    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false);
+    const [selectedTrip, setSelectedTrip] = useState({});
+    const { userData } = useAuthentication();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
+    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] = useState(false);
+    const [successMessage, setSuccessMessage]  = useState("");
+    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
+
 
     async function getMyScheduledTrips(userId) {
         setIsLoading(true)
         try {
-            const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`)
-            setIsLoading(false)
+            const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`);
+            setIsLoading(false);
             if (response.status === 200) {
-                console.log(response.data)
-                setMyScheduledTrips(response.data.content)
-                setTotalPages(response?.data?.totalPages)
-                setIsSearch(false)
-                if (response?.data?.empty === true) setCanRenderPaginationContent(false)
-                else setCanRenderPaginationContent(true)
-                setError(null)
+                console.log(response.data);
+                setMyScheduledTrips(response.data.content);
+                setTotalPages(response?.data?.totalPages);
+                setIsSearch(false);
+                if (response?.data?.empty === true) setCanRenderPaginationContent(false);
+                else setCanRenderPaginationContent(true);
+                setError(null);
             }
         } catch (error) {
-            setIsLoading(false)
-            setError(error)
-            setMyScheduledTrips(null)
-            console.log(error)
+            setIsLoading(false);
+            setError(error);
+            setMyScheduledTrips(null);
+            console.log(error);
         }
     }
 
     useEffect(() => {
         if (userData.userId) {
-            getMyScheduledTrips(userData?.userId)
+            getMyScheduledTrips(userData?.userId);
         }
     }, [userData?.userId])
 
@@ -315,7 +321,8 @@ export default function Page() {
                               </div>
                               <button
                                 onClick={() => {
-                                  alert("payment");
+                                    setSelectedTrip(scheduledTrip)
+                                  setCanOpenPaymentRequestModal(true)
                                 }}
                                 className="px-4 py-2 bg-orange-500 font-bold text-white rounded-lg text-sm hover:bg-orange-700 transition-colors w-full sm:w-auto">
                                 Complete payment
@@ -410,6 +417,19 @@ export default function Page() {
           isOpen={canOpenTripAnnulationModal}
           onClose={() => setCanOpenTripAnnulationModal(false)}
         />
+
+          <PaymentModal
+              onClose={()=>setCanOpenPaymentRequestModal(false)}
+              isOpen={canOpenPaymentRequestModal}
+              reservationAmount={Number.parseInt(selectedTrip?.reservation?.prixTotal) - Number.parseInt(selectedTrip?.reservation?.montantPaye)}
+              setIsLoading={setIsLoading}
+              setCanOpenSuccessModal={setCanOpenSuccessModal}
+              setSuccessMessage={setSuccessMessage}
+              idReservation={selectedTrip?.reservation?.idReservation}
+          />
+
+          <SuccessModal canOpenSuccessModal={setCanOpenSuccessModal} isOpen={canOpenSuccessModal} message={successMessage} makeAction={()=>{setCanOpenPaymentRequestModal(false), window.location.reload()}}/>
+
       </div>
     );
 }
