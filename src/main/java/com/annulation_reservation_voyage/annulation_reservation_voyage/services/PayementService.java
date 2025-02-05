@@ -32,7 +32,7 @@ public class PayementService {
   @Value("${payment.apiKey}")
   private String apiKey;
 
-  private String BASE_PATH_URL = "https://gateway.yowyob.com/payment-service/" + apiKey;
+  private String BASE_PATH_URL = "https://gateway.yowyob.com/payment-service";
 
   public PayementService(UserRepository userRepository, ReservationRepository reservationRepository,
       RestTemplate restTemplate) {
@@ -64,7 +64,7 @@ public class PayementService {
     // Définition de la requete
     HttpEntity<?> request = new HttpEntity<>(payInDTO);
 
-    String url = this.BASE_PATH_URL + "/payin";
+    String url = this.BASE_PATH_URL + "/" + this.apiKey + "/payin";
 
     ResponseEntity<PayInResult> response = restTemplate.exchange(url, HttpMethod.POST, request, PayInResult.class);
     PayInResult payInResult = response.getBody();
@@ -73,7 +73,7 @@ public class PayementService {
   }
 
   public StatusResult payStatus(String transactionCode) {
-    String url = this.BASE_PATH_URL + "/transactions/" + transactionCode + "/status";
+    String url = this.BASE_PATH_URL + "/" + this.apiKey + "/transactions/" + transactionCode + "/status";
 
     ResponseEntity<StatusResult> response = restTemplate.exchange(url, HttpMethod.GET, null, StatusResult.class);
 

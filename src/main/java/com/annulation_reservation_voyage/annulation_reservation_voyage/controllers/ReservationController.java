@@ -11,6 +11,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reser
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationPreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.AnnulationService;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.services.PayementService;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.services.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +20,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.AllArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -29,16 +32,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController {
 
     private final ReservationService reservationService;
     private final AnnulationService annulationService;
-
-    public ReservationController(ReservationService reservationService, AnnulationService annulationService) {
-        this.reservationService = reservationService;
-        this.annulationService = annulationService;
-    }
 
     @Operation(summary = "Obtenir toutes les réservations", description = "Récupère la liste de toutes les réservations.")
     @ApiResponses(value = {
@@ -208,7 +207,10 @@ public class ReservationController {
     @PutMapping("/payer")
     public ResponseEntity<?> payerReservation(
             @Parameter(description = "Données nécessaires pour payer la réservation (détails du paiement).", required = true) @RequestBody PayRequestDTO payRequestDTO) {
-
+        // PayInResult payInResult =
+        // this.payementService.pay(payRequestDTO.getMobilePhone(),
+        // payRequestDTO.getMobilePhoneName(), payRequestDTO.getAmount(),
+        // payRequestDTO.getUserId());
         PayInResult payInResult = this.reservationService.payerReservation(payRequestDTO);
         if (payInResult.getStatus() == ResultStatus.SUCCESS) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -216,5 +218,7 @@ public class ReservationController {
             return new ResponseEntity<>(payInResult.getErrors(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    // PayementService payementService;
 
 }
