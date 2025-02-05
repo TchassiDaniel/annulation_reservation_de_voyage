@@ -20,8 +20,8 @@ export default function NavBar({ onMenuClick }) {
                     <button className="lg:hidden mr-4 text-gray-600" onClick={onMenuClick}>
                         <Menu size={24} />
                     </button>
-                    <h1 className="text-xl lg:text-3xl font-bold truncate">
-                        Welcome Back {userData?.prenom + " " + userData?.nom}!
+                    <h1 className="text-xl lg:text-3xl font-bold ">
+                        Welcome Back {userData?.prenom}!
                     </h1>
                 </div>
                 <div className="flex items-center space-x-2 lg:space-x-4">
@@ -42,7 +42,7 @@ export default function NavBar({ onMenuClick }) {
                             onClick={() => {
                                 logout()
                             }}
-                            className="w-10 h-10 flex justify-center items-center rounded-full shadow-md bg-red-400 text-white text-xl hover:bg-white hover:text-red-500 transition-all duration-300"
+                            className="w-10 h-10 flex justify-center items-center rounded-full shadow-md bg-red-500 text-white text-xl hover:bg-white hover:text-red-500 transition-all duration-300"
                         >
                             <FaSignOutAlt />
                         </button>

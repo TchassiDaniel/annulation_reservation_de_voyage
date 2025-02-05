@@ -105,7 +105,14 @@ export default function ReservationStep1({ tripDetails, setSelectedSeats, select
                 </div>
 
                 <div className="w-full lg:w-1/2 p-6  bg-gray-50 h-full overflow-y-auto">
-                    <h3 className="text-2xl font-bold text-reservation-color mb-4">Selection of places</h3>
+                    <div className="flex justify-between">
+                        <h3 className="text-2xl font-bold text-reservation-color mb-4">Selection of places</h3>
+
+                        <button onClick={onClose} className=" w-8 h-8 bg-red-100 rounded-full flex justify-center items-center hover:bg-red-200 transition-all duration-300">
+                            <X className="w-6 h-6 text-red-500"/>
+                        </button>
+                    </div>
+
                     <p className="italic text-md mb-6 text-gray-600">Please choose the seat(s) you want to book</p>
                     <div className="flex flex-wrap gap-4 mb-6">
                         <div className="flex items-center gap-2">

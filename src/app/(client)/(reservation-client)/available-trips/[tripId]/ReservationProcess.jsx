@@ -25,8 +25,8 @@ export default function ReservationProcessModal({ isOpen, onClose, tripDetails }
     if (!isOpen) return null
     return (
         <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300 p-4">
-                <div className="bg-white relative rounded-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300 lg:p-4 p-0">
+                <div className="bg-white relative lg:rounded-xl lg:w-full lg:max-w-5xl w-screen max-h-[90vh] overflow-y-auto">
                     {step === 1 && (
                         <ReservationStep1
                             tripDetails={tripDetails}
