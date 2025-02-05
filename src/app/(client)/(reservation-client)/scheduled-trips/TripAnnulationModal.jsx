@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import axiosInstance from "@/Utils/AxiosInstance";
 import { X } from "lucide-react";
 
 export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const [reservartionDetail, setReservartionDetail] = useState("");
   const [selectedCause, setSelectedCause] = useState("");
   const [customCause, setCustomCause] = useState("");
   const [selectedPassengers, setSelectedPassengers] = useState([]);
@@ -95,23 +96,28 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const handleCancelAllChange = () => {
     setCancelAll((prev) => !prev);
     if (!cancelAll) {
-      setSelectedPassengers(reservation.passager.map((p) => p.idPassager));
+      setSelectedPassengers(
+        reservartionDetail.passager.map((p) => p.idPassager)
+      );
     } else {
       setSelectedPassengers([]);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logique pour soumettre le formulaire
     setIsConfirming(true);
+
+    const causeAnnulation =
+      selectedCause === "other" ? customCause : selectedCause;
+    const originAnnulation = "user";
     try {
-      const response = await axiosInstance.post(
-        `/reservation/annuler/${trip.id}`,
-        {
-          idUser: trip.idUser,
-          idVoyage: trip.idVoyage,
-        }
-      );
+      const response = await axiosInstance.post(`/reservation/annuler`, {
+        causeAnnulation,
+        originAnnulation,
+        idPassagers: selectedPassengers,
+        canceled: true,
+      });
       if (response.status === 201) {
         onClose();
         setIsConfirming(false);
@@ -121,6 +127,30 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
       setIsConfirming(false);
     }
   };
+
+  async function getReservartionDetail(idReservation) {
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/reservation/${idReservation}`);
+      setIsLoading(false);
+      if (response.status === 200) {
+        console.log(response.data);
+        setReservartionDetail(response.data.content);
+        setError(null);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+      setReservartionDetail(null);
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (trip.reservation.idReservation) {
+      getReservartionDetail(trip?.reservation?.idReservation);
+    }
+  }, [trip?.reservation?.idReservation]);
 
   if (!isOpen) return null;
   return (
@@ -147,7 +177,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Select Passengers to Cancel
             </label>
             <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
-              {reservation.passager.map((passenger) => (
+              {reservartionDetail.passager.map((passenger) => (
                 <div
                   key={passenger.idPassager}
                   className="flex items-center mb-2">
@@ -241,6 +271,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
             </button>
           </div>
         </form>
+        trip.idVoyage,
       </div>
     </div>
   );
