@@ -8,7 +8,7 @@ import WaitForPageLoad from "@/components/Modals/WaitForPageLoad"
 import { ErrorModal } from "@/components/Modals/ErrorModal"
 import SuccessModal from "@/components/Modals/SuccessModal"
 
-export default function ReservationProcessModal({ isOpen, onClose, tripDetails }) {
+export default function ReservationProcessModal({ isOpen, onClose, tripDetails, openPaymentModal, setReservationPrice }) {
     const [step, setStep] = useState(1)
     const [selectedSeats, setSelectedSeats] = useState([])
     const [passengersData, setPassengersData] = useState({})
@@ -61,6 +61,7 @@ export default function ReservationProcessModal({ isOpen, onClose, tripDetails }
                             setErrorMessage={setErrorMessage}
                             setSuccessMessage={setSuccessMessage}
                             setIsLoading={setIsLoading}
+                            setReservationPrice={setReservationPrice}
                         />
                     )}
                 </div>
@@ -78,6 +79,7 @@ export default function ReservationProcessModal({ isOpen, onClose, tripDetails }
                 makeAction={() => {
                     setStep(1)
                     onClose()
+                    openPaymentModal()
                 }}
             />
         </>

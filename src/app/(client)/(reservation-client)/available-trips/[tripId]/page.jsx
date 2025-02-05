@@ -20,37 +20,40 @@ import { MdAirlineSeatReclineNormal } from "react-icons/md"
 import TripDetailsSkeleton from "@/components/Loadings/Trip-details-skeleton"
 import ReservationProcessModal from "@/app/(client)/(reservation-client)/available-trips/[tripId]/ReservationProcess"
 import { formatDateOnly, formatDurationSimple, formatFullDateTime, formatDateToTime } from "@/Utils/formatDateMethods"
+import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
 
 export default function TripDetails({ params }) {
-    const tripId = React.use(params).tripId
-    const router = useRouter()
-    const [currentImageIndex, setCurrentImageIndex] = useState(0)
-    const [direction, setDirection] = useState("right")
-    const interval = 5000
-    const [errorMessage, setErrorMessage] = useState("")
-    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [tripDetails, setTripDetail] = useState({})
-    const [images, setImages] = useState([busImage1])
-    const [canOpenReservationModal, setCanOpenReservationModal] = useState(false)
+    const tripId = React.use(params).tripId;
+    const router = useRouter();
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [direction, setDirection] = useState("right");
+    const interval = 5000;
+    const [errorMessage, setErrorMessage] = useState("");
+    const [canOpenErrorModal, setCanOpenErrorModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [tripDetails, setTripDetail] = useState({});
+    const [images, setImages] = useState([busImage1]);
+    const [canOpenReservationModal, setCanOpenReservationModal] = useState(false);
+    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal]= useState(false);
+    const [reservationPrice, setReservationPrice] = useState(0)
 
     async function fetchTripDetails(tripId) {
         setIsLoading(true)
         try {
-            const response = await axiosInstance.get(`/voyage/${tripId}`)
+            const response = await axiosInstance.get(`/voyage/${tripId}`);
             if (response.status === 200) {
-                console.log(response?.data)
-                setIsLoading(false)
-                setTripDetail(response?.data)
-                setImages([response.data?.smallImage, response?.data.bigImage])
-                setErrorMessage("")
-                setCanOpenErrorModal(false)
+                console.log(response?.data);
+                setIsLoading(false);
+                setTripDetail(response?.data);
+                setImages([response.data?.smallImage, response?.data.bigImage]);
+                setErrorMessage("");
+                setCanOpenErrorModal(false);
             }
         } catch (error) {
-            setIsLoading(false)
-            console.log(error)
-            setErrorMessage("Something went wrong when retrieving trip details, please try again later !")
-            setCanOpenErrorModal(true)
+            setIsLoading(false);
+            console.log(error);
+            setErrorMessage("Something went wrong when retrieving trip details, please try again later !");
+            setCanOpenErrorModal(true);
         }
     }
 
@@ -58,7 +61,7 @@ export default function TripDetails({ params }) {
         { icon: Wifi, label: "Free WiFi" },
         { icon: Coffee, label: "Sandwich/Coffee/Tea" },
         { icon: Usb, label: "USB Ports" },
-    ]
+    ];
 
     const nextImage = useCallback(() => {
         setDirection("right")
@@ -368,7 +371,11 @@ export default function TripDetails({ params }) {
                     setCanOpenReservationModal(false)
                 }}
                 tripDetails={tripDetails}
+                openPaymentModal={()=>setCanOpenPaymentRequestModal(true)}
+                setReservationPrice={setReservationPrice}
             />
+
+            <PaymentModal onClose={()=>setCanOpenPaymentRequestModal(false)} isOpen={true /*canOpenPaymentRequestModal*/} reservationAmount={reservationPrice} setIsLoading={setIsLoading} />
         </div>
     )
 }

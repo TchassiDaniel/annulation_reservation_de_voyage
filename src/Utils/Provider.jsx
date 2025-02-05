@@ -32,7 +32,6 @@ function useLogin() {
     function saveAuthData(_token)
     {
         const token = _token.substring(7, _token.length);
-        console.log("token, token");
         localStorage.setItem("mooving_app_token", token);
     }
 
