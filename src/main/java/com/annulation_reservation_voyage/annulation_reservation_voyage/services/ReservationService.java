@@ -1,21 +1,21 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.services;
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.PassagerDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayInResult;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayRequestDTO;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.ResultStatus;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.StatusResult;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationPreviewDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.voyage.VoyageDetailsDTO;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.*;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.RoleType;
-import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutCoupon;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutHistorique;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutPayement;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.*;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.*;
-
-import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.AnnulationOperator;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.utils.PaginationUtils;
 
 import lombok.AllArgsConstructor;
@@ -24,14 +24,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -46,6 +45,7 @@ public class ReservationService {
     private final PassagerRepository passagerRepository;
     private final UserRepository userRepository;
     private final VoyageService voyageService;
+    private final PayementService payementService;
 
     public Page<Reservation> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -103,14 +103,16 @@ public class ReservationService {
          * throw new
          * RuntimeException("Cet utilisateur à déjà une réservation pour ce voyage.");
          * }
+         * 
+         * // verifier si l'utilisateur a déjà reserver ce voyage
+         * Reservation reservationOpt = reservationRepository
+         * .findByIdUserAndIdVoyage(reservationDTO.getIdUser(),
+         * reservationDTO.getIdVoyage()).orElse(null);
+         * if (reservationOpt != null) {
+         * throw new
+         * RuntimeException("Cet utilisateur à déjà une réservation pour ce voyage.");
+         * }
          */
-        // verifier si l'utilisateur a déjà reserver ce voyage
-        Reservation reservationOpt = reservationRepository
-                .findByIdUserAndIdVoyage(reservationDTO.getIdUser(), reservationDTO.getIdVoyage()).orElse(null);
-        if (reservationOpt != null) {
-            throw new RuntimeException("Cet utilisateur à déjà une réservation pour ce voyage.");
-        }
-
         // Verifier que la liste des passagers est non vide
         if (reservationDTO.getPassagerDTO().length <= 0) {
             throw new RuntimeException("La liste des passagers est vide.");
@@ -153,6 +155,7 @@ public class ReservationService {
         reservation.setIdVoyage(reservationDTO.getIdVoyage());
         reservation.setNbrPassager(reservationDTO.getNbrPassager());
         reservation.setMontantPaye(reservationDTO.getMontantPaye());
+        reservation.setStatutPayement(StatutPayement.NO_PAYMENT);
         reservation.setPrixTotal(reservationDTO.getNbrPassager() * classVoyage.getPrix());
 
         // On cree les passagers
@@ -193,7 +196,7 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    public Reservation confirmerReservation(ReservationConfirmDTO reservationConfirmDTO) {
+    private Reservation confirmerReservation(ReservationConfirmDTO reservationConfirmDTO) {
         // Récupérer la date et l'heure actuelles
         Date now = new Date();
 
@@ -236,5 +239,49 @@ public class ReservationService {
         historique.setStatusHistorique(StatutHistorique.VALIDER);
         this.historiqueRepository.save(historique);
         return this.reservationRepository.save(reservation);
+    }
+
+    public PayInResult payerReservation(PayRequestDTO payRequestDTO) {
+
+        // On se rassure que la reservation existe
+        Reservation reservation = this.reservationRepository.findById(payRequestDTO.getReservationId())
+                .orElseThrow(() -> new RuntimeException("Reservation non existante"));
+
+        PayInResult payInResult = this.payementService.pay(payRequestDTO.getMobilePhone(),
+                payRequestDTO.getMobilePhoneName(), payRequestDTO.getMessage(), payRequestDTO.getAmount(),
+                payRequestDTO.getUserId());
+
+        if (payInResult.getStatus() == ResultStatus.SUCCESS) {
+            // On sérialise dans la BD
+            reservation.setStatutPayement(StatutPayement.PENDING);
+            reservation.setTransactionCode(payInResult.getData().getTransaction_code());
+            this.reservationRepository.save(reservation);
+        }
+        return payInResult;
+    }
+
+    @Scheduled(cron = "0 0/5 * * * *")
+    public void verifierPayement() {
+        List<Reservation> reservations = reservationRepository.findAll();
+        // TODO Faire en sorte que la liste retourné soit filtré par le status PENDING
+        for (Reservation reservation : reservations) {
+            // Si la reservation a un status de PENDING alors on regarde s'il a déjà été
+            // payé
+            if (reservation.getStatutPayement() != StatutPayement.NO_PAYMENT
+                    || reservation.getStatutPayement() != StatutPayement.PAID) {
+                StatusResult statusResult = this.payementService.payStatus(reservation.getTransactionCode());
+                if (statusResult.getStatus() == ResultStatus.SUCCESS) {
+                    reservation.setStatutPayement(StatutPayement.PAID);
+                    reservation.setMontantPaye(
+                            reservation.getMontantPaye() + statusResult.getData().getTransaction_amount());
+                    reservationRepository.save(reservation);
+                    if (reservation.getMontantPaye() >= reservation.getPrixTotal()) {
+                        confirmerReservation(new ReservationConfirmDTO(reservation.getIdReservation(),
+                                reservation.getMontantPaye()));
+                    }
+                    System.out.print(statusResult.toString());
+                }
+            }
+        }
     }
 }

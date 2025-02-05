@@ -1,5 +1,8 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.controllers;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayInErrors;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayInResult;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayRequestDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationCancelDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
@@ -17,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -128,28 +132,46 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Confirmer une réservation", description = "Confirme une réservation en modifiant son statut à 'CONFIRME' et en enregistrant l'action dans l'historique.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Réservation confirmée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "400", description = "données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "404", description = "reservation inexistante.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
-    })
-    @PutMapping("/confirmer")
-    public ResponseEntity<?> confirmerReservation(
-            @Parameter(description = "Données nécessaires pour confirmer la réservation (ID de la réservation).", required = true) @RequestBody ReservationConfirmDTO reservationConfirmDTO) {
-
-        try {
-            Reservation reservation = reservationService.confirmerReservation(reservationConfirmDTO);
-            return new ResponseEntity<>(reservation, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            if (e.getMessage().contains("n'existe pas")) {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-            }
-        }
-    }
-
+    /*
+     * @Operation(summary = "Confirmer une réservation", description =
+     * "Confirme une réservation en modifiant son statut à 'CONFIRME' et en enregistrant l'action dans l'historique."
+     * )
+     * 
+     * @ApiResponses(value = {
+     * 
+     * @ApiResponse(responseCode = "200", description =
+     * "Réservation confirmée avec succès.", content = @Content(mediaType =
+     * "application/json", schema = @Schema(implementation = String.class))),
+     * 
+     * @ApiResponse(responseCode = "400", description = "données invalides.",
+     * content = @Content(mediaType = "application/json", schema
+     * = @Schema(implementation = String.class))),
+     * 
+     * @ApiResponse(responseCode = "404", description = "reservation inexistante.",
+     * content = @Content(mediaType = "application/json", schema
+     * = @Schema(implementation = String.class)))
+     * })
+     * 
+     * @PutMapping("/confirmer")
+     * public ResponseEntity<?> confirmerReservation(
+     * 
+     * @Parameter(description =
+     * "Données nécessaires pour confirmer la réservation (ID de la réservation).",
+     * required = true) @RequestBody ReservationConfirmDTO reservationConfirmDTO) {
+     * 
+     * try {
+     * Reservation reservation =
+     * reservationService.confirmerReservation(reservationConfirmDTO);
+     * return new ResponseEntity<>(reservation, HttpStatus.OK);
+     * } catch (RuntimeException e) {
+     * if (e.getMessage().contains("n'existe pas")) {
+     * return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+     * } else {
+     * return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+     * }
+     * }
+     * }
+     */
     @Operation(summary = "Annuler une réservation", description = "Permet d'annuler une réservation en par un utilisateur. Si l'annulation a lieu après confirmation, un coupon est généré.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Réservation annulée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
@@ -175,4 +197,23 @@ public class ReservationController {
             }
         }
     }
+
+    @Operation(summary = "Payer une réservation", description = "Permet à un utilisateur de payer une réservation. En cas de succès, la réservation est considérée comme payée.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Réservation payée avec succès.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Erreur, données de paiement invalides ou problème avec le paiement.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "404", description = "Réservation inexistante ou non trouvée.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
+    })
+    @PutMapping("/payer")
+    public ResponseEntity<?> payerReservation(
+            @Parameter(description = "Données nécessaires pour payer la réservation (détails du paiement).", required = true) @RequestBody PayRequestDTO payRequestDTO) {
+
+        PayInResult payInResult = this.reservationService.payerReservation(payRequestDTO);
+        if (payInResult.isOk()) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(payInResult.getErrors(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
