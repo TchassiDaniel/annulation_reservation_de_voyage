@@ -25,7 +25,7 @@ export default  function Bus70SeatsDisposition ({setSeats, _reservedSeats}) {
         <div className="p-5">
             <div className="grid grid-cols-2 w-fit gap-12 min-h-screen overflow-y-auto">
                 {/* Première rangée */}
-                <div className="grid gap-3 w-fit grid-cols-3 min-h-screen p-2">
+                <div className="grid lg:gap-3 gap-8 w-fit grid-cols-3 min-h-screen p-2  ">
                     <div className="col-span-3 border-2 border-gray-400 flex justify-center items-center rounded-lg font-bold h-12  mt-1">
                         <p className="text-xl text-reservation-color">Driver</p>
                     </div>

@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Calendar, Timer, MapPin, MapPinHouse } from "lucide-react";
-import dynamic from "next/dynamic";
-//import html2pdf from "html2pdf.js";
-//const DynamicComponent = dynamic(() => import("html2pdf.js"), { ssr: false });
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const Coupons = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -31,20 +30,51 @@ const Coupons = () => {
     },
   ];
 
-  const generatePDF = async (couponId) => {
-    const element = document.getElementById(`pdf-content-${couponId}`); // L'élément HTML à convertir
-    const html2pdf = (await import("html2pdf.js")).default;
+const printCoupon = (couponId) => {
+  // Récupérer l'élément du coupon
+  const couponElement = document.getElementById(`pdf-content-${couponId}`);
 
-    const options = {
-      margin: 1,
-      filename: `coupon-${couponId}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-    //    DynamicComponent().then((html2pdf) => {
-    html2pdf().set(options).from(element).save();
-    //    });
-  };
+  // Créer une nouvelle fenêtre d'impression
+  const printWindow = window.open("", "", "height=600,width=800");
+
+  // Ajouter les styles Tailwind et personnalisés
+  printWindow.document.write(`
+    <html>
+      <head>
+        <title>Coupon de Remboursement</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          @media print {
+            body {
+              margin: 0;
+              padding: 20px;
+            }
+            .print-container {
+              max-width: 600px;
+              margin: 0 auto;
+              border: 2px solid #2563eb;
+              padding: 20px;
+              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+          }
+        </style>
+      </head>
+      <body class="bg-gray-100 p-6">
+        <div class="print-container bg-white rounded-xl shadow-lg border-2 border-blue-600 p-6">
+          ${couponElement.innerHTML}
+        </div>
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  // Attendre un court instant pour s'assurer que le contenu est chargé
+  setTimeout(() => {
+    printWindow.print();
+    printWindow.close();
+  }, 500);
+};
 
   return (
     <div className="min-h-screen p-4">
@@ -65,7 +95,7 @@ const Coupons = () => {
             onClick={() => setActiveTab("all")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
               activeTab === "all"
-                ? "bg-reservation-details-color text-white"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             All
@@ -74,8 +104,8 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("VALIDE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "confirmed"
-                ? "bg-reservation-details-color text-white"
+              activeTab === "VALIDE"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Valid
@@ -84,8 +114,8 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("EXPIRE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "reserved"
-                ? "bg-reservation-details-color text-white"
+              activeTab === "EXPIRE"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Expired
@@ -174,7 +204,7 @@ const Coupons = () => {
                 </div>
                 <div className="mt-5 flex justify-end">
                   <button
-                    onClick={generatePDF}
+                    onClick={() => printCoupon(coupon.idCoupon)}
                     className="bg-reservation-color px-4 py-2 rounded-md text-white font-bold hover:bg-reservation-color/90 transition-all duration-300">
                     Print PDF
                   </button>
