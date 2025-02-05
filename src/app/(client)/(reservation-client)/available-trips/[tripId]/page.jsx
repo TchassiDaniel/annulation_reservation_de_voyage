@@ -89,7 +89,7 @@ export default function TripDetails({ params }) {
         return <TripDetailsSkeleton />
     }
     return (
-        <div className="min-h-screen p-4">
+        <div className="min-h-screen">
             <div className="flex flex-col sm:flex-row justify-between p-4 bg-gray-100 rounded-lg mb-2">
                 <button onClick={() => router.back()} className="flex gap-1 mb-2 sm:mb-0">
                     <FaArrowLeft className="text-reservation-color text-xl mt-0.5" />
@@ -98,7 +98,7 @@ export default function TripDetails({ params }) {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-5 mt-4">
-                <div className="relative h-[400px] lg:h-[520px] w-full lg:w-[68%] rounded-lg overflow-hidden ">
+                <div className="relative h-[400px] lg:h-[580px] w-full lg:w-[68%] rounded-lg overflow-hidden ">
                     <div
                         className="flex w-full h-full relative"
                         style={{
@@ -139,15 +139,15 @@ export default function TripDetails({ params }) {
                             />
                         ))}
                     </div>
-                    <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                    <div className=" absolute bottom-0 left-0 right-0 lg:p-10 pb-24 pl-3 text-white">
                         <div className="max-w-7xl mx-auto">
-                            <h1 className="text-4xl font-bold mb-4">{tripDetails?.lieuDepart + " - " + tripDetails?.lieuArrive}</h1>
-                            <p className="text-xl opacity-90">Travel comfortably with {tripDetails?.nomAgence}</p>
+                            <h1 className="lg:text-5xl text-3xl font-bold lg:mb-4 mb-2">{tripDetails?.lieuDepart + " - " + tripDetails?.lieuArrive}</h1>
+                            <p className="lg:text-2xl text-sm opacity-90">Travel comfortably with {tripDetails?.nomAgence}</p>
                             <button
                                 onClick={() => {
                                     setCanOpenReservationModal(true)
                                 }}
-                                className="absolute bottom-8 right-8 bg-reservation-color text-white px-5 py-2.5 text-2xl hover:bg-white hover:text-reservation-color hover:border-2 hover:border-reservation-color rounded-lg font-semibold shadow-lg transition-all duration-300 flex items-center gap-2 "
+                                className="lg:hidden absolute bottom-8 right-1 bg-reservation-color text-white px-4 py-2 text-xl hover:bg-white hover:text-reservation-color hover:border-2 hover:border-reservation-color rounded-lg font-semibold shadow-lg transition-all duration-300 flex items-center gap-2 "
                             >
                                 <span>Book Now</span>
                             </button>
@@ -229,11 +229,11 @@ export default function TripDetails({ params }) {
                             </div>
                         </div>
 
-                        {/*
+
                         <button onClick={() => {setCanOpenReservationModal(true)}}
-                                className="w-full bg-reservation-color font-bold  text-xl text-white rounded-lg px-4 py-3 hover:bg-blue-800 transition-all duration-300">
+                                className="w-full bg-reservation-color font-semibold  text-xl text-white rounded-lg px-4 py-2 hover:bg-blue-800 transition-all duration-300">
                             Book Now
-                        </button>*/}
+                        </button>
 
                         <p className="text-center text-sm text-gray-500 mt-4">
                             Only {tripDetails.nbrPlaceReservable} places left at this price
@@ -344,11 +344,15 @@ export default function TripDetails({ params }) {
                     </div>
                 </div>
 
-                {/*  <div className="flex justify-center items-center mt-7 mb-5">
-                        <button className="bg-reservation-color rounded-xl text-2xl text-white font-medium px-6 py-3">
+                  <div className="lg:hidden flex justify-center items-center mt-7 mb-5">
+                        <button
+                            onClick={() => {
+                                setCanOpenReservationModal(true)
+                            }}
+                            className="bg-reservation-color rounded-xl text-2xl text-white font-medium px-6 py-3">
                             Book This Trip
                         </button>
-                    </div>*/}
+                  </div>
             </div>
 
             <ErrorModal

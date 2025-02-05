@@ -55,7 +55,7 @@ export default function AvailableTrips() {
     }
 
     return (
-        <div className="min-h-screen p-2 flex-1">
+        <div className="min-h-screen flex-1">
             <div className="mx-auto mb-8">
                 <div className="bg-gray-100 rounded-2xl shadow-sm mb-6 p-4 sm:p-6 flex flex-col sm:flex-row justify-between gap-4">
                     <h1 className="text-2xl sm:text-3xl font-bold text-reservation-color mb-4 sm:mb-0 sm:mt-1 sm:ml-2">
@@ -192,7 +192,7 @@ export default function AvailableTrips() {
                                                         <span className="font-medium">{trip.lieuArrive}</span>
                                                     </div>
                                                     <button
-                                                        className="px-6 py-2 font-bold bg-reservation-color text-white rounded-lg hover:bg-white hover:border-2 hover:border-reservation-color transition-all duration-300 hover:text-reservation-color"
+                                                        className="lg:px-4 py-2 px-3 font-semibold bg-reservation-color text-white rounded-lg hover:bg-white hover:border-2 hover:border-reservation-color transition-all duration-300 hover:text-reservation-color"
                                                         onClick={() => router.push(`/available-trips/${trip.idVoyage}`)}
                                                     >
                                                         Book Trip
