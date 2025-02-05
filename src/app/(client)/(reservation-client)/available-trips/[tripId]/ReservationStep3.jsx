@@ -15,19 +15,10 @@ import { useAuthentication } from "@/Utils/Provider"
 import PropTypes from "prop-types"
 import { formatDateOnly, formatDateToTime } from "@/Utils/formatDateMethods"
 import axiosInstance from "@/Utils/AxiosInstance"
+import {PaymentRequestModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
+import {useState} from "react";
 
-export default function ReservationStep3({
-                                             selectedSeats,
-                                             tripDetails,
-                                             passengersData,
-                                             onClose,
-                                             setStep,
-                                             setCanOpenErrorModal,
-                                             setCanOpenSuccessModal,
-                                             setErrorMessage,
-                                             setSuccessMessage,
-                                             setIsLoading,
-                                         }) {
+export default function ReservationStep3({selectedSeats, tripDetails, passengersData,onClose, setStep, setCanOpenErrorModal, setCanOpenSuccessModal, setErrorMessage, setSuccessMessage, setIsLoading, setReservationPrice}) {
 
 
     ReservationStep3.propTypes = {
@@ -41,6 +32,7 @@ export default function ReservationStep3({
         setErrorMessage: PropTypes.func.isRequired,
         setSuccessMessage: PropTypes.func.isRequired,
         setIsLoading: PropTypes.func.isRequired,
+        setReservationPrice: PropTypes.func.isRequired,
     }
 
     const totalPassengers = selectedSeats.length
@@ -50,6 +42,11 @@ export default function ReservationStep3({
     )
     const totalPrice = tripDetails.prix * totalPassengers
     const { userData } = useAuthentication()
+
+
+
+
+
 
     async function bookTrip() {
         setIsLoading(true)
@@ -69,21 +66,23 @@ export default function ReservationStep3({
         try {
             const response = await axiosInstance.post("/reservation/reserver", data)
             if (response.status === 201) {
-                setIsLoading(false)
-                console.log(response.data)
-                setCanOpenErrorModal(false)
-                setErrorMessage("")
-                setSuccessMessage("Reservation created successfully and attempted for your confirmation")
-                setCanOpenErrorModal(false)
-                setCanOpenSuccessModal(true)
+                setIsLoading(false);
+                console.log(response.data);
+                setReservationPrice(totalPrice);
+                localStorage.setItem('idCurrentReservation', response?.data?.idReservation);
+                setCanOpenErrorModal(false);
+                setErrorMessage("");
+                setSuccessMessage("Reservation created successfully and attempted for your confirmation");
+                setCanOpenErrorModal(false);
+                setCanOpenSuccessModal(true);
             }
         } catch (error) {
-            setIsLoading(false)
-            console.log(error)
-            setSuccessMessage("")
-            setErrorMessage("Something went wrong when booking this trip, please try again later !")
-            setCanOpenSuccessModal(false)
-            setCanOpenErrorModal(true)
+            setIsLoading(false);
+            console.log(error);
+            setSuccessMessage("");
+            setErrorMessage("Something went wrong when booking this trip, please try again later !");
+            setCanOpenSuccessModal(false);
+            setCanOpenErrorModal(true);
         }
     }
 
@@ -241,9 +240,7 @@ export default function ReservationStep3({
 
             <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8">
                 <button
-                    onClick={async () => {
-                        await bookTrip()
-                    }}
+                    onClick={async () => await bookTrip()}
                     className="bg-reservation-color text-white py-3 px-6 rounded-lg font-semibold hover:bg-opacity-90 transition-colors duration-200 flex items-center justify-center"
                 >
                     <CheckCircle className="w-5 h-5 mr-2" />
