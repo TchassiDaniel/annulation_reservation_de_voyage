@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 
 export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
-  const [reservartionDetail, setReservartionDetail] = useState("");
+  const [reservationDetail, setReservationDetail] = useState("");
   const [selectedCause, setSelectedCause] = useState("");
   const [customCause, setCustomCause] = useState("");
   const [selectedPassengers, setSelectedPassengers] = useState([]);
@@ -96,9 +96,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const handleCancelAllChange = () => {
     setCancelAll((prev) => !prev);
     if (!cancelAll) {
-      setSelectedPassengers(
-        reservartionDetail.passager.map((p) => p.idPassager)
-      );
+      setSelectedPassengers(reservation.passager.map((p) => p.idPassager));
     } else {
       setSelectedPassengers([]);
     }
@@ -128,29 +126,29 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     }
   };
 
-  async function getReservartionDetail(idReservation) {
+  async function getReservationDetail(idReservation) {
     setIsLoading(true);
     try {
       const response = await axiosInstance.get(`/reservation/${idReservation}`);
       setIsLoading(false);
       if (response.status === 200) {
         console.log(response.data);
-        setReservartionDetail(response.data.content);
+        setReservationDetail(response.data.content);
         setError(null);
       }
     } catch (error) {
       setIsLoading(false);
       setError(error);
-      setReservartionDetail(null);
+      setReservationDetail(null);
       console.log(error);
     }
   }
 
   useEffect(() => {
-    if (trip.reservation.idReservation) {
-      getReservartionDetail(trip?.reservation?.idReservation);
+    if (trip.idReservation) {
+      getReservationDetail(trip.idReservation);
     }
-  }, [trip?.reservation?.idReservation]);
+  }, [trip.idReservation]);
 
   if (!isOpen) return null;
   return (
@@ -177,7 +175,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Select Passengers to Cancel
             </label>
             <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
-              {reservartionDetail.passager.map((passenger) => (
+              {reservation.passager.map((passenger) => (
                 <div
                   key={passenger.idPassager}
                   className="flex items-center mb-2">
@@ -271,7 +269,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
             </button>
           </div>
         </form>
-        trip.idVoyage,
+        {trip.idReservation}
       </div>
     </div>
   );
