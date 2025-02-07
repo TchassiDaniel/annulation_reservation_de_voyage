@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { AlertCircle, Calendar, CheckCircle2, Clock, MapPin, Users, Wallet } from "lucide-react"
 import { BsInfo } from "react-icons/bs"
 import { MdCancel } from "react-icons/md"
@@ -13,6 +13,8 @@ import { Tooltip } from "antd"
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
 import { formatDateOnly, formatDateToTime, formatFullDateTime } from "@/Utils/formatDateMethods"
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler"
+import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
+import SuccessModal from "@/components/Modals/SuccessModal";
 
 // Données simulées mises à jour pour la prévisualisation
 const mockReservation = {
@@ -78,6 +80,7 @@ const mockReservation = {
 }
 
 export default function Page() {
+<<<<<<< HEAD
     const router = useRouter()
     const [myScheduledTrips, setMyScheduledTrips] = useState([] | null)
     const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false)
@@ -106,6 +109,42 @@ export default function Page() {
           console.log(reservationDetail);
 
           setError(null);
+=======
+    const router = useRouter();
+    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null);
+    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false);
+    const [selectedTrip, setSelectedTrip] = useState({});
+    const { userData } = useAuthentication();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
+    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] = useState(false);
+    const [successMessage, setSuccessMessage]  = useState("");
+    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
+
+
+    async function getMyScheduledTrips(userId) {
+        setIsLoading(true)
+        try {
+            const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`);
+            setIsLoading(false);
+            if (response.status === 200) {
+                console.log(response.data);
+                setMyScheduledTrips(response.data.content);
+                setTotalPages(response?.data?.totalPages);
+                setIsSearch(false);
+                if (response?.data?.empty === true) setCanRenderPaginationContent(false);
+                else setCanRenderPaginationContent(true);
+                setError(null);
+            }
+        } catch (error) {
+            setIsLoading(false);
+            setError(error);
+            setMyScheduledTrips(null);
+            console.log(error);
+>>>>>>> 1f1b3add30f24554d87f3ba89229248099254ff6
         }
       } catch (error) {
         setIsLoading(false);
@@ -141,6 +180,7 @@ export default function Page() {
     }
 
     useEffect(() => {
+<<<<<<< HEAD
       if (userData.userId) {
         getMyScheduledTrips(userData?.userId);
       }
@@ -149,6 +189,12 @@ export default function Page() {
     useEffect(() => {
       getReservationDetail(idReservation);
     }, [idReservation]);
+=======
+        if (userData.userId) {
+            getMyScheduledTrips(userData?.userId);
+        }
+    }, [userData?.userId])
+>>>>>>> 1f1b3add30f24554d87f3ba89229248099254ff6
 
     return (
       <div className="min-h-screen  ">
@@ -188,7 +234,7 @@ export default function Page() {
                       className=" rounded-xl border-2 border-gray-300 bg-gray-100 overflow-hidden">
                       {/* Header Section */}
                       <div className="p-4 sm:p-6">
-                        <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
+                        <div className="flex justify-between items-start mb-4 gap-4">
                           <div className="flex items-center gap-2">
                             <MapPin className="text-reservation-color h-8 w-8 sm:h-10 sm:w-10" />
                             <h3 className="text-base sm:text-lg font-semibold">
@@ -196,7 +242,7 @@ export default function Page() {
                             </h3>
                           </div>
 
-                          <div className="flex flex-wrap gap-2">
+                          <div className="lg:hidden flex flex-wrap gap-2">
                             {reservation?.status === "CONFIRMER" ? (
                               <span className="px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-600 border-2 border-green-300 flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -348,7 +394,8 @@ export default function Page() {
                               </div>
                               <button
                                 onClick={() => {
-                                  alert("payment");
+                                    setSelectedTrip(scheduledTrip)
+                                  setCanOpenPaymentRequestModal(true)
                                 }}
                                 className="px-4 py-2 bg-orange-500 font-bold text-white rounded-lg text-sm hover:bg-orange-700 transition-colors w-full sm:w-auto">
                                 Complete payment
@@ -447,6 +494,19 @@ export default function Page() {
           isOpen={canOpenTripAnnulationModal}
           onClose={() => setCanOpenTripAnnulationModal(false)}
         />
+
+          <PaymentModal
+              onClose={()=>setCanOpenPaymentRequestModal(false)}
+              isOpen={canOpenPaymentRequestModal}
+              reservationAmount={Number.parseInt(selectedTrip?.reservation?.prixTotal) - Number.parseInt(selectedTrip?.reservation?.montantPaye)}
+              setIsLoading={setIsLoading}
+              setCanOpenSuccessModal={setCanOpenSuccessModal}
+              setSuccessMessage={setSuccessMessage}
+              idReservation={selectedTrip?.reservation?.idReservation}
+          />
+
+          <SuccessModal canOpenSuccessModal={setCanOpenSuccessModal} isOpen={canOpenSuccessModal} message={successMessage} makeAction={()=>{setCanOpenPaymentRequestModal(false), window.location.reload()}}/>
+
       </div>
     );
 }

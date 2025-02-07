@@ -6,7 +6,7 @@ import WaitForPageLoad from "@/components/Modals/WaitForPageLoad";
 
 
 
-export function PaymentModal({ isOpen, onClose, reservationAmount}) {
+export function PaymentModal({ isOpen, onClose, reservationAmount, setCanOpenSuccessModal, setSuccessMessage, idReservation}) {
     const [step, setStep] = useState(1);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [name, setName] = useState("");
@@ -16,20 +16,21 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const handleConfirmPayment = () => {
+    function handleConfirmPayment () {
         setStep(2);
-    };
+    }
+
+
 
     async function handleSubmitPayment (e){
         e.preventDefault();
         setIsLoading(true);
         let paymentData = {
-            mobilePhone: phoneNumber,
+            mobilePhone: '+237'+phoneNumber,
             mobilePhoneName: name,
             amount: amount,
             userId: userData?.userId,
-            reservationId: localStorage.getItem('idCurrentReservation'),
-            message:'Payment',
+            reservationId: idReservation ? idReservation : localStorage.getItem('idCurrentReservation'),
         };
 
         console.log(paymentData);
@@ -40,7 +41,8 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
             if (paymentResponse.status === 200)
             {
                 localStorage.removeItem('idCurrentReservation');
-
+                setSuccessMessage("transaction initiated successfully, follow steps on your phone to complete the transaction");
+                setCanOpenSuccessModal(true);
             }
 
         }
@@ -48,32 +50,29 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
         {
             console.log(error);
             setIsLoading(false);
+            setSuccessMessage("");
+            setCanOpenSuccessModal(false);
             if (error.response.status === 400)
             {
-                setError(error.response.data);
-
+                setError("Any mobile account is associated with your phone number .... please retry !");
             }
             else if (error.response.status === 404)
             {
-                setError(error.response.data);
-
+                setError("Your phone number doesn't exist!");
             }
             else
             {
                 setError("Something went wrong when initializing the payment, please retry !!");
-
             }
         }
 
     }
 
-    const resetAndClose = () => {
+    function resetAndClose ()  {
         setStep(1);
-        setPhoneNumber("");
-        setName("");
-        setAmount(reservationAmount.toString());
+        localStorage.removeItem('idCurrentReservation');
         onClose();
-    };
+    }
 
     if (!isOpen) return null;
 
@@ -108,13 +107,13 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
                             <div className="flex space-x-4">
                                 <button
                                     onClick={handleConfirmPayment}
-                                    className="flex-1 px-4 py-2 bg-reservation-color text-white rounded-md hover:bg-reservation-color/90 transition-colors"
+                                    className="flex-1 lg:px-4 lg:py-2 px-2 py-1 font-semibold  bg-reservation-color text-white rounded-md hover:bg-reservation-color/90 transition-colors"
                                 >
                                     Proceed to Payment
                                 </button>
                                 <button
                                     onClick={resetAndClose}
-                                    className="flex-1 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                                    className="flex-1 lg:px-4 py-2 px-2  bg-red-500 text-white font-semibold rounded-md hover:bg-red-600 transition-colors"
                                 >
                                     Not Now
                                 </button>
@@ -168,14 +167,14 @@ export function PaymentModal({ isOpen, onClose, reservationAmount}) {
                                 <button
                                     type="button"
                                     onClick={() => setStep(1)}
-                                    className="flex items-center px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+                                    className="flex items-center px-4 py-2 bg-gray-200 font-semibold text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
                                 >
                                     <ArrowLeft className="h-4 w-4 mr-2" />
                                     Back
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-reservation-color text-white rounded-md hover:bg-reservation-color/90 transition-colors"
+                                    className="px-4 py-2 bg-reservation-color text-white font-semibold rounded-md hover:bg-reservation-color/90 transition-colors"
                                 >
                                     Complete Payment
                                 </button>

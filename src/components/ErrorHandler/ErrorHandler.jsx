@@ -25,7 +25,7 @@ export default function ErrorHandler({ error, dataLength, isSearch }) {
             setErrorType('noTrips');
         }
         else {
-        setErrorType(''); // Reset error type if there's no error
+        setErrorType('');
         }
 
     }, [error, dataLength]);
