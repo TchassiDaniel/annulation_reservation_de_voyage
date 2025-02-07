@@ -28,5 +28,6 @@ public interface ReservationRepository extends CassandraRepository<Reservation, 
     @AllowFiltering
     List<Reservation> findByIdVoyage(UUID idVoyage);
 
+    @AllowFiltering
     List<Reservation> findAllByStatutReservationIsIn(Collection<StatutReservation> statutReservations);
 }
