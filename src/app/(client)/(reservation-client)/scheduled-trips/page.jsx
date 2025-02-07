@@ -95,6 +95,13 @@ export default function Page() {
     const [isSearch, setIsSearch] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
+    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] =
+      useState(false);
+    const [selectedTrip, setSelectedTrip] = useState({});
+    const [sucessMessage, setSucessMessage] = useState({});
+
+
+    
 
     async function getReservationDetail(idReservation) {
       setIsLoading(true);
