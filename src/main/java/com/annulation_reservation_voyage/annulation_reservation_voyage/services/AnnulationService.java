@@ -167,12 +167,12 @@ public class AnnulationService {
         reservation.setNbrPassager(reservation.getNbrPassager() - reservationCancelDTO.getIdPassagers().length);
         reservation.setPrixTotal(
                 (reservation.getNbrPassager() - reservationCancelDTO.getIdPassagers().length) * classVoyage.getPrix());
-
         this.historiqueRepository.save(historique);
 
         if (reservationCancelDTO.getIdPassagers().length == reservation.getNbrPassager()) {
             reservation.setStatutReservation(StatutReservation.ANNULER);
         }
+        this.reservationRepository.save(reservation);
         this.voyageRepository.save(voyage);
         this.reservationRepository.save(reservation);
         return -1.0;
@@ -269,7 +269,7 @@ public class AnnulationService {
 
         // on met à jour la reservation
         reservation.setStatutReservation(StatutReservation.ANNULER);
-
+        this.reservationRepository.save(reservation);
         this.historiqueRepository.save(historique);
         this.voyageRepository.save(voyage);
         this.reservationRepository.save(reservation);
@@ -370,7 +370,7 @@ public class AnnulationService {
                 reservation.setNbrPassager(reservation.getNbrPassager() - passagersReservation.size());
                 reservation.setPrixTotal(
                         (reservation.getNbrPassager() - passagersReservation.size()) * classVoyage.getPrix());
-
+                this.reservationRepository.save(reservation);
                 this.historiqueRepository.save(historique);
 
                 this.voyageRepository.save(voyage);
