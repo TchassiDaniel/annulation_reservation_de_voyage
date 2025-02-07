@@ -10,9 +10,7 @@ import {MdCancel} from "react-icons/md";
 import {FaExclamation} from "react-icons/fa";
 import {BiStar} from "react-icons/bi";
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler";
-
-
-
+import TripAnnulationModal from "@/app/(client)/(reservation-client)/scheduled-trips/TripAnnulationModal";
 
 export default function ReservationDetails({ params }) {
   const reservationId = React.use(params)?.reservationId;
@@ -20,6 +18,8 @@ export default function ReservationDetails({ params }) {
   const [reservationDetails, setReservationDetails] = useState([] || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] =
+    useState(false);
 
   async function getReservationDetails(reservationId) {
     setIsLoading(true);
@@ -326,7 +326,9 @@ export default function ReservationDetails({ params }) {
                         <Printer className="mr-2 h-5 w-5" /> Print Ticket
                       </button>
                       <button
-                        onClick={() => alert("cancellation")}
+                        onClick={() => {
+                          setCanOpenTripAnnulationModal(true);
+                        }}
                         className="w-full sm:w-auto px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-300 flex items-center justify-center">
                         <MdCancel className="mr-2 h-5 w-5" /> Cancel Trip
                       </button>
@@ -340,6 +342,11 @@ export default function ReservationDetails({ params }) {
       ) : (
         <ErrorHandler error={error} />
       )}
+      <TripAnnulationModal
+        trip={reservationDetails}
+        isOpen={canOpenTripAnnulationModal}
+        onClose={() => setCanOpenTripAnnulationModal(false)}
+      />
     </div>
   );
 }
