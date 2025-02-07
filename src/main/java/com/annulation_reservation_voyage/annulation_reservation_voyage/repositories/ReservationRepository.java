@@ -1,9 +1,11 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.repositories;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.annulation_reservation_voyage.annulation_reservation_voyage.enums.StatutReservation;
 import org.springframework.data.cassandra.repository.AllowFiltering;
 import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +27,6 @@ public interface ReservationRepository extends CassandraRepository<Reservation, 
 
     @AllowFiltering
     List<Reservation> findByIdVoyage(UUID idVoyage);
+
+    List<Reservation> findAllByStatutReservationIsIn(Collection<StatutReservation> statutReservations);
 }
