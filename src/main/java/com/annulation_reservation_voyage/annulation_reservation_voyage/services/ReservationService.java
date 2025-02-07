@@ -5,6 +5,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payem
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.PayRequestDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.ResultStatus;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.StatusResult;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Payements.TransactionStatus;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationConfirmDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDTO;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Reservation.ReservationDetailDTO;
@@ -271,7 +272,7 @@ public class ReservationService {
             // payé
             if (reservation.getStatutPayement() == StatutPayement.PENDING) {
                 StatusResult statusResult = this.payementService.payStatus(reservation.getTransactionCode());
-                if (statusResult.getStatus() == ResultStatus.SUCCESS) {
+                if (statusResult.getData().getStatus() == TransactionStatus.COMPLETED) {
                     reservation.setStatutPayement(StatutPayement.PAID);
                     reservation.setMontantPaye(
                             reservation.getMontantPaye() + statusResult.getData().getTransaction_amount());
