@@ -6,6 +6,7 @@ import com.annulation_reservation_voyage.annulation_reservation_voyage.DTO.Passa
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Passager;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Reservation;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.User;
+import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Vehicule;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Voyage;
 
 import lombok.AllArgsConstructor;
@@ -27,4 +28,5 @@ public class ReservationDetailDTO {
   private List<Passager> passager;
   private Voyage voyage;
   private User agence;
+  private Vehicule vehicule;
 }
