@@ -1,6 +1,7 @@
 package com.annulation_reservation_voyage.annulation_reservation_voyage.configurations;
 
-
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.cassandra.core.CassandraTemplate;
 
 /*
  * @Configuration
