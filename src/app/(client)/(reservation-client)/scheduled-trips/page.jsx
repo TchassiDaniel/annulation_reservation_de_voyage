@@ -81,41 +81,74 @@ export default function Page() {
     const router = useRouter()
     const [myScheduledTrips, setMyScheduledTrips] = useState([] | null)
     const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false)
-    const [selectedTrip, setSelectedTrip] = useState({})
-    const { userData } = useAuthentication()
-    const [isLoading, setIsLoading] = useState(false)
-    const [error, setError] = useState(false)
-    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false)
-    const [isSearch, setIsSearch] = useState(false)
-    const [totalPages, setTotalPages] = useState(1)
+    const [idReservation, setIdReservation] = useState("");
+    const [reservationDetail, setReservationDetail] = useState({});
+    const { userData } = useAuthentication();
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(false);
+    const [canRenderPaginationContent, setCanRenderPaginationContent] =
+      useState(false);
+    const [isSearch, setIsSearch] = useState(false);
+    const [totalPages, setTotalPages] = useState(1);
 
-    async function getMyScheduledTrips(userId) {
-        setIsLoading(true)
-        try {
-            const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`)
-            setIsLoading(false)
-            if (response.status === 200) {
-                console.log(response.data)
-                setMyScheduledTrips(response.data.content)
-                setTotalPages(response?.data?.totalPages)
-                setIsSearch(false)
-                if (response?.data?.empty === true) setCanRenderPaginationContent(false)
-                else setCanRenderPaginationContent(true)
-                setError(null)
-            }
-        } catch (error) {
-            setIsLoading(false)
-            setError(error)
-            setMyScheduledTrips(null)
-            console.log(error)
+    async function getReservationDetail(idReservation) {
+      setIsLoading(true);
+      try {
+        const response = await axiosInstance.get(
+          `/reservation/${idReservation}`
+        );
+        setIsLoading(false);
+        if (response.status === 200) {
+          console.log("response.data");
+          console.log(response.data);
+          setReservationDetail(response.data);
+          console.log("reservationDetail");
+          console.log(reservationDetail);
+
+          setError(null);
         }
+      } catch (error) {
+        setIsLoading(false);
+        setError(error);
+        setReservationDetail(null);
+        console.log(error);
+        console.log("echech de get du reservationDetail");
+      }
+    }
+    async function getMyScheduledTrips(userId) {
+      setIsLoading(true);
+      try {
+        const response = await axiosInstance.get(
+          `/reservation/utilisateur/${userId}`
+        );
+        setIsLoading(false);
+        if (response.status === 200) {
+          console.log(response.data);
+          setMyScheduledTrips(response.data.content);
+          setTotalPages(response?.data?.totalPages);
+          setIsSearch(false);
+          if (response?.data?.empty === true)
+            setCanRenderPaginationContent(false);
+          else setCanRenderPaginationContent(true);
+          setError(null);
+        }
+      } catch (error) {
+        setIsLoading(false);
+        setError(error);
+        setMyScheduledTrips(null);
+        console.log(error);
+      }
     }
 
     useEffect(() => {
-        if (userData.userId) {
-            getMyScheduledTrips(userData?.userId)
-        }
-    }, [userData?.userId])
+      if (userData.userId) {
+        getMyScheduledTrips(userData?.userId);
+      }
+    }, [userData?.userId]);
+
+    useEffect(() => {
+      getReservationDetail(idReservation);
+    }, [idReservation]);
 
     return (
       <div className="min-h-screen  ">
@@ -339,8 +372,12 @@ export default function Page() {
                           </button>
                           <button
                             onClick={() => {
-                              setSelectedTrip(scheduledTrip);
-                              setCanOpenTripAnnulationModal(true);
+                              setIdReservation(
+                                scheduledTrip.reservation.idReservation
+                              );
+                              if (reservationDetail) {
+                                setCanOpenTripAnnulationModal(true);
+                              }
                             }}
                             className="px-4 py-2 border-2 border-red-300 text-red-600 font-medium rounded-lg bg-red-100 hover:text-red-800 hover:bg-red-300 transition-all duration-300 flex items-center justify-center gap-1 w-full sm:w-auto">
                             <MdCancel className="w-6 h-6" />
@@ -406,7 +443,7 @@ export default function Page() {
           )}
         </div>
         <TripAnnulationModal
-          trip={selectedTrip}
+          trip={reservationDetail}
           isOpen={canOpenTripAnnulationModal}
           onClose={() => setCanOpenTripAnnulationModal(false)}
         />

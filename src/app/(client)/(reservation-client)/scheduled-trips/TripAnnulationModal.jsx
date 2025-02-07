@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import axiosInstance from "@/Utils/AxiosInstance";
@@ -5,13 +6,15 @@ import { X } from "lucide-react";
 
 export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
-  const [reservationDetail, setReservationDetail] = useState("");
   const [selectedCause, setSelectedCause] = useState("");
   const [customCause, setCustomCause] = useState("");
   const [selectedPassengers, setSelectedPassengers] = useState([]);
   const [cancelAll, setCancelAll] = useState(true);
 
-  const refundAmount = 3000;
+  const refundAmount =
+    ((trip?.reservation?.prixTotal ?? 0) / trip?.passager?.length ?? 1) *
+    0.74 *
+    selectedPassengers.length;
   const reservation = {
     idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     dateReservation: "2025-01-10T14:23:39.491Z",
@@ -77,6 +80,13 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     },
   };
 
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedCause("");
+      setCancelAll(false);
+    }
+  }, [isOpen]);
+
   const handleCauseChange = (e) => {
     setSelectedCause(e.target.value);
   };
@@ -96,7 +106,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const handleCancelAllChange = () => {
     setCancelAll((prev) => !prev);
     if (!cancelAll) {
-      setSelectedPassengers(reservation.passager.map((p) => p.idPassager));
+      setSelectedPassengers(trip.passager.map((p) => p.idPassager));
     } else {
       setSelectedPassengers([]);
     }
@@ -108,47 +118,31 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
 
     const causeAnnulation =
       selectedCause === "other" ? customCause : selectedCause;
-    const originAnnulation = "user";
+    const origineAnnulation = "user";
     try {
-      const response = await axiosInstance.post(`/reservation/annuler`, {
-        causeAnnulation,
-        originAnnulation,
+      const response = await axiosInstance.put(`/reservation/annuler`, {
+        causeAnnulation: causeAnnulation,
+        origineAnnulation: origineAnnulation,
+        idReservation: trip.reservation.idReservation,
         idPassagers: selectedPassengers,
         canceled: true,
       });
-      if (response.status === 201) {
+      if (response.status === 200) {
         onClose();
         setIsConfirming(false);
       }
     } catch (error) {
       console.log(error);
       setIsConfirming(false);
+      console.log({
+        causeAnnulation: causeAnnulation,
+        origineAnnulation: origineAnnulation,
+        idReservation: trip.reservation.idReservation,
+        idPassagers: selectedPassengers,
+        canceled: true,
+      });
     }
   };
-
-  async function getReservationDetail(idReservation) {
-    setIsLoading(true);
-    try {
-      const response = await axiosInstance.get(`/reservation/${idReservation}`);
-      setIsLoading(false);
-      if (response.status === 200) {
-        console.log(response.data);
-        setReservationDetail(response.data.content);
-        setError(null);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      setError(error);
-      setReservationDetail(null);
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if (trip.idReservation) {
-      getReservationDetail(trip.idReservation);
-    }
-  }, [trip.idReservation]);
 
   if (!isOpen) return null;
   return (
@@ -175,7 +169,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Select Passengers to Cancel
             </label>
             <div className="bg-gray-100 p-4 rounded-lg shadow-inner">
-              {reservation.passager.map((passenger) => (
+              {trip.passager.map((passenger) => (
                 <div
                   key={passenger.idPassager}
                   className="flex items-center mb-2">
@@ -269,7 +263,6 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
             </button>
           </div>
         </form>
-        {trip.idReservation}
       </div>
     </div>
   );
