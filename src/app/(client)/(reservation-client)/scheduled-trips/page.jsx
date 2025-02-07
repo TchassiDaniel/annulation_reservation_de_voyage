@@ -98,7 +98,7 @@ export default function Page() {
     const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] =
       useState(false);
     const [selectedTrip, setSelectedTrip] = useState({});
-    const [successMessage, setSuccessMessage] = useState({});
+    const [successMessage, setSuccessMessage] = useState("");
 
 
     
