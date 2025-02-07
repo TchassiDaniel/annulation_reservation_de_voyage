@@ -16,68 +16,7 @@ import ErrorHandler from "@/components/ErrorHandler/ErrorHandler"
 import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
 import SuccessModal from "@/components/Modals/SuccessModal";
 
-// Données simulées mises à jour pour la prévisualisation
-const mockReservation = {
-    id: 1,
-    reference: "RES123456",
-    status: "Confirmed",
-    class: "VIP",
-    departure: "Douala",
-    departureQuarter: "Akwa",
-    arrival: "Yaoundé",
-    arrivalQuarter: "Bastos",
-    agencyName: "Finex Voyages",
-    busRegistration: "CE 1234 AB",
-    departureDate: "2024-01-15",
-    departureTime: "13:00",
-    paymentDeadline: "2024-01-14",
-    price: 7000,
-    amountPaid: 14000,
-    totalAmount: 21000,
-    cancellationPolicy:
-        "Free cancellation up to 24 hours before departure. 50% refund for cancellations made less than 24 hours before departure.",
-    passengers: [
-        {
-            id: "1",
-            name: "John Doe",
-            age: 35,
-            gender: "Male",
-            seatNumber: "23A",
-            type: "Adult",
-            idNumber: "ID123456",
-            phone: "+237 123456789",
-            email: "john@example.com",
-            luggageCount: 2,
-            ticketPrice: 7000,
-        },
-        {
-            id: "2",
-            name: "Jane Doe",
-            age: 32,
-            gender: "Female",
-            seatNumber: "23B",
-            type: "Adult",
-            idNumber: "ID789012",
-            phone: "+237 987654321",
-            email: "jane@example.com",
-            luggageCount: 1,
-            ticketPrice: 7000,
-        },
-        {
-            id: "3",
-            name: "Alice Doe",
-            age: 8,
-            gender: "Female",
-            seatNumber: "23C",
-            type: "Child",
-            idNumber: "ID345678",
-            phone: "+237 567891234",
-            email: "alice@example.com",
-            luggageCount: 1,
-            ticketPrice: 7000,
-        },
-    ],
-}
+
 
 export default function Page() {
 
@@ -157,6 +96,7 @@ export default function Page() {
       }
     }, [userData?.userId]);
 
+
     useEffect(() => {
       getReservationDetail(idReservation);
     }, [idReservation]);
@@ -193,6 +133,7 @@ export default function Page() {
                 myScheduledTrips.map((scheduledTrip, index) => {
                   const tripDetails = scheduledTrip?.voyage;
                   const reservation = scheduledTrip?.reservation;
+                  const agencyInfo = scheduledTrip?.agence;
                   return (
                     <div
                       key={index}
@@ -234,8 +175,8 @@ export default function Page() {
                                   Transport agency
                                 </p>
                                 <p className="font-bold">
-                                  {tripDetails.nomAgence
-                                    ? tripDetails?.nomAgence
+                                  {agencyInfo.nom
+                                    ? agencyInfo?.nom
                                     : "not specified"}
                                 </p>
                               </div>
@@ -300,16 +241,6 @@ export default function Page() {
                                   </p>
                                   <p className="font-bold">
                                     {reservation?.nbrPassager}
-                                  </p>
-                                </div>
-                                <div className="flex gap-3">
-                                  <p className="text-sm sm:text-md text-gray-500">
-                                    Seats:{" "}
-                                  </p>
-                                  <p className="font-bold">
-                                    {mockReservation.passengers
-                                      .map((p) => p.seatNumber)
-                                      .join(", ")}
                                   </p>
                                 </div>
                               </div>

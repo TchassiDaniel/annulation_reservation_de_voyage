@@ -73,7 +73,16 @@ export default function ReservationDetails({ params }) {
       </div>
 
       {isLoading ? (
-        <div>Loading ...</div>
+          <div className="h-[500px] flex justify-center items-center">
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full border-4 border-reservation-color border-b-transparent animate-spin relative">
+                <div className="absolute inset-0 w-full h-full rounded-full border-4 border-reservation-color/20"></div>
+              </div>
+              <p className="animate-bounce text-reservation-color text-xl font-bold mt-4">
+                Loading...
+              </p>
+            </div>
+          </div>
       ) : !error && reservationDetails ? (
         <div className="space-y-8">
           {/* Reservation Summary */}
@@ -119,7 +128,7 @@ export default function ReservationDetails({ params }) {
                     <div>
                       <p className="text-md text-gray-500">Agency</p>
                       <p className="font-bold">
-                        {reservationDetails?.voyage?.nomAgence ||
+                        {reservationDetails?.agence?.nom ||
                           "not specified"}
                       </p>
                     </div>
