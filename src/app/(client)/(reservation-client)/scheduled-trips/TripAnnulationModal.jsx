@@ -13,16 +13,12 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [cancelAll, setCancelAll] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [refundAmount, setRefundAmount] = useState(0);
 
   const openSuccessModal = (message) => {
     setSuccessMessage(message);
     setIsSuccessModalOpen(true);
   };
-
-  const refundAmount =
-    ((trip?.reservation?.montantPaye ?? 0) / trip?.passager?.length ?? 1) *
-    0.74 *
-    selectedPassengers.length;
   const reservation = {
     idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     dateReservation: "2025-01-10T14:23:39.491Z",
@@ -121,6 +117,29 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     }
   };
 
+  const getRefundAmount = async () => {
+    try {
+      const response = await axiosInstance.post(`/reservation/annuler`, {
+        causeAnnulation: "",
+        origineAnnulation: "",
+        idReservation: trip.reservation.idReservation,
+        idPassagers: [],
+        canceled: false,
+      });
+      console.log(response.data);
+      if (response.status === 200 || response.status === 201) {
+        console.log("refund amount: ", response.data);
+        setRefundAmount(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getRefundAmount();
+  }, [selectedPassengers]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsConfirming(true);
@@ -144,13 +163,6 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     } catch (error) {
       console.log(error);
       setIsConfirming(false);
-      console.log({
-        causeAnnulation: causeAnnulation,
-        origineAnnulation: origineAnnulation,
-        idReservation: trip.reservation.idReservation,
-        idPassagers: selectedPassengers,
-        canceled: true,
-      });
     }
   };
 
