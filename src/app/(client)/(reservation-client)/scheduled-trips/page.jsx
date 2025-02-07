@@ -10,12 +10,11 @@ import { FaHouse } from "react-icons/fa6"
 import { useAuthentication } from "@/Utils/Provider"
 import axiosInstance from "@/Utils/AxiosInstance"
 import { Tooltip } from "antd"
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { formatDateOnly, formatDateToTime, formatFullDateTime } from "@/Utils/formatDateMethods"
 import ErrorHandler from "@/components/ErrorHandler/ErrorHandler"
 import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/[tripId]/PaymentRequestModal";
 import SuccessModal from "@/components/Modals/SuccessModal";
-
 
 
 export default function Page() {
@@ -290,8 +289,8 @@ export default function Page() {
                               </div>
                               <button
                                 onClick={() => {
-                                    setSelectedTrip(scheduledTrip)
-                                  setCanOpenPaymentRequestModal(true)
+                                  setSelectedTrip(scheduledTrip);
+                                  setCanOpenPaymentRequestModal(true);
                                 }}
                                 className="px-4 py-2 bg-orange-500 font-bold text-white rounded-lg text-sm hover:bg-orange-700 transition-colors w-full sm:w-auto">
                                 Complete payment
