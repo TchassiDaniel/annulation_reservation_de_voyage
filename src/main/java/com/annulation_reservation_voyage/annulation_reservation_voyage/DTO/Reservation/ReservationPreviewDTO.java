@@ -14,4 +14,5 @@ import lombok.Setter;
 public class ReservationPreviewDTO {
   Reservation reservation;
   Voyage voyage;
+  User agence;
 }

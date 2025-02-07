@@ -70,7 +70,11 @@ public class ReservationService {
         List<ReservationPreviewDTO> reservationPreviewDTOs = new ArrayList<>();
         for (Reservation reservation : reservations) {
             Voyage voyage = voyageRepository.findById(reservation.getIdVoyage()).orElse(null);
-            ReservationPreviewDTO reservationPreviewDTO = new ReservationPreviewDTO(reservation, voyage);
+            User agence = userRepository
+                    .findById(this.ligneVoyageRepository.findByIdVoyage(voyage.getIdVoyage())
+                            .getIdAgenceVoyage())
+                    .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifique n'existe pas."));
+            ReservationPreviewDTO reservationPreviewDTO = new ReservationPreviewDTO(reservation, voyage, agence);
             reservationPreviewDTOs.add(reservationPreviewDTO);
         }
         long total = reservationRepository.count();
@@ -86,6 +90,12 @@ public class ReservationService {
         // On charge le voyage
         reservationDetailDTO.setVoyage(voyageRepository.findById(reservation.getIdVoyage())
                 .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifié n'existe pas.")));
+        // On charge l'agence
+        reservationDetailDTO.setAgence(userRepository
+                .findById(this.ligneVoyageRepository.findByIdVoyage(reservationDetailDTO.getVoyage().getIdVoyage())
+                        .getIdAgenceVoyage())
+                .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifique n'existe pas.")));
+
         return reservationDetailDTO;
     }
 
