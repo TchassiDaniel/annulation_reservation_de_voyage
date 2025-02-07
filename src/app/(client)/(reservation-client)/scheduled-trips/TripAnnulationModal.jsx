@@ -20,7 +20,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   };
 
   const refundAmount =
-    ((trip?.reservation?.prixTotal ?? 0) / trip?.passager?.length ?? 1) *
+    ((trip?.reservation?.montantPaye ?? 0) / trip?.passager?.length ?? 1) *
     0.74 *
     selectedPassengers.length;
   const reservation = {
@@ -202,6 +202,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               <div className="flex items-center mt-4">
                 <input
                   type="checkbox"
+                  openSuccessModal
                   id="cancel-all"
                   name="cancel-all"
                   checked={cancelAll}
