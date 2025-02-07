@@ -40,7 +40,8 @@ function useLogin() {
     {
         try
         {
-            const response= await axios.post("http://85.214.142.178:8085/api/utilisateur/connexion", data);
+            //const response= await axios.post("http://85.214.142.178:8085/api/utilisateur/connexion", data);
+            const response = await axios.post("https://tchassidaniel-voyage-service--8080.prod1a.defang.dev/api/utilisateur/connexion", data);
             if (response?.status === 200)
             {
                 setIsLoading(false);
@@ -93,7 +94,8 @@ function useLogin() {
             {
                 try {
                     {
-                        const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
+                        //const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
+                        const response = await axios.get(`https://tchassidaniel-voyage-service--8080.prod1a.defang.dev/api/utilisateur/profil/${token}`);
                         if (response.status === 200)
                         {
                             console.log(response.data);
