@@ -80,10 +80,11 @@ const mockReservation = {
 }
 
 export default function Page() {
-<<<<<<< HEAD
-    const router = useRouter()
-    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null)
-    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false)
+
+    const router = useRouter();
+    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null);
+    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] =
+      useState(false);
     const [idReservation, setIdReservation] = useState("");
     const [reservationDetail, setReservationDetail] = useState({});
     const { userData } = useAuthentication();
@@ -93,6 +94,7 @@ export default function Page() {
       useState(false);
     const [isSearch, setIsSearch] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
+    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
 
     async function getReservationDetail(idReservation) {
       setIsLoading(true);
@@ -107,44 +109,7 @@ export default function Page() {
           setReservationDetail(response.data);
           console.log("reservationDetail");
           console.log(reservationDetail);
-
           setError(null);
-=======
-    const router = useRouter();
-    const [myScheduledTrips, setMyScheduledTrips] = useState([] | null);
-    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false);
-    const [selectedTrip, setSelectedTrip] = useState({});
-    const { userData } = useAuthentication();
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
-    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
-    const [isSearch, setIsSearch] = useState(false);
-    const [totalPages, setTotalPages] = useState(1);
-    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] = useState(false);
-    const [successMessage, setSuccessMessage]  = useState("");
-    const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
-
-
-    async function getMyScheduledTrips(userId) {
-        setIsLoading(true)
-        try {
-            const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`);
-            setIsLoading(false);
-            if (response.status === 200) {
-                console.log(response.data);
-                setMyScheduledTrips(response.data.content);
-                setTotalPages(response?.data?.totalPages);
-                setIsSearch(false);
-                if (response?.data?.empty === true) setCanRenderPaginationContent(false);
-                else setCanRenderPaginationContent(true);
-                setError(null);
-            }
-        } catch (error) {
-            setIsLoading(false);
-            setError(error);
-            setMyScheduledTrips(null);
-            console.log(error);
->>>>>>> 1f1b3add30f24554d87f3ba89229248099254ff6
         }
       } catch (error) {
         setIsLoading(false);
@@ -180,7 +145,6 @@ export default function Page() {
     }
 
     useEffect(() => {
-<<<<<<< HEAD
       if (userData.userId) {
         getMyScheduledTrips(userData?.userId);
       }
@@ -189,12 +153,6 @@ export default function Page() {
     useEffect(() => {
       getReservationDetail(idReservation);
     }, [idReservation]);
-=======
-        if (userData.userId) {
-            getMyScheduledTrips(userData?.userId);
-        }
-    }, [userData?.userId])
->>>>>>> 1f1b3add30f24554d87f3ba89229248099254ff6
 
     return (
       <div className="min-h-screen  ">
