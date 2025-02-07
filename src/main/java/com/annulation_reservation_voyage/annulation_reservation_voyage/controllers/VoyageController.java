@@ -75,7 +75,7 @@ public class VoyageController {
             @ApiResponse(responseCode = "400", description = "Erreur, Voyage non existant ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "404", description = "Voyage inexistant.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @PutMapping("/annuler")
+    @PostMapping("/annuler")
     public ResponseEntity<?> annulerVoyage(VoyageCancelDTO voyageCancelDTO){
         try {
             double risqueAnnulation = annulationService.annulerVoyage(voyageCancelDTO);

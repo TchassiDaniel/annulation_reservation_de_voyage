@@ -178,7 +178,7 @@ public class ReservationController {
             @ApiResponse(responseCode = "400", description = "Erreur, réservation non existante ou données invalides.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "404", description = "reservation inexistante.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = String.class)))
     })
-    @PutMapping("/annuler")
+    @PostMapping("/annuler")
     public ResponseEntity<?> annulerReservation(
             @Parameter(description = "Données nécessaires pour annuler la réservation (ID de la réservation et informations supplémentaires).", required = true) @RequestBody ReservationCancelDTO reservationCancelDTO) {
 
