@@ -19,11 +19,11 @@ export const linkList = [
         link: "/coupons",
         icon: FaTicketAlt,
     },
-    {
+   /* {
         name: "Statistics",
         link: "/statistics",
         icon: AiOutlineBarChart,
-    },
+    },*/
     {
         name: "History",
         icon: FaHistory,

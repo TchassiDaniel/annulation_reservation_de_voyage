@@ -373,7 +373,7 @@ export default function Page() {
                           <button
                             onClick={() => {
                               router.push(
-                                `scheduled-trips/reservation/${reservation?.idReservation}`
+                                `scheduled-trips/reservation-details/${reservation?.idReservation}`
                               );
                             }}
                             className="px-4 py-2 text-blue-600 hover:text-blue-800 border-2 border-blue-300 hover:bg-blue-300 font-medium rounded-lg bg-blue-100 transition-all duration-300 flex items-center justify-center gap-2 w-full sm:w-auto">
