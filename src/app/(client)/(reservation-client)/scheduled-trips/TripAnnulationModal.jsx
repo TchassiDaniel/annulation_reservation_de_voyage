@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import axiosInstance from "@/Utils/AxiosInstance";
 import { X } from "lucide-react";
 
 export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
+  const [reservationDetail, setReservationDetail] = useState("");
   const [selectedCause, setSelectedCause] = useState("");
   const [customCause, setCustomCause] = useState("");
   const [selectedPassengers, setSelectedPassengers] = useState([]);
@@ -100,18 +101,21 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
       setSelectedPassengers([]);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logique pour soumettre le formulaire
     setIsConfirming(true);
+
+    const causeAnnulation =
+      selectedCause === "other" ? customCause : selectedCause;
+    const originAnnulation = "user";
     try {
-      const response = await axiosInstance.post(
-        `/reservation/annuler/${trip.id}`,
-        {
-          idUser: trip.idUser,
-          idVoyage: trip.idVoyage,
-        }
-      );
+      const response = await axiosInstance.post(`/reservation/annuler`, {
+        causeAnnulation,
+        originAnnulation,
+        idPassagers: selectedPassengers,
+        canceled: true,
+      });
       if (response.status === 201) {
         onClose();
         setIsConfirming(false);
@@ -121,6 +125,30 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
       setIsConfirming(false);
     }
   };
+
+  async function getReservationDetail(idReservation) {
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance.get(`/reservation/${idReservation}`);
+      setIsLoading(false);
+      if (response.status === 200) {
+        console.log(response.data);
+        setReservationDetail(response.data.content);
+        setError(null);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
+      setReservationDetail(null);
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    if (trip.idReservation) {
+      getReservationDetail(trip.idReservation);
+    }
+  }, [trip.idReservation]);
 
   if (!isOpen) return null;
   return (
@@ -241,6 +269,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
             </button>
           </div>
         </form>
+        {trip.idReservation}
       </div>
     </div>
   );
