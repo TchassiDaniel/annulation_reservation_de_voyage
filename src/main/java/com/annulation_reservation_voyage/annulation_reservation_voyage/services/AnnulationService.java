@@ -107,7 +107,7 @@ public class AnnulationService {
                 montantPaye = 0;
             }
         }
-        double tauxAnnulation = AnnulationOperator.tauxannualtion(classVoyage.getTauxAnnulation(), politiqueAnnulation,
+        double tauxAnnulation = AnnulationOperator.tauxannualtion(classVoyage, politiqueAnnulation,
                 voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
         if (!reservationCancelDTO.isCanceled()) { // si canceled est à false, alors on veut juste evaluer combien on
             // risque perdre et on s'arrete là
@@ -210,8 +210,7 @@ public class AnnulationService {
             }
         }
 
-        double tauxCompensation = AnnulationOperator.tauxCompensation(classVoyage.getTauxAnnulation(),
-                politiqueAnnulation, voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
+        double tauxCompensation = AnnulationOperator.tauxCompensation(classVoyage, politiqueAnnulation, voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
         if (!reservationCancelDTO.isCanceled()) { // si canceled est à false, alors on veut juste evaluer combien on
             // risque perdre et on s'arrete là
             return tauxCompensation * reservation.getMontantPaye();
@@ -269,7 +268,6 @@ public class AnnulationService {
 
         // on met à jour la reservation
         reservation.setStatutReservation(StatutReservation.ANNULER);
-        this.reservationRepository.save(reservation);
         this.historiqueRepository.save(historique);
         this.voyageRepository.save(voyage);
         this.reservationRepository.save(reservation);
@@ -314,7 +312,7 @@ public class AnnulationService {
                         montantPaye = 0;
                     }
                 }
-                double tauxAnnulation = AnnulationOperator.tauxannualtion(classVoyage.getTauxAnnulation(), politiqueAnnulation,
+                double tauxAnnulation = AnnulationOperator.tauxannualtion(classVoyage, politiqueAnnulation,
                         voyage.getDateLimiteReservation(), voyage.getDateLimiteConfirmation(), now);
 
                 // On update l'historique
