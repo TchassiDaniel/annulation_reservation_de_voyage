@@ -161,7 +161,7 @@ export default function Page() {
                       className=" rounded-xl border-2 border-gray-300 bg-gray-100 overflow-hidden">
                       {/* Header Section */}
                       <div className="p-4 sm:p-6">
-                        <div className="flex flex-col sm:flex-row justify-between items-start mb-4 gap-4">
+                        <div className="flex justify-between items-start mb-4 gap-4">
                           <div className="flex items-center gap-2">
                             <MapPin className="text-reservation-color h-8 w-8 sm:h-10 sm:w-10" />
                             <h3 className="text-base sm:text-lg font-semibold">
@@ -169,7 +169,7 @@ export default function Page() {
                             </h3>
                           </div>
 
-                          <div className="flex flex-wrap gap-2">
+                          <div className="lg:hidden flex flex-wrap gap-2">
                             {reservation?.status === "CONFIRMER" ? (
                               <span className="px-2 py-1 sm:px-3 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-green-100 text-green-600 border-2 border-green-300 flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3 sm:h-4 sm:w-4" />

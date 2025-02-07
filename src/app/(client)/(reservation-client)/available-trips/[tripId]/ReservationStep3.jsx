@@ -238,17 +238,13 @@ export default function ReservationStep3({selectedSeats, tripDetails, passengers
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-8">
+            <div className="flex justify-end mr-2 mt-8">
                 <button
                     onClick={async () => await bookTrip()}
                     className="bg-reservation-color text-white py-3 px-6 rounded-lg font-semibold hover:bg-opacity-90 transition-colors duration-200 flex items-center justify-center"
                 >
                     <CheckCircle className="w-5 h-5 mr-2" />
                     Book
-                </button>
-                <button className="bg-orange-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-600 transition-colors duration-200 flex items-center justify-center">
-                    <CreditCard className="w-5 h-5 mr-2" />
-                    Proceed to payment
                 </button>
             </div>
         </div>

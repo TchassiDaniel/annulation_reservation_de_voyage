@@ -10,7 +10,8 @@ if (typeof window !== "undefined")
 
 const axiosInstance = axios.create(
     {
-        baseURL: 'http://85.214.142.178:8085/api',
+        //baseURL: 'http://85.214.142.178:8085/api',
+        baseURL: 'https://tchassidaniel-voyage-service--8080.prod1a.defang.dev/api',
         headers:
             {
                 'Authorization': `Bearer ${token}`,
@@ -21,3 +22,5 @@ const axiosInstance = axios.create(
 
 
 export default axiosInstance;
+
+
