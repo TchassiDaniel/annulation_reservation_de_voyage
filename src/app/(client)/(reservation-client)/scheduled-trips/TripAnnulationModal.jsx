@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { XCircle } from "lucide-react";
 import axiosInstance from "@/Utils/AxiosInstance";
 import { X } from "lucide-react";
+import SuccessModal from "@/components/Modals/SuccessModal";
 
 export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [isConfirming, setIsConfirming] = useState(false);
@@ -10,6 +11,13 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [customCause, setCustomCause] = useState("");
   const [selectedPassengers, setSelectedPassengers] = useState([]);
   const [cancelAll, setCancelAll] = useState(true);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const openSuccessModal = (message) => {
+    setSuccessMessage(message);
+    setIsSuccessModalOpen(true);
+  };
 
   const refundAmount =
     ((trip?.reservation?.prixTotal ?? 0) / trip?.passager?.length ?? 1) *
@@ -83,6 +91,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   useEffect(() => {
     if (!isOpen) {
       setSelectedCause("");
+      setSelectedPassengers([]);
       setCancelAll(false);
     }
   }, [isOpen]);
@@ -120,16 +129,17 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
       selectedCause === "other" ? customCause : selectedCause;
     const origineAnnulation = "user";
     try {
-      const response = await axiosInstance.put(`/reservation/annuler`, {
+      const response = await axiosInstance.post(`/reservation/annuler`, {
         causeAnnulation: causeAnnulation,
         origineAnnulation: origineAnnulation,
         idReservation: trip.reservation.idReservation,
         idPassagers: selectedPassengers,
         canceled: true,
       });
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         onClose();
         setIsConfirming(false);
+        openSuccessModal("successfully Canceled!");
       }
     } catch (error) {
       console.log(error);
@@ -264,6 +274,11 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
           </div>
         </form>
       </div>
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        canOpenSuccessModal={setIsSuccessModalOpen}
+        message={successMessage}
+      />
     </div>
   );
 }
