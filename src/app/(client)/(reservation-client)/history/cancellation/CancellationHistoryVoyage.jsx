@@ -32,7 +32,7 @@ export default function CancellationHistoryVoyage() {
 
   const renderAnnulationDetails = (reservation) => {
     if (!reservation) {
-      return <div>Aucun détail disponible</div>;
+      return <div>No details available</div>;
     }
 
     return (
@@ -47,14 +47,14 @@ export default function CancellationHistoryVoyage() {
 
           <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
             <NoSymbolIcon className="h-8 w-8 text-red-500 mr-3" />
-            Détails de l'Annulation
+            Cancellation Details
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center">
               <UserIcon className="h-6 w-6 text-blue-500 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Passager</p>
+                <p className="text-gray-600 text-xs">Passenger</p>
                 <p className="font-medium text-sm">{reservation.passagerDetails.nom}</p>
               </div>
             </div>
@@ -62,7 +62,7 @@ export default function CancellationHistoryVoyage() {
             <div className="flex items-center">
               <ClockIcon className="h-6 w-6 text-blue-500 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Heure de Départ</p>
+                <p className="text-gray-600 text-xs">Departure Time</p>
                 <p className="font-medium text-sm">
                   {formatTime(reservation.heureDepart)}
                 </p>
@@ -72,7 +72,7 @@ export default function CancellationHistoryVoyage() {
             <div className="flex items-center">
               <ClockIcon className="h-6 w-6 text-green-500 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Heure d'Arrivée</p>
+                <p className="text-gray-600 text-xs">Arrival Time</p>
                 <p className="font-medium text-sm">
                   {formatTime(reservation.heureArrivee)}
                 </p>
@@ -94,7 +94,7 @@ export default function CancellationHistoryVoyage() {
             <div className="flex items-center">
               <UserCircleIcon className="h-6 w-6 text-green-500 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Initiateur de l'Annulation</p>
+                <p className="text-gray-600 text-xs">Cancellation Initiator</p>
                 <p className="font-medium text-sm">
                   {reservation.initiateurAnnulation}
                 </p>
@@ -104,7 +104,7 @@ export default function CancellationHistoryVoyage() {
             <div className="flex items-center">
               <IdentificationIcon className="h-6 w-6 text-purple-500 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Agence Prestataire</p>
+                <p className="text-gray-600 text-xs">Service Provider Agency</p>
                 <p className="font-bold text-lg">
                   {reservation.agencePrestaire}
                 </p>
@@ -114,7 +114,7 @@ export default function CancellationHistoryVoyage() {
             <div className="flex items-center col-span-full">
               <NoSymbolIcon className="h-6 w-6 text-red-600 mr-3" />
               <div>
-                <p className="text-gray-600 text-xs">Cause de l'Annulation</p>
+                <p className="text-gray-600 text-xs">Cause of Cancellation</p>
                 <p className="font-medium text-sm">
                   {reservation.causeAnnulation}
                 </p>
@@ -127,27 +127,26 @@ export default function CancellationHistoryVoyage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-0">
-            Voyages Annulés
+          <h1 className="text-xl sm:text-3xl font-bold text-reservation-color mb-4 sm:mb-0">
+            Canceled Trips
           </h1>
-          <div className="text-lg font-bold text-red-600">Mooving Voyages</div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {historiqueData.historiques
             .filter(reservation => reservation.etatVoyage === 'annulé')
             .map((reservation) => (
               <div 
                 key={reservation.idHistorique} 
-                className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-l-4 border-red-500"
+                className="bg-gray-100 shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl border-l-4 border-red-500"
               >
                 <div className="p-4">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
                     <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-0">
-                      Réservation #{reservation.idHistorique}
+                      Reservation #{reservation.idHistorique}
                     </h2>
                     <div className="flex flex-wrap items-center gap-2">
                       <span 
@@ -165,11 +164,11 @@ export default function CancellationHistoryVoyage() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-8">
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-blue-500 mr-2" />
                       <div>
-                        <p className="text-xs text-gray-600">Lieu Départ</p>
+                        <p className="text-xs text-gray-600">Depart Location</p>
                         <p className="font-medium text-xs">{reservation.lieuDepart}</p>
                       </div>
                     </div>
@@ -177,7 +176,7 @@ export default function CancellationHistoryVoyage() {
                     <div className="flex items-center">
                       <ClockIcon className="h-5 w-5 text-blue-500 mr-2" />
                       <div>
-                        <p className="text-xs text-gray-600">Heure Départ</p>
+                        <p className="text-xs text-gray-600">Departure Time</p>
                         <p className="font-medium text-xs">
                           {formatTime(reservation.heureDepart)}
                         </p>
@@ -187,7 +186,7 @@ export default function CancellationHistoryVoyage() {
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-green-500 mr-2" />
                       <div>
-                        <p className="text-xs text-gray-600">Lieu Arrivée</p>
+                        <p className="text-xs text-gray-600">Arrival Location</p>
                         <p className="font-medium text-xs">{reservation.lieuArrivee}</p>
                       </div>
                     </div>
@@ -195,7 +194,7 @@ export default function CancellationHistoryVoyage() {
                     <div className="flex items-center">
                       <ClockIcon className="h-5 w-5 text-green-500 mr-2" />
                       <div>
-                        <p className="text-xs text-gray-600">Heure Arrivée</p>
+                        <p className="text-xs text-gray-600">Arrival Time</p>
                         <p className="font-medium text-xs">
                           {formatTime(reservation.heureArrivee)}
                         </p>
@@ -213,7 +212,7 @@ export default function CancellationHistoryVoyage() {
                     <div className="flex items-center col-span-2">
                       <UserCircleIcon className="h-5 w-5 text-red-500 mr-2" />
                       <div>
-                        <p className="text-xs text-gray-600">Initiateur d'Annulation</p>
+                        <p className="text-xs text-gray-600">Cancellation Initiator</p>
                         <p className="font-medium text-xs">
                           {reservation.initiateurAnnulation}
                         </p>
@@ -221,14 +220,14 @@ export default function CancellationHistoryVoyage() {
                     </div>
                   </div>
                   
-                  <div className="mt-3 flex justify-center">
+                  <div className="mt-5 flex justify-center">
                     <button 
                       onClick={() => setSelectedReservation(
                         selectedReservation === reservation ? null : reservation
                       )}
-                      className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition text-xs w-full"
+                      className="bg-red-500 text-white font-semibold px-3 py-2 rounded-lg hover:bg-red-600 transition text-sm"
                     >
-                      Détails Annulation
+                      Cancellation Details
                     </button>
                   </div>
                 </div>

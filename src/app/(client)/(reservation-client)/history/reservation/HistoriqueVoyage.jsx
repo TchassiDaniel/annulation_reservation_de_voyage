@@ -214,7 +214,7 @@ export default function HistoriqueVoyage() {
             <XMarkIcon className="h-6 w-6" />
           </button>
 
-          <h3 className="text-xl font-bold mb-4 text-gray-800 flex items-center">
+          <h3 className="mt-8 text-xl font-bold mb-4 text-gray-800 flex items-center">
             <UserCircleIcon className="h-8 w-8 text-blue-500 mr-3" />
             Détails du Passager
           </h3>

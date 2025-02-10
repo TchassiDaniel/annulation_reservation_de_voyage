@@ -75,7 +75,7 @@ const Coupons = () => {
   };
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen">
       <div className="bg-gray-100 rounded-lg">
         <div className="mx-auto px-4 py-6">
           <h1 className="text-3xl font-bold text-reservation-color">
@@ -121,7 +121,7 @@ const Coupons = () => {
         </div>
       </div>
 
-      <div className="mx-auto py-6">
+      <div className="mx-auto">
         <div className="space-y-4">
           {coupons
             .filter(
@@ -133,20 +133,20 @@ const Coupons = () => {
                 key={coupon.idCoupon}
                 id={`pdf-content-${coupon.idCoupon}`}
                 className="border-2 border-blue-600 bg-white rounded-xl p-6 shadow-md">
-                <div className="text-center mb-6">
+                <div className="text-center mb-3">
                   <h2 className="text-2xl font-bold text-blue-800">
                     Coupon de Remboursement
                   </h2>
                   <p className="text-gray-600">Annulation de Voyage</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-2 mb-4">
                   <div>
                     <p className="text-sm text-gray-500">Coupon ID</p>
                     <p className="font-bold text-blue-800">{coupon.idCoupon}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm text-gray-500">Statut</p>
+                    <p className="text-sm text-gray-500">Status</p>
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
                         coupon.statusCoupon === "VALIDE"
@@ -160,7 +160,7 @@ const Coupons = () => {
 
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div>
-                    <p className="text-sm text-gray-500">Agence</p>
+                    <p className="text-sm text-gray-500">Agency</p>
                     <MapPin className="h-5 w-5 text-blue-600 inline-block mr-2" />
                     <span>{coupon.nomAgence}</span>
                   </div>
@@ -207,7 +207,7 @@ const Coupons = () => {
                         onClick={() => printCoupon(coupon.idCoupon)}
                         className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center">
                         <Printer className="h-4 w-4 mr-2" />
-                        Imprimer
+                        Print
                       </button>
                     </div>
                   )}
