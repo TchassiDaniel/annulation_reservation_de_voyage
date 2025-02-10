@@ -13,76 +13,16 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
   const [cancelAll, setCancelAll] = useState(true);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [refundAmount, setRefundAmount] = useState(0);
+  const [refundAmount, setRefundAmount] = useState(null);
+  const [error, setError] = useState("");
 
   const openSuccessModal = (message) => {
     setSuccessMessage(message);
     setIsSuccessModalOpen(true);
   };
-  const reservation = {
-    idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    dateReservation: "2025-01-10T14:23:39.491Z",
-    dateConfirmation: "2025-01-11T14:23:39.491Z",
-    nbrPassager: 2,
-    montantPaye: 6000,
-    prixTotal: 12000,
-    statutReservation: "RESERVER",
-    idUser: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    idVoyage: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    passager: [
-      {
-        idPassager: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        numeroPieceIdentific: "123456789",
-        nom: "John Doe",
-        genre: "M",
-        age: 30,
-        nbrBaggage: 2,
-        idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        placeChoisis: 1,
-      },
-      {
-        idPassager: "4fa85f64-5717-4562-b3fc-2c963f66afa7",
-        numeroPieceIdentific: "987654321",
-        nom: "Jane Doe",
-        genre: "F",
-        age: 28,
-        nbrBaggage: 1,
-        idReservation: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        placeChoisis: 2,
-      },
-    ],
-    voyage: {
-      idVoyage: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-      titre: "Trip to Douala",
-      description: "A wonderful trip to Douala",
-      dateDepartPrev: "2025-01-15T14:23:39.491Z",
-      lieuDepart: "Yaoundé",
-      dateDepartEffectif: "2025-01-15T14:23:39.491Z",
-      dateArriveEffectif: "2025-01-15T18:23:39.491Z",
-      lieuArrive: "Douala",
-      heureDepartEffectif: "2025-01-15T14:23:39.491Z",
-      pointDeDepart: "Point A",
-      pointArrivee: "Point C",
-      dureeVoyage: {
-        seconds: 14400,
-        zero: false,
-        nano: 0,
-        negative: false,
-        units: [],
-      },
-      heureArrive: "2025-01-15T18:23:39.491Z",
-      nbrPlaceReservable: 50,
-      nbrPlaceReserve: 20,
-      nbrPlaceConfirm: 15,
-      nbrPlaceRestante: 30,
-      datePublication: "2025-01-01T14:23:39.491Z",
-      dateLimiteReservation: "2025-01-14T14:23:39.491Z",
-      dateLimiteConfirmation: "2025-01-14T14:23:39.491Z",
-      statusVoyage: "CONFIRMER",
-      smallImage: "small.jpg",
-      bigImage: "big.jpg",
-    },
-  };
+
+
+
 
   useEffect(() => {
     if (!isOpen) {
@@ -156,17 +96,28 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
         canceled: true,
       });
       if (response.status === 200 || response.status === 201) {
-        onClose();
         setIsConfirming(false);
         openSuccessModal("successfully Canceled!");
       }
     } catch (error) {
       console.log(error);
+      setError(error.response.data);
+      setSuccessMessage("");
+      setIsSuccessModalOpen(false);
       setIsConfirming(false);
     }
   };
 
   if (!isOpen) return null;
+
+  if (isSuccessModalOpen) return (
+      <SuccessModal
+          isOpen={isSuccessModalOpen}
+          canOpenSuccessModal={setIsSuccessModalOpen}
+          message={successMessage}
+          makeAction={onClose}
+      />
+  )
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
       <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -178,6 +129,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
             <h2 className="text-3xl font-bold text-red-500 mt-1">
               Cancel Reservation
             </h2>
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
           <button
             onClick={onClose}
@@ -214,7 +166,6 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               <div className="flex items-center mt-4">
                 <input
                   type="checkbox"
-                  openSuccessModal
                   id="cancel-all"
                   name="cancel-all"
                   checked={cancelAll}
@@ -266,7 +217,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Refund Amount
             </label>
             <p className="text-red-500 text-lg font-medium">
-              {refundAmount} FCFA
+              {refundAmount !== 'Réservation annulée avec succès.' ? refundAmount : 0} FCFA
             </p>
           </div>
           <p className="text-lg font-medium text-gray-700">
@@ -287,11 +238,6 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
           </div>
         </form>
       </div>
-      <SuccessModal
-        isOpen={isSuccessModalOpen}
-        canOpenSuccessModal={setIsSuccessModalOpen}
-        message={successMessage}
-      />
     </div>
   );
 }

@@ -21,20 +21,17 @@ export default function Page() {
 
     const router = useRouter();
     const [myScheduledTrips, setMyScheduledTrips] = useState([] | null);
-    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] =
-      useState(false);
+    const [canOpenTripAnnulationModal, setCanOpenTripAnnulationModal] = useState(false);
     const [idReservation, setIdReservation] = useState("");
     const [reservationDetail, setReservationDetail] = useState({});
     const { userData } = useAuthentication();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [canRenderPaginationContent, setCanRenderPaginationContent] =
-      useState(false);
+    const [canRenderPaginationContent, setCanRenderPaginationContent] = useState(false);
     const [isSearch, setIsSearch] = useState(false);
     const [totalPages, setTotalPages] = useState(1);
     const [canOpenSuccessModal, setCanOpenSuccessModal] = useState(false);
-    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] =
-      useState(false);
+    const [canOpenPaymentRequestModal, setCanOpenPaymentRequestModal] = useState(false);
     const [selectedTrip, setSelectedTrip] = useState({});
     const [successMessage, setSuccessMessage] = useState("");
 
@@ -42,12 +39,10 @@ export default function Page() {
     
 
     async function getReservationDetail(idReservation) {
-      setIsLoading(true);
       try {
         const response = await axiosInstance.get(
           `/reservation/${idReservation}`
         );
-        setIsLoading(false);
         if (response.status === 200) {
           console.log("response.data");
           console.log(response.data);
@@ -57,13 +52,16 @@ export default function Page() {
           setError(null);
         }
       } catch (error) {
-        setIsLoading(false);
-        setError(error);
         setReservationDetail(null);
         console.log(error);
-        console.log("echech de get du reservationDetail");
+        console.log("echec de get du reservationDetail");
       }
     }
+
+
+
+
+
     async function getMyScheduledTrips(userId) {
       setIsLoading(true);
       try {
