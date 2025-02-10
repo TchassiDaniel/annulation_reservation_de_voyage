@@ -42,17 +42,13 @@ export default function Page() {
           `/reservation/${idReservation}`
         );
         if (response.status === 200) {
-          console.log("response.data");
           console.log(response.data);
           setReservationDetail(response.data);
-          console.log("reservationDetail");
-          console.log(reservationDetail);
           setError(null);
         }
       } catch (error) {
         setReservationDetail(null);
         console.log(error);
-        console.log("echec de get du reservationDetail");
       }
     }
 
@@ -372,11 +368,13 @@ export default function Page() {
                   </div>
                 </div>
               )}
+
               <ErrorHandler
                 error={error}
                 dataLength={myScheduledTrips?.length}
                 isSearch={isSearch}
               />
+
             </>
           )}
         </div>
@@ -403,9 +401,7 @@ export default function Page() {
           canOpenSuccessModal={setCanOpenSuccessModal}
           isOpen={canOpenSuccessModal}
           message={successMessage}
-          makeAction={() => {
-            setCanOpenPaymentRequestModal(false), window.location.reload();
-          }}
+          makeAction={() => {setCanOpenPaymentRequestModal(false), window.location.reload();}}
         />
       </div>
     );

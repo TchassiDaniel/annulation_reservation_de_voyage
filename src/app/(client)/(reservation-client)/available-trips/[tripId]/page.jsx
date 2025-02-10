@@ -1,16 +1,7 @@
 "use client"
 
 import React, { useCallback, useEffect, useState } from "react"
-import {
-    FaArrowLeft,
-    FaCalendarCheck,
-    FaCalendarTimes,
-    FaDollarSign,
-    FaInfoCircle,
-    FaLandmark,
-    FaStar,
-    FaTools,
-} from "react-icons/fa"
+import {FaArrowLeft, FaCalendarCheck, FaCalendarTimes, FaDollarSign, FaInfoCircle, FaLandmark, FaStar, FaTools,} from "react-icons/fa"
 import { Calendar, ChevronLeft, ChevronRight, Clock, Coffee, MapPin, Usb, Wifi } from "lucide-react"
 import { useRouter } from "next/navigation"
 import axiosInstance from "@/Utils/AxiosInstance"
@@ -24,6 +15,7 @@ import {PaymentModal} from "@/app/(client)/(reservation-client)/available-trips/
 import SuccessModal from "@/components/Modals/SuccessModal";
 
 export default function TripDetails({ params }) {
+
     const tripId = React.use(params).tripId;
     const router = useRouter();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -185,14 +177,14 @@ export default function TripDetails({ params }) {
                                 <MapPin className="h-7 w-7 text-red-600" />
                                 <div>
                                     <p className="text-sm text-gray-500">Departure location</p>
-                                    <p className="font-medium">{tripDetails?.pointDeDepart}</p>
+                                    <p className="font-semibold">{tripDetails?.lieuDepart + " - " + tripDetails?.pointDeDepart}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2">
                                 <MapPin className="h-7 w-7 text-red-600" />
                                 <div>
                                     <p className="text-sm text-gray-500">Arrival location</p>
-                                    <p className="font-medium">{tripDetails?.pointArrivee}</p>
+                                    <p className="font-semibold">{tripDetails?.lieuArrive + " - " +tripDetails?.pointArrivee}</p>
                                 </div>
                             </div>
 
@@ -202,7 +194,7 @@ export default function TripDetails({ params }) {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Travel Date</p>
-                                    <p className="font-medium">
+                                    <p className="font-semibold">
                                         {tripDetails?.dateDepartPrev ? formatDateOnly(tripDetails?.dateDepartPrev) : "not specified"}
                                     </p>
                                 </div>
@@ -226,7 +218,7 @@ export default function TripDetails({ params }) {
                                 <Calendar className="h-7 w-7 text-reservation-color" />
                                 <div>
                                     <p className="text-sm text-gray-500">Validity of the offer</p>
-                                    <p className="font-medium">
+                                    <p className="font-semibold">
                                         {tripDetails?.dateLimiteReservation
                                             ? formatFullDateTime(tripDetails?.dateLimiteReservation)
                                             : "not specified"}
