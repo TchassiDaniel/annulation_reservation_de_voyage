@@ -174,23 +174,24 @@ export default function TripDetails({ params }) {
 
                         <div className="space-y-8 mb-6">
                             <div className="flex items-center gap-2">
-                                <MapPin className="h-7 w-7 text-red-600" />
+                                <MapPin className="h-7 w-7 text-red-600"/>
+                                <div>
+                                    <p className="text-sm text-gray-500">Arrival location</p>
+                                    <p className="font-semibold">{tripDetails?.lieuArrive + " - " + tripDetails?.pointArrivee}</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                                <MapPin className="h-7 w-7 text-red-600"/>
                                 <div>
                                     <p className="text-sm text-gray-500">Departure location</p>
                                     <p className="font-semibold">{tripDetails?.lieuDepart + " - " + tripDetails?.pointDeDepart}</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <MapPin className="h-7 w-7 text-red-600" />
-                                <div>
-                                    <p className="text-sm text-gray-500">Arrival location</p>
-                                    <p className="font-semibold">{tripDetails?.lieuArrive + " - " +tripDetails?.pointArrivee}</p>
-                                </div>
-                            </div>
 
                             <div className="flex items-center gap-2">
                                 <div className=" flex items-center justify-center">
-                                    <Calendar className="h-7 w-7 text-reservation-color" />
+                                    <Calendar className="h-7 w-7 text-reservation-color"/>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Travel Date</p>
@@ -202,7 +203,7 @@ export default function TripDetails({ params }) {
 
                             <div className="flex items-center gap-2">
                                 <div className=" flex items-center justify-center">
-                                    <Clock className="h-8 w-8 text-reservation-color" />
+                                    <Clock className="h-8 w-8 text-reservation-color"/>
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Departure Time</p>
@@ -215,7 +216,7 @@ export default function TripDetails({ params }) {
                             </div>
 
                             <div className="flex items-center gap-2">
-                                <Calendar className="h-7 w-7 text-reservation-color" />
+                                <Calendar className="h-7 w-7 text-reservation-color"/>
                                 <div>
                                     <p className="text-sm text-gray-500">Validity of the offer</p>
                                     <p className="font-semibold">
@@ -228,7 +229,9 @@ export default function TripDetails({ params }) {
                         </div>
 
 
-                        <button onClick={() => {setCanOpenReservationModal(true)}}
+                        <button onClick={() => {
+                            setCanOpenReservationModal(true)
+                        }}
                                 className="w-full bg-reservation-color font-semibold  text-xl text-white rounded-lg px-4 py-2 hover:bg-blue-800 transition-all duration-300">
                             Book Now
                         </button>
