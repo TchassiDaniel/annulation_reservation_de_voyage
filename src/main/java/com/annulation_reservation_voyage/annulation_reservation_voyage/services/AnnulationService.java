@@ -168,9 +168,11 @@ public class AnnulationService {
         reservation.setPrixTotal(
                 (reservation.getNbrPassager() - reservationCancelDTO.getIdPassagers().length) * classVoyage.getPrix());
 
+        /*
         if (reservationCancelDTO.getIdPassagers().length == reservation.getNbrPassager()) {
             reservation.setStatutReservation(StatutReservation.ANNULER);
         }
+         */
 
         if(reservation.getNbrPassager() <= 0){
             this.reservationRepository.delete(reservation);
