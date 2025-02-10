@@ -48,6 +48,8 @@ function useLogin() {
                 setIsLogged(true);
                 setHasLoginError(false);
                 saveAuthData(response?.data);
+                await fetchUserData();
+
                 return 200;
             }
             setHasLoginError(true);
@@ -86,33 +88,35 @@ function useLogin() {
     }
 
 
-    useEffect(() => {
-        const token = localStorage.getItem("mooving_app_token");
-        async function fetchUserData()
-        {
-            if (token)
+    async function fetchUserData()
+    {
+        try {
             {
-                try {
-                    {
-                        //const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
-                        const response = await axios.get(`https://tchassidaniel-voyage-service--8080.prod1b.defang.dev/api/utilisateur/profil/${token}`);
-                        if (response.status === 200)
-                        {
-                            console.log(response.data);
-                            setUserData(response.data);
-                            setIsLogged(true);
-                        }
-                    }
-                }
-                catch (error)
+                //const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
+                const response = await axios.get(`https://tchassidaniel-voyage-service--8080.prod1b.defang.dev/api/utilisateur/profil/${token}`);
+                if (response.status === 200)
                 {
-                    console.log(error);
-                    setIsLogged(false);
-                    setUserData({});
+                    console.log(response.data);
+                    setUserData(response.data);
+                    setIsLogged(true);
                 }
             }
         }
-        fetchUserData();
+        catch (error)
+        {
+            console.log(error);
+            setIsLogged(false);
+            setUserData({});
+        }
+    }
+
+
+    useEffect(() => {
+        const token = localStorage.getItem("mooving_app_token");
+        if (token)
+        {
+            fetchUserData();
+        }
     }, []);
 
 
