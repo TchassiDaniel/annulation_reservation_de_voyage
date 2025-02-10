@@ -36,8 +36,6 @@ export default function Page() {
     const [successMessage, setSuccessMessage] = useState("");
 
 
-    
-
     async function getReservationDetail(idReservation) {
       try {
         const response = await axiosInstance.get(
@@ -388,18 +386,27 @@ export default function Page() {
           onClose={() => setCanOpenTripAnnulationModal(false)}
         />
 
-          <PaymentModal
-              onClose={()=>setCanOpenPaymentRequestModal(false)}
-              isOpen={canOpenPaymentRequestModal}
-              reservationAmount={Number.parseInt(selectedTrip?.reservation?.prixTotal) - Number.parseInt(selectedTrip?.reservation?.montantPaye)}
-              setIsLoading={setIsLoading}
-              setCanOpenSuccessModal={setCanOpenSuccessModal}
-              setSuccessMessage={setSuccessMessage}
-              idReservation={selectedTrip?.reservation?.idReservation}
-          />
+        <PaymentModal
+          onClose={() => setCanOpenPaymentRequestModal(false)}
+          isOpen={canOpenPaymentRequestModal}
+          reservationAmount={
+            Number.parseInt(selectedTrip?.reservation?.prixTotal) -
+            Number.parseInt(selectedTrip?.reservation?.montantPaye)
+          }
+          setIsLoading={setIsLoading}
+          setCanOpenSuccessModal={setCanOpenSuccessModal}
+          setSuccessMessage={setSuccessMessage}
+          idReservation={selectedTrip?.reservation?.idReservation}
+        />
 
-          <SuccessModal canOpenSuccessModal={setCanOpenSuccessModal} isOpen={canOpenSuccessModal} message={successMessage} makeAction={()=>{setCanOpenPaymentRequestModal(false), window.location.reload()}}/>
-
+        <SuccessModal
+          canOpenSuccessModal={setCanOpenSuccessModal}
+          isOpen={canOpenSuccessModal}
+          message={successMessage}
+          makeAction={() => {
+            setCanOpenPaymentRequestModal(false), window.location.reload();
+          }}
+        />
       </div>
     );
 }

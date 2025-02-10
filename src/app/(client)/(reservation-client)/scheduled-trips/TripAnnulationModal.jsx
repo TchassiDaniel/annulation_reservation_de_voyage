@@ -21,8 +21,10 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
     setIsSuccessModalOpen(true);
   };
 
-
-
+  const handleAction = () => {
+    // Action to perform when the modal closes
+    console.log("Modal closed and action performed");
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -110,14 +112,15 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
 
   if (!isOpen) return null;
 
-  if (isSuccessModalOpen) return (
+  if (isSuccessModalOpen)
+    return (
       <SuccessModal
-          isOpen={isSuccessModalOpen}
-          canOpenSuccessModal={setIsSuccessModalOpen}
-          message={successMessage}
-          makeAction={onClose}
+        isOpen={isSuccessModalOpen}
+        canOpenSuccessModal={setIsSuccessModalOpen}
+        message={successMessage}
+        makeAction={onClose}
       />
-  )
+    );
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 backdrop-blur-sm transition-all duration-300">
       <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -217,7 +220,10 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Refund Amount
             </label>
             <p className="text-red-500 text-lg font-medium">
-              {refundAmount !== 'Réservation annulée avec succès.' ? refundAmount : 0} FCFA
+              {refundAmount !== "Réservation annulée avec succès."
+                ? refundAmount
+                : 0}{" "}
+              FCFA
             </p>
           </div>
           <p className="text-lg font-medium text-gray-700">
@@ -238,6 +244,13 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
           </div>
         </form>
       </div>
+
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        canOpenSuccessModal={setIsSuccessModalOpen}
+        message={successMessage}
+        makeAction={handleAction}
+      />
     </div>
   );
 }
