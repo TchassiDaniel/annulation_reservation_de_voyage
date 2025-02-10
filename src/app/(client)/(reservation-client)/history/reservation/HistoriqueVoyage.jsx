@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState } from 'react';
 import {
   MapPinIcon, 
@@ -94,6 +95,20 @@ export default function HistoriqueVoyage() {
               border-top: 2px dashed #e0e0e0;
               padding-top: 15px;
             }
+            @media print {
+              body { margin: 0; padding: 10px; }
+              .ticket-container { max-width: 100%; padding: 10px !important; }
+            }
+            @media screen and (max-width: 600px) {
+              .ticket-container { 
+                padding: 15px; 
+                border-radius: 8px; 
+              }
+              .passenger-section { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+              }
+            }
           </style>
         </head>
         <body>
@@ -187,8 +202,8 @@ export default function HistoriqueVoyage() {
     }
 
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div className="bg-white shadow-xl rounded-lg p-6 max-w-2xl w-full relative">
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white shadow-xl rounded-lg p-6 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
           <div className="absolute top-4 left-4 text-xl font-bold text-blue-600">
             Mooving Voyages
           </div>
@@ -269,27 +284,28 @@ export default function HistoriqueVoyage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">Historique des Réservations</h1>
-          <div className="text-xl font-bold text-blue-600">Mooving Voyages</div>
+    <div className="min-h-screen p-2">
+      <div className="mx-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl lg:text-3xl text-reservation-color font-bold  mb-4 sm:mb-0">
+            Reservation History
+          </h1>
         </div>
         
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {historiqueData.historiques
             .filter(reservation => reservation.etatVoyage !== 'annulé')
             .map((reservation) => (
               <div 
                 key={reservation.idHistorique} 
-                className="bg-white shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="bg-gray-100 shadow-md rounded-lg overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
                 <div className="p-4">
-                  <div className="flex justify-between items-center mb-3">
-                    <h2 className="text-lg font-semibold text-gray-800">
+                  <div className="flex  justify-between  mb-3">
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-800 mb-2 sm:mb-0">
                       Réservation #{reservation.idHistorique}
                     </h2>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span 
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           reservation.statusVoyage === 'VIP'
@@ -312,8 +328,7 @@ export default function HistoriqueVoyage() {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Lieu de Départ */}
+                  <div className="grid grid-cols-2 gap-7">
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-blue-500 mr-2" />
                       <div>
@@ -322,7 +337,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Quartier de Départ */}
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-indigo-500 mr-2" />
                       <div>
@@ -331,7 +345,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Lieu d'Arrivée */}
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-green-500 mr-2" />
                       <div>
@@ -340,7 +353,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Quartier d'Arrivée */}
                     <div className="flex items-center">
                       <MapPinIcon className="h-5 w-5 text-emerald-500 mr-2" />
                       <div>
@@ -349,7 +361,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Date de Départ */}
                     <div className="flex items-center">
                       <CalendarIcon className="h-5 w-5 text-teal-500 mr-2" />
                       <div>
@@ -358,7 +369,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Heure de Départ */}
                     <div className="flex items-center">
                       <ClockIcon className="h-5 w-5 text-purple-500 mr-2" />
                       <div>
@@ -369,7 +379,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Heure d'Arrivée */}
                     <div className="flex items-center">
                       <ClockIcon className="h-5 w-5 text-green-500 mr-2" />
                       <div>
@@ -380,7 +389,6 @@ export default function HistoriqueVoyage() {
                       </div>
                     </div>
                     
-                    {/* Prix du Billet */}
                     <div className="flex items-center col-span-2">
                       <CurrencyEuroIcon className="h-5 w-5 text-green-600 mr-2" />
                       <div>
@@ -397,9 +405,9 @@ export default function HistoriqueVoyage() {
                       onClick={() => setSelectedReservation(
                         selectedReservation === reservation ? null : reservation
                       )}
-                      className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition text-xs w-full"
+                      className="bg-reservation-color text-white px-4 py-2 font-semibold rounded-lg hover:bg-blue-700 transition text-sm lg:text-md"
                     >
-                      Voir Détails
+                      View Details
                     </button>
                   </div>
                 </div>

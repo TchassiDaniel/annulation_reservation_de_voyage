@@ -1,9 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import { Calendar, Timer, MapPin, MapPinHouse } from "lucide-react";
-import dynamic from "next/dynamic";
-//import html2pdf from "html2pdf.js";
-//const DynamicComponent = dynamic(() => import("html2pdf.js"), { ssr: false });
+import React, { useState, useRef } from "react";
+import { Calendar, Timer, MapPin, MapPinHouse, Printer } from "lucide-react";
 
 const Coupons = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -31,19 +28,50 @@ const Coupons = () => {
     },
   ];
 
-  const generatePDF = async (couponId) => {
-    const element = document.getElementById(`pdf-content-${couponId}`); // L'élément HTML à convertir
-    const html2pdf = (await import("html2pdf.js")).default;
+  const printCoupon = (couponId) => {
+    // Récupérer l'élément du coupon
+    const couponElement = document.getElementById(`pdf-content-${couponId}`);
 
-    const options = {
-      margin: 1,
-      filename: `coupon-${couponId}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-    };
-    //    DynamicComponent().then((html2pdf) => {
-    html2pdf().set(options).from(element).save();
-    //    });
+    // Créer une nouvelle fenêtre d'impression
+    const printWindow = window.open("", "", "height=600,width=800");
+
+    // Ajouter les styles Tailwind et personnalisés
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Coupon de Remboursement</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          @media print {
+            body {
+              margin: 0;
+              padding: 20px;
+            }
+            .print-container {
+              max-width: 600px;
+              margin: 0 auto;
+              border: 2px solid #2563eb;
+              padding: 20px;
+              box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            }
+          }
+        </style>
+      </head>
+      <body class="bg-gray-100 p-6">
+        <div class="print-container bg-white rounded-xl shadow-lg border-2 border-blue-600 p-6">
+          ${couponElement.innerHTML}
+        </div>
+      </body>
+    </html>
+  `);
+
+    printWindow.document.close();
+
+    // Attendre un court instant pour s'assurer que le contenu est chargé
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 1000);
   };
 
   return (
@@ -65,7 +93,7 @@ const Coupons = () => {
             onClick={() => setActiveTab("all")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
               activeTab === "all"
-                ? "bg-reservation-details-color text-white"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             All
@@ -74,8 +102,8 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("VALIDE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "confirmed"
-                ? "bg-reservation-details-color text-white"
+              activeTab === "VALIDE"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Valid
@@ -84,8 +112,8 @@ const Coupons = () => {
           <button
             onClick={() => setActiveTab("EXPIRE")}
             className={`px-4 py-2 rounded-lg text-md font-medium transition-colors ${
-              activeTab === "reserved"
-                ? "bg-reservation-details-color text-white"
+              activeTab === "EXPIRE"
+                ? "bg-reservation-color text-white"
                 : "border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}>
             Expired
@@ -104,83 +132,89 @@ const Coupons = () => {
               <div
                 key={coupon.idCoupon}
                 id={`pdf-content-${coupon.idCoupon}`}
-                className="border border-blue-600 bg-gray-50 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 text-reservation-color">
-                      <h3 className="text-xl font-bold">
-                        Coupon ID: {coupon.idCoupon}
-                      </h3>
-                    </div>
-                    <div className="flex gap-2">
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          coupon.statusCoupon === "VALIDE"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
-                        }`}>
-                        {coupon.statusCoupon}
-                      </span>
-                    </div>
+                className="border-2 border-blue-600 bg-white rounded-xl p-6 shadow-md">
+                <div className="text-center mb-6">
+                  <h2 className="text-2xl font-bold text-blue-800">
+                    Coupon de Remboursement
+                  </h2>
+                  <p className="text-gray-600">Annulation de Voyage</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Coupon ID</p>
+                    <p className="font-bold text-blue-800">{coupon.idCoupon}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-3xl font-bold text-reservation-color">
-                      {coupon.valeur.toLocaleString()} FCFA
-                    </p>
+                    <p className="text-sm text-gray-500">Statut</p>
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        coupon.statusCoupon === "VALIDE"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}>
+                      {coupon.statusCoupon}
+                    </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 mb-6 ml-10">
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-5 w-5 text-reservation-color" />
-                    <div>
-                      <p className="text-sm text-gray-500">Agency</p>
-                      <p className="font-medium">{coupon.nomAgence}</p>
-                    </div>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Agence</p>
+                    <MapPin className="h-5 w-5 text-blue-600 inline-block mr-2" />
+                    <span>{coupon.nomAgence}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <MapPinHouse className="h-5 w-5 text-red-500" />
-
-                    <div>
-                      <p className="text-sm text-gray-500">Destination</p>
-                      <p className="font-medium">{coupon.lieuArrive}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-reservation-color" />
-                    <div>
-                      <p className="text-sm text-gray-500">Start Date</p>
-                      <p className="font-medium">
-                        {new Date(coupon.dateDebut).toLocaleDateString(
-                          "en-EN",
-                          {
-                            dateStyle: "long",
-                          }
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Timer className="h-5 w-5 text-reservation-color" />
-                    <div>
-                      <p className="text-sm text-gray-500">End Date</p>
-                      <p className="font-medium">
-                        {new Date(coupon.dateFin).toLocaleDateString("en-EN", {
-                          dateStyle: "long",
-                        })}
-                      </p>
-                    </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Destination</p>
+                    <MapPinHouse className="h-5 w-5 text-red-500 inline-block mr-2" />
+                    <span>{coupon.lieuArrive}</span>
                   </div>
                 </div>
-                <div className="mt-5 flex justify-end">
-                  <button
-                    onClick={generatePDF}
-                    className="bg-reservation-color px-4 py-2 rounded-md text-white font-bold hover:bg-reservation-color/90 transition-all duration-300">
-                    Print PDF
-                  </button>
+
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Date de Debut</p>
+                    <Calendar className="h-5 w-5 text-blue-600 inline-block mr-2" />
+                    <span className="font-medium">
+                      {new Date(coupon.dateDebut).toLocaleDateString("fr-FR", {
+                        dateStyle: "long",
+                      })}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Date de Fin</p>
+                    <Timer className="h-5 w-5 text-blue-600 inline-block mr-2" />
+                    <span className="font-medium">
+                      {new Date(coupon.dateFin).toLocaleDateString("fr-FR", {
+                        dateStyle: "long",
+                      })}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="text-center mt-6">
+                  <p className="text-2xl font-bold text-blue-800">
+                    Montant du Remboursement
+                  </p>
+                  <p className="text-3xl font-extrabold text-green-600">
+                    {coupon.valeur.toLocaleString()} FCFA
+                  </p>
+                </div>
+                <div className="mt-6 flex justify-center">
+                  {coupon.statusCoupon === "VALIDE" && (
+                    <div className="mt-5 flex justify-end">
+                      <button
+                        onClick={() => printCoupon(coupon.idCoupon)}
+                        className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-all duration-300 shadow-md flex items-center">
+                        <Printer className="h-4 w-4 mr-2" />
+                        Imprimer
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
+          ;
         </div>
       </div>
     </div>
