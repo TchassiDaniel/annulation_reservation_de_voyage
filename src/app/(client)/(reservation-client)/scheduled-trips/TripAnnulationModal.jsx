@@ -220,9 +220,7 @@ export default function TripAnnulationModal({ isOpen, onClose, trip }) {
               Refund Amount
             </label>
             <p className="text-red-500 text-lg font-medium">
-              {refundAmount !== "Réservation annulée avec succès."
-                ? refundAmount
-                : 0}{" "}
+              {refundAmount !== "Réservation annulée avec succès." ? refundAmount : 0}{" "}
               FCFA
             </p>
           </div>

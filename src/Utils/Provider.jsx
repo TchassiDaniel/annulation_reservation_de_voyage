@@ -44,10 +44,10 @@ function useLogin() {
             const response = await axios.post("https://tchassidaniel-voyage-service--8080.prod1b.defang.dev/api/utilisateur/connexion", data);
             if (response?.status === 200)
             {
+                saveAuthData(response?.data);
                 setIsLoading(false);
                 setIsLogged(true);
                 setHasLoginError(false);
-                saveAuthData(response?.data);
                 await fetchUserData();
 
                 return 200;
@@ -90,33 +90,38 @@ function useLogin() {
 
     async function fetchUserData()
     {
-        try {
-            {
+        const token = localStorage.getItem("mooving_app_token");
+        if (token)
+        {
+            try {
                 //const response = await axios.get(`http://85.214.142.178:8085/api/utilisateur/profil/${token}`);
                 const response = await axios.get(`https://tchassidaniel-voyage-service--8080.prod1b.defang.dev/api/utilisateur/profil/${token}`);
                 if (response.status === 200)
                 {
-                    console.log(response.data);
                     setUserData(response.data);
+                    console.log("donnees utilisateur", userData);
                     setIsLogged(true);
                 }
             }
+            catch (error)
+            {
+                console.log(error);
+                setIsLogged(false);
+                setUserData({});
+            }
         }
-        catch (error)
+        else
         {
-            console.log(error);
             setIsLogged(false);
             setUserData({});
         }
+
+
     }
 
 
     useEffect(() => {
-        const token = localStorage.getItem("mooving_app_token");
-        if (token)
-        {
-            fetchUserData();
-        }
+        fetchUserData();
     }, []);
 
 

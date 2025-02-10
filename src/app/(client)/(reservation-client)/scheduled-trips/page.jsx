@@ -54,14 +54,11 @@ export default function Page() {
 
 
 
-
-
     async function getMyScheduledTrips(userId) {
       setIsLoading(true);
+      console.log("user data", userData.userId);
       try {
-        const response = await axiosInstance.get(
-          `/reservation/utilisateur/${userId}`
-        );
+        const response = await axiosInstance.get(`/reservation/utilisateur/${userId}`);
         setIsLoading(false);
         if (response.status === 200) {
           console.log(response.data);
@@ -81,16 +78,21 @@ export default function Page() {
       }
     }
 
-    useEffect(() => {
+    useEffect(() =>
+    {
+        console.log(userData)
       if (userData.userId) {
+          console.log("user id", userData.userId);
         getMyScheduledTrips(userData?.userId);
       }
     }, [userData?.userId]);
 
 
+
     useEffect(() => {
       getReservationDetail(idReservation);
     }, [idReservation]);
+
 
     return (
       <div className="min-h-screen  ">
