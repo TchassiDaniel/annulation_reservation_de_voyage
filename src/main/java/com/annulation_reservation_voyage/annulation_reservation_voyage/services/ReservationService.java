@@ -47,6 +47,7 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final VoyageService voyageService;
     private final PayementService payementService;
+    private final VehiculeRepository vehiculeRepository;
 
     public Page<Reservation> findAll(int page, int size) {
         // TODO, ajouter un filtre pour ne retourner que les voyages qui ne sont pas
@@ -95,7 +96,11 @@ public class ReservationService {
                 .findById(this.ligneVoyageRepository.findByIdVoyage(reservationDetailDTO.getVoyage().getIdVoyage())
                         .getIdAgenceVoyage())
                 .orElseThrow(() -> new RuntimeException("Le voyage dont l'id est spécifique n'existe pas.")));
-
+        // On charge le vehicule
+        reservationDetailDTO.setVehicule(vehiculeRepository
+                .findById(this.ligneVoyageRepository.findByIdVoyage(reservationDetailDTO.getVoyage().getIdVoyage())
+                        .getIdVehicule())
+                .orElseThrow(() -> new RuntimeException("Le vehicule dont l'id est spécifique n'existe pas.")));
         return reservationDetailDTO;
     }
 
