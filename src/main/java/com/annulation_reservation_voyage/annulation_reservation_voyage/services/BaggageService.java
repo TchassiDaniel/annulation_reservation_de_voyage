@@ -2,19 +2,19 @@ package com.annulation_reservation_voyage.annulation_reservation_voyage.services
 
 import com.annulation_reservation_voyage.annulation_reservation_voyage.models.Baggage;
 import com.annulation_reservation_voyage.annulation_reservation_voyage.repositories.BaggageRepository;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class BaggageService {
 
     private final BaggageRepository baggageRepository;
-
-    public BaggageService(BaggageRepository baggageRepository) {
-        this.baggageRepository = baggageRepository;
-    }
 
     public List<Baggage> findAll() {
         return baggageRepository.findAll();
